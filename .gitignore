@@ -1,0 +1,43 @@
+# Node
+node_modules/
+
+# Expo
+.expo/
+.expo-shared/
+
+# Build
+dist/
+build/
+
+# Logs
+logs/
+*.log
+
+# Environment
+.env
+.env.*
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# VS Code
+.vscode/settings.json
+
+# Android
+android/app/build/
+
+# iOS
+ios/build/
+
+# Coverage
+coverage/
+
+# Cache
+.cache/
+
+# Temporary
+tmp/
+temp/
