@@ -1,15 +1,18 @@
-import { View, Text } from "react-native";
+import { useLocalSearchParams } from "expo-router";
+
+import PhoneNumberScreen from "@/screens/auth/PhoneNumberScreen";
 
 export default function LoginScreen() {
+  const { role } = useLocalSearchParams<{
+    role?: string;
+  }>();
+
+  const selectedRole =
+    role === "driver" ? "driver" : "passenger";
+
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Login Screen</Text>
-    </View>
+    <PhoneNumberScreen
+      role={selectedRole}
+    />
   );
 }

@@ -1,15 +1,23 @@
-import { View, Text } from "react-native";
+import { useLocalSearchParams } from "expo-router";
+
+import OTPScreen from "@/screens/auth/OTPScreen";
 
 export default function VerifyOtpScreen() {
+  const {
+    phoneNumber,
+    role,
+  } = useLocalSearchParams<{
+    phoneNumber?: string;
+    role?: string;
+  }>();
+
+  const selectedRole =
+    role === "driver" ? "driver" : "passenger";
+
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>OTP Verification Screen</Text>
-    </View>
+    <OTPScreen
+      phoneNumber={phoneNumber || ""}
+      role={selectedRole}
+    />
   );
 }

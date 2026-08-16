@@ -11,6 +11,8 @@ const PORT = process.env.PORT || 5000;
 connectDB();
 
 // Start Server
-app.listen(PORT, () => {
-  console.log(`🚀 PickMe Backend running on http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(
+    `🚀 PickMe Backend running on http://localhost:${PORT}`
+  );
 });
