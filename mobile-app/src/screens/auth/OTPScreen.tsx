@@ -11,6 +11,11 @@ import {
 import { router } from "expo-router";
 
 import API_BASE_URL from "@/services/api";
+import {
+  getAuthSession,
+  saveAuthSession,
+} from "@/services/auth.service";
+
 import Header from "@/components/Header";
 import OTPInput from "@/components/OTPInput";
 import PrimaryButton from "@/components/Button";
@@ -22,9 +27,11 @@ import {
   Typography,
 } from "@/theme";
 
+import { UserRole } from "@/types/auth";
+
 interface OTPScreenProps {
   phoneNumber: string;
-  role: "passenger" | "driver";
+  role: UserRole;
 }
 
 export default function OTPScreen({
@@ -65,18 +72,75 @@ export default function OTPScreen({
 
       if (!response.ok) {
         throw new Error(
-          data?.message || "OTP verification failed."
+          data?.message ||
+            "OTP verification failed."
         );
       }
 
-      console.log("OTP verified successfully");
-      console.log("User:", data.user);
-      console.log("Selected role:", role);
-      console.log("Authentication successful");
+      if (!data.token || !data.user) {
+        throw new Error(
+          "Authentication response is missing session data."
+        );
+      }
 
-      // JWT token is returned by the backend.
-      // Token persistence will be implemented next.
-      console.log("Token received:", !!data.token);
+      console.log(
+        "OTP verified successfully"
+      );
+
+      console.log(
+        "User:",
+        data.user
+      );
+
+      console.log(
+        "Selected role:",
+        role
+      );
+
+      console.log(
+        "Authentication successful"
+      );
+
+      await saveAuthSession(
+        data.token,
+        data.user,
+        role
+      );
+
+      const restoredSession = await getAuthSession();
+
+console.log(
+  "Session readback successful:",
+  !!restoredSession
+);
+
+console.log(
+  "Restored session role:",
+  restoredSession?.role
+);
+
+console.log(
+  "Restored user:",
+  restoredSession?.user?.phoneNumber
+);
+
+      console.log(
+        "Authentication session saved securely"
+      );
+
+      console.log(
+        "Token received:",
+        !!data.token
+      );
+
+      /*
+       * We intentionally do not navigate to the
+       * passenger/driver UI yet.
+       *
+       * Session restoration and authenticated
+       * routing will be implemented in the next
+       * milestone.
+       */
     } catch (error) {
       console.error(
         "OTP verification failed:",
