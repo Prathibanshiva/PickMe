@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { getCurrentUser } from "@/services/user.service";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -127,6 +128,18 @@ console.log(
       console.log(
         "Authentication session saved securely"
       );
+
+      const currentUser =
+  await getCurrentUser();
+
+console.log(
+  "Authenticated API request successful"
+);
+
+console.log(
+  "Server user:",
+  currentUser
+);
 
       console.log(
         "Token received:",
