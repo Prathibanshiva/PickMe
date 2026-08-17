@@ -1,5 +1,5 @@
-import RoleSelectionScreen from "@/screens/auth/RoleSelectionScreen";
+import AuthGateScreen from "@/screens/auth/AuthGateScreen";
 
 export default function Home() {
-  return <RoleSelectionScreen />;
+  return <AuthGateScreen />;
 }
