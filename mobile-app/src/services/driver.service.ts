@@ -53,3 +53,39 @@ export async function createOrGetDriverProfile(): Promise<DriverProfile> {
 
   return data.driverProfile;
 }
+
+export interface DriverProfile {
+  id: string;
+  userId: string;
+
+  verificationStatus:
+    | "pending"
+    | "approved"
+    | "rejected";
+
+  rejectionReason: string;
+
+  profilePhoto: string;
+
+  aadhaarDocument: string;
+
+  drivingLicenceDocument: string;
+
+  vehicleType:
+    | "bike"
+    | "auto"
+    | "car"
+    | "sedan"
+    | "suv"
+    | null;
+
+  vehicleNumber: string;
+
+  vehiclePhoto: string;
+
+  verifiedAt: string | null;
+
+  createdAt: string;
+
+  updatedAt: string;
+}

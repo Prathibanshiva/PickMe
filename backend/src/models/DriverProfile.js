@@ -10,6 +10,10 @@ const driverProfileSchema = new mongoose.Schema(
       index: true,
     },
 
+    // -----------------------------
+    // Verification
+    // -----------------------------
+
     verificationStatus: {
       type: String,
       enum: [
@@ -25,6 +29,37 @@ const driverProfileSchema = new mongoose.Schema(
       default: "",
       trim: true,
     },
+
+    verifiedAt: {
+      type: Date,
+      default: null,
+    },
+
+    // -----------------------------
+    // Driver Personal Information
+    // -----------------------------
+
+    profilePhoto: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    aadhaarDocument: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    drivingLicenceDocument: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    // -----------------------------
+    // Vehicle Information
+    // -----------------------------
 
     vehicleType: {
       type: String,
@@ -45,9 +80,10 @@ const driverProfileSchema = new mongoose.Schema(
       uppercase: true,
     },
 
-    verifiedAt: {
-      type: Date,
-      default: null,
+    vehiclePhoto: {
+      type: String,
+      default: "",
+      trim: true,
     },
   },
   {
