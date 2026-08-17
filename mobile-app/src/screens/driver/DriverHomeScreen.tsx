@@ -4,12 +4,51 @@ import {
   Text,
   View,
 } from "react-native";
+import { useEffect, useState } from "react";
 
 import { useAuth } from "@/store/auth.store";
-import { Colors, Spacing, Typography } from "@/theme";
+import { createOrGetDriverProfile } from "@/services/driver.service";
+
+import {
+  Colors,
+  Spacing,
+  Typography,
+} from "@/theme";
 
 export default function DriverHomeScreen() {
   const { user, role } = useAuth();
+
+  const [verificationStatus, setVerificationStatus] =
+    useState<string | null>(null);
+
+  useEffect(() => {
+    const loadDriverProfile = async () => {
+      try {
+        const profile =
+          await createOrGetDriverProfile();
+
+        console.log(
+          "Driver profile request successful"
+        );
+
+        console.log(
+          "Driver profile:",
+          profile
+        );
+
+        setVerificationStatus(
+          profile.verificationStatus
+        );
+      } catch (error) {
+        console.error(
+          "Driver profile request failed:",
+          error
+        );
+      }
+    };
+
+    loadDriverProfile();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -37,6 +76,15 @@ export default function DriverHomeScreen() {
 
           <Text style={styles.value}>
             {role}
+          </Text>
+
+          <Text style={styles.label}>
+            Verification Status
+          </Text>
+
+          <Text style={styles.value}>
+            {verificationStatus ??
+              "Loading..."}
           </Text>
         </View>
       </View>
