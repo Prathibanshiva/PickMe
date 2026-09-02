@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { router } from "expo-router";
+import { useAuth } from "@/store/auth.store";
 
 import API_BASE_URL from "@/services/api";
 import {
@@ -39,6 +40,8 @@ export default function OTPScreen({
   phoneNumber,
   role,
 }: OTPScreenProps) {
+    const { refreshSession } = useAuth();
+
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -141,19 +144,37 @@ console.log(
   currentUser
 );
 
-      console.log(
+            console.log(
         "Token received:",
         !!data.token
       );
 
       /*
-       * We intentionally do not navigate to the
-       * passenger/driver UI yet.
+       * Refresh the global authentication state.
        *
-       * Session restoration and authenticated
-       * routing will be implemented in the next
-       * milestone.
+       * This makes AuthProvider read the newly
+       * saved session and validate it with the
+       * backend.
        */
+      await refreshSession();
+
+      console.log(
+        "Authentication state refreshed"
+      );
+
+      /*
+       * Return to the root route.
+       *
+       * The root route renders AuthGateScreen,
+       * which will now detect the authenticated
+       * session and display the correct UI based
+       * on the selected role.
+       */
+      router.replace("/");
+
+      console.log(
+        "Navigated to authenticated home"
+      );
     } catch (error) {
       console.error(
         "OTP verification failed:",
@@ -194,6 +215,7 @@ console.log(
             title="Verify your number"
             subtitle="Enter the 6-digit code sent to your mobile number."
             onBack={handleBack}
+            backArrowVariant="material"
           />
 
           <View style={styles.phoneContainer}>

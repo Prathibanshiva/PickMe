@@ -1,4 +1,5 @@
 const DriverProfile = require("../../models/DriverProfile");
+const User = require("../../models/User");
 
 
 // ============================================
@@ -86,6 +87,7 @@ const submitDriverProfile = async (req, res) => {
     const userId = req.user._id;
 
     const {
+      driverName,
       profilePhoto,
       aadhaarDocument,
       drivingLicenceDocument,
@@ -99,6 +101,8 @@ const submitDriverProfile = async (req, res) => {
     // -----------------------------
 
     if (
+      !driverName ||
+      !driverName.trim() ||
       !profilePhoto ||
       !aadhaarDocument ||
       !drivingLicenceDocument ||
@@ -146,7 +150,24 @@ const submitDriverProfile = async (req, res) => {
     }
 
     // -----------------------------
-    // Update profile
+    // Update User name
+    // -----------------------------
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User account not found",
+      });
+    }
+
+    user.name = driverName.trim();
+
+    await user.save();
+
+    // -----------------------------
+    // Update Driver Profile
     // -----------------------------
 
     driverProfile.profilePhoto =
@@ -167,7 +188,6 @@ const submitDriverProfile = async (req, res) => {
     driverProfile.vehiclePhoto =
       vehiclePhoto;
 
-    // New submission goes back to pending
     driverProfile.verificationStatus =
       "pending";
 
@@ -218,6 +238,11 @@ const submitDriverProfile = async (req, res) => {
 
         updatedAt:
           driverProfile.updatedAt,
+      },
+
+      user: {
+        id: user._id,
+        name: user.name,
       },
     });
   } catch (error) {

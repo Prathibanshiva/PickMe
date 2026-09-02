@@ -112,6 +112,7 @@ export default function PhoneNumberScreen({
             title="Enter your mobile number"
             subtitle="We'll send you a verification code to verify your number."
             onBack={handleBack}
+            backArrowVariant="material"
           />
 
           <View style={styles.inputSpacing}>
