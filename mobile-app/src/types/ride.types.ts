@@ -5,9 +5,10 @@ import { RideMode, VehicleType } from "@/constants/vehicles";
 export interface LocationPoint {
   title: string;
   subtitle?: string;
-  latitude?: number;
-  longitude?: number;
+  latitude: number;
+  longitude: number;
   distanceKm?: number;
+  placeId?: string;
 }
 
 export interface RideBookingDraft {

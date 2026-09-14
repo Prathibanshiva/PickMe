@@ -1,6 +1,9 @@
-import React from "react";
+// mobile-app/src/screens/passenger/PassengerHomeScreen.tsx
+
+import React, { useEffect, useState } from "react";
 import {
-  SafeAreaView,
+  Modal,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,11 +15,36 @@ import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useAuth } from "@/store/auth.store";
-import { Colors, Radius, Spacing } from "@/theme";
+import { Colors, Radius } from "@/theme";
+import { LocationPoint } from "@/types/ride.types";
+import {
+  BENGALURU_FALLBACK_LOCATION,
+  getCurrentPickupLocation,
+} from "@/services/location.service";
 
 export default function PassengerHomeScreen() {
-  const { user, role, logout } = useAuth();
+  const { user, logout } = useAuth();
   const insets = useSafeAreaInsets();
+
+  const [pickupLocation, setPickupLocation] = useState<LocationPoint>(
+    BENGALURU_FALLBACK_LOCATION
+  );
+  const [activeTab, setActiveTab] = useState<"ride" | "schedule" | "activity" | "profile">("ride");
+  const [pendingTabModal, setPendingTabModal] = useState<string | null>(null);
+
+  // Fetch real GPS location on mount
+  useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      const loc = await getCurrentPickupLocation();
+      if (isMounted) {
+        setPickupLocation(loc);
+      }
+    })();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleOpenSearch = (initialQuery?: string) => {
     router.push({
@@ -25,26 +53,49 @@ export default function PassengerHomeScreen() {
     } as any);
   };
 
-  const handleSelectRecent = (title: string, subtitle: string, distanceKm: number) => {
+  const handleSelectRecent = (
+    title: string,
+    subtitle: string,
+    latitude: number,
+    longitude: number,
+    distanceKm: number
+  ) => {
     router.push({
       pathname: "/passenger/vehicle-selection",
       params: {
-        pickupTitle: "4th Block, Koramangala",
-        pickupSubtitle: "Bengaluru, Karnataka",
+        pickupTitle: pickupLocation.title,
+        pickupSubtitle: pickupLocation.subtitle || "",
+        pickupLat: String(pickupLocation.latitude),
+        pickupLng: String(pickupLocation.longitude),
         destinationTitle: title,
         destinationSubtitle: subtitle,
+        destLat: String(latitude),
+        destLng: String(longitude),
         distanceKm: String(distanceKm),
       },
     } as any);
   };
 
+  const handleTabPress = (tab: "ride" | "schedule" | "activity" | "profile") => {
+    if (tab === "ride") {
+      setActiveTab("ride");
+    } else {
+      const tabNames: Record<string, string> = {
+        schedule: "Schedule a Ride",
+        activity: "Ride Activity & History",
+        profile: "Passenger Profile",
+      };
+      setPendingTabModal(tabNames[tab]);
+    }
+  };
+
   const displayName = user?.name?.trim() || "Passenger";
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.root}>
       <View style={styles.container}>
-        {/* Top Header */}
-        <View style={styles.header}>
+        {/* Top Header strictly below Android status bar */}
+        <View style={[styles.header, { paddingTop: Math.max(insets.top, 12) }]}>
           <View>
             <Text style={styles.brandTitle}>PickMe</Text>
             <Text style={styles.greetingText}>Hello, {displayName}</Text>
@@ -71,19 +122,23 @@ export default function PassengerHomeScreen() {
         {/* Scrollable Content */}
         <ScrollView
           style={styles.scrollContent}
-          contentContainerStyle={{ paddingBottom: insets.bottom + 80 }}
+          contentContainerStyle={{ paddingBottom: insets.bottom + 90 }}
           showsVerticalScrollIndicator={false}
         >
-          {/* Pickup location indicator */}
-          <View style={styles.pickupPill}>
+          {/* Pickup location indicator (Real GPS or fallback) */}
+          <TouchableOpacity
+            style={styles.pickupPill}
+            activeOpacity={0.8}
+            onPress={() => handleOpenSearch()}
+          >
             <View style={styles.pickupDot} />
             <Text style={styles.pickupAddress} numberOfLines={1}>
-              4th Block, Koramangala, Bengaluru
+              {pickupLocation.title}
             </Text>
             <MaterialIcons name="my-location" size={16} color={Colors.primary} />
-          </View>
+          </TouchableOpacity>
 
-          {/* Destination Search Trigger (Stitch Visual Style) */}
+          {/* Destination Search Trigger */}
           <TouchableOpacity
             style={styles.searchBar}
             activeOpacity={0.85}
@@ -108,7 +163,15 @@ export default function PassengerHomeScreen() {
             <TouchableOpacity
               style={styles.chip}
               activeOpacity={0.7}
-              onPress={() => handleSelectRecent("Home", "Indiranagar 100ft Road", 4.8)}
+              onPress={() =>
+                handleSelectRecent(
+                  "Home",
+                  "Indiranagar 100ft Road",
+                  12.9784,
+                  77.6408,
+                  4.8
+                )
+              }
             >
               <MaterialIcons name="home" size={18} color={Colors.primary} />
               <Text style={styles.chipText}>Home</Text>
@@ -117,7 +180,15 @@ export default function PassengerHomeScreen() {
             <TouchableOpacity
               style={styles.chip}
               activeOpacity={0.7}
-              onPress={() => handleSelectRecent("Work", "Ecospace Business Park", 8.5)}
+              onPress={() =>
+                handleSelectRecent(
+                  "Work",
+                  "Ecospace Business Park",
+                  12.926,
+                  77.6833,
+                  8.5
+                )
+              }
             >
               <MaterialIcons name="work" size={18} color={Colors.primary} />
               <Text style={styles.chipText}>Work</Text>
@@ -126,7 +197,15 @@ export default function PassengerHomeScreen() {
             <TouchableOpacity
               style={styles.chip}
               activeOpacity={0.7}
-              onPress={() => handleSelectRecent("Favorites", "MG Road Metro", 6.1)}
+              onPress={() =>
+                handleSelectRecent(
+                  "Favorites",
+                  "MG Road Metro",
+                  12.9756,
+                  77.6066,
+                  6.1
+                )
+              }
             >
               <MaterialIcons name="favorite" size={18} color="#E11D48" />
               <Text style={styles.chipText}>Favorites</Text>
@@ -201,6 +280,8 @@ export default function PassengerHomeScreen() {
                 handleSelectRecent(
                   "Oil Mill Road",
                   "Kammanahalli, Bengaluru, Karnataka",
+                  13.0082,
+                  77.6321,
                   7.2
                 )
               }
@@ -222,6 +303,8 @@ export default function PassengerHomeScreen() {
                 handleSelectRecent(
                   "Jubilee Revival AG Church",
                   "Kacharakanahalli, Bengaluru",
+                  13.0145,
+                  77.6358,
                   5.8
                 )
               }
@@ -240,39 +323,84 @@ export default function PassengerHomeScreen() {
 
         {/* Bottom Navigation Bar */}
         <View style={[styles.bottomNav, { paddingBottom: Math.max(insets.bottom, 10) }]}>
-          <TouchableOpacity style={styles.navItem} activeOpacity={0.8}>
-            <View style={styles.navIconActiveBox}>
-              <MaterialIcons name="directions-car" size={22} color={Colors.primary} />
+          <TouchableOpacity
+            style={styles.navItem}
+            activeOpacity={0.8}
+            onPress={() => handleTabPress("ride")}
+          >
+            <View style={activeTab === "ride" ? styles.navIconActiveBox : undefined}>
+              <MaterialIcons
+                name="directions-car"
+                size={22}
+                color={activeTab === "ride" ? Colors.primary : "#6B7280"}
+              />
             </View>
-            <Text style={styles.navLabelActive}>Ride</Text>
+            <Text style={activeTab === "ride" ? styles.navLabelActive : styles.navLabelInactive}>
+              Ride
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.navItem}
             activeOpacity={0.8}
-            onPress={() => handleOpenSearch()}
+            onPress={() => handleTabPress("schedule")}
           >
             <MaterialIcons name="calendar-today" size={22} color="#6B7280" />
             <Text style={styles.navLabelInactive}>Schedule</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.navItem} activeOpacity={0.8}>
+          <TouchableOpacity
+            style={styles.navItem}
+            activeOpacity={0.8}
+            onPress={() => handleTabPress("activity")}
+          >
             <MaterialIcons name="receipt-long" size={22} color="#6B7280" />
             <Text style={styles.navLabelInactive}>Activity</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.navItem} activeOpacity={0.8}>
+          <TouchableOpacity
+            style={styles.navItem}
+            activeOpacity={0.8}
+            onPress={() => handleTabPress("profile")}
+          >
             <Ionicons name="person-outline" size={22} color="#6B7280" />
             <Text style={styles.navLabelInactive}>Profile</Text>
           </TouchableOpacity>
         </View>
+
+        {/* Informative Modal for Tabs Planned for Future Tasks */}
+        <Modal
+          animationType="fade"
+          transparent
+          visible={Boolean(pendingTabModal)}
+          onRequestClose={() => setPendingTabModal(null)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalCard}>
+              <View style={styles.modalIconBox}>
+                <MaterialIcons name="schedule" size={26} color={Colors.primary} />
+              </View>
+              <Text style={styles.modalTitle}>{pendingTabModal}</Text>
+              <Text style={styles.modalDesc}>
+                This section is planned for an upcoming dedicated task according to the project roadmap.
+              </Text>
+              <TouchableOpacity
+                style={styles.modalButton}
+                activeOpacity={0.85}
+                onPress={() => setPendingTabModal(null)}
+              >
+                <Text style={styles.modalButtonText}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
+  root: {
     flex: 1,
     backgroundColor: "#FFFFFF",
   },
@@ -285,11 +413,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingTop: 12,
     paddingBottom: 12,
     backgroundColor: "#FFFFFF",
     borderBottomWidth: 1,
     borderBottomColor: "#F1F3FF",
+    zIndex: 999,
+    elevation: 8,
   },
   brandTitle: {
     fontSize: 22,
@@ -596,5 +725,59 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#6B7280",
     marginTop: 2,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
+  },
+  modalCard: {
+    width: "100%",
+    maxWidth: 320,
+    backgroundColor: "#FFFFFF",
+    borderRadius: Radius.lg,
+    padding: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  modalIconBox: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "rgba(31, 198, 0, 0.12)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 12,
+  },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: "800",
+    color: Colors.text.primary,
+    marginBottom: 6,
+    textAlign: "center",
+  },
+  modalDesc: {
+    fontSize: 12,
+    color: Colors.text.secondary,
+    textAlign: "center",
+    lineHeight: 17,
+    marginBottom: 16,
+  },
+  modalButton: {
+    backgroundColor: Colors.text.primary,
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    borderRadius: Radius.pill,
+  },
+  modalButtonText: {
+    color: "#FFFFFF",
+    fontSize: 13,
+    fontWeight: "700",
   },
 });

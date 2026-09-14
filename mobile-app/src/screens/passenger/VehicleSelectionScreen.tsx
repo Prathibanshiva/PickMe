@@ -1,7 +1,9 @@
+// mobile-app/src/screens/passenger/VehicleSelectionScreen.tsx
+
 import React, { useMemo, useState } from "react";
 import {
   Modal,
-  SafeAreaView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -26,20 +28,31 @@ import {
   VEHICLE_DEFINITIONS,
   VehicleType,
 } from "@/constants/vehicles";
-import { Colors, Radius, Spacing } from "@/theme";
+import { Colors, Radius } from "@/theme";
 
 export default function VehicleSelectionScreen() {
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{
     pickupTitle?: string;
     pickupSubtitle?: string;
+    pickupLat?: string;
+    pickupLng?: string;
     destinationTitle?: string;
     destinationSubtitle?: string;
+    destLat?: string;
+    destLng?: string;
     distanceKm?: string;
   }>();
 
-  const pickupTitle = params.pickupTitle || "4th Block, Koramangala";
-  const destinationTitle = params.destinationTitle || "Oil Mill Road";
+  const pickupTitle = params.pickupTitle || "Current Location";
+  const pickupSubtitle = params.pickupSubtitle || "";
+  const pickupLat = parseFloat(params.pickupLat || "12.9352");
+  const pickupLng = parseFloat(params.pickupLng || "77.6245");
+
+  const destinationTitle = params.destinationTitle || "Destination";
+  const destinationSubtitle = params.destinationSubtitle || "";
+  const destLat = parseFloat(params.destLat || "13.0082");
+  const destLng = parseFloat(params.destLng || "77.6321");
 
   // State: SHARED RIDE is DEFAULT
   const [selectedMode, setSelectedMode] = useState<RideMode>("shared");
@@ -59,7 +72,8 @@ export default function VehicleSelectionScreen() {
   }, [selectedMode]);
 
   // Current vehicle definition
-  const currentVehicleDef = VEHICLE_DEFINITIONS[selectedVehicleKey] || VEHICLE_DEFINITIONS.sedan;
+  const currentVehicleDef =
+    VEHICLE_DEFINITIONS[selectedVehicleKey] || VEHICLE_DEFINITIONS.sedan;
 
   // Maximum selectable seats for current vehicle in current mode
   const maxSeatsForCurrentVehicle = useMemo(() => {
@@ -106,21 +120,26 @@ export default function VehicleSelectionScreen() {
     return getEstimatedFare(selectedVehicleKey, selectedMode, requestedSeats);
   }, [selectedVehicleKey, selectedMode, requestedSeats]);
 
-  // Booking action
-  const handleConfirmBooking = () => {
-    setConfirmationModalVisible(true);
+  // Back Navigation Handler
+  const handleGoBack = () => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace("/passenger/destination-search");
+    }
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.root}>
       <View style={styles.container}>
-        {/* Top Navigation Shell (Fixed Header matching Stitch) */}
-        <View style={styles.topHeader}>
+        {/* Top Navigation Shell strictly below Android status bar */}
+        <View style={[styles.topHeader, { paddingTop: Math.max(insets.top, 12) }]}>
           <TouchableOpacity
             style={styles.circleButton}
-            onPress={() => router.back()}
+            onPress={handleGoBack}
             activeOpacity={0.7}
             accessibilityLabel="Go back"
+            hitSlop={{ top: 14, bottom: 14, left: 14, right: 14 }}
           >
             <Ionicons name="arrow-back" size={20} color={Colors.text.primary} />
           </TouchableOpacity>
@@ -158,28 +177,35 @@ export default function VehicleSelectionScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Map Preview Area with Route (Stitch Reference) */}
+        {/* Real Google Map Preview with Dual Markers and Camera Fit */}
         <PassengerMapPreview
           mode="route"
-          height={200}
-          pickupLabel={pickupTitle}
-          dropoffLabel={destinationTitle}
+          height={210}
+          pickupCoords={{
+            latitude: pickupLat,
+            longitude: pickupLng,
+            title: pickupTitle,
+            subtitle: pickupSubtitle,
+          }}
+          destinationCoords={{
+            latitude: destLat,
+            longitude: destLng,
+            title: destinationTitle,
+            subtitle: destinationSubtitle,
+          }}
         />
 
         {/* Bottom Sheet Area */}
         <View style={styles.bottomSheet}>
-          {/* Drag Handle */}
           <View style={styles.dragHandleContainer}>
             <View style={styles.dragHandle} />
           </View>
 
-          {/* Scrollable Vehicle Cards */}
           <ScrollView
             style={styles.sheetScroll}
             contentContainerStyle={styles.sheetScrollContent}
             showsVerticalScrollIndicator={false}
           >
-            {/* Header: Choose a ride + Fastest ETA badge */}
             <View style={styles.sheetHeaderRow}>
               <Text style={styles.sheetHeading}>Choose a ride</Text>
               <View style={styles.fastestEtaBadge}>
@@ -205,13 +231,12 @@ export default function VehicleSelectionScreen() {
               );
             })}
 
-            {/* Bottom spacer so cards are never clipped behind fixed action bar */}
             <View style={{ height: 260 }} />
           </ScrollView>
         </View>
 
-        {/* Bottom Action Bar (Fixed, matching Stitch) */}
-        <View style={[styles.bottomActionBar, { paddingBottom: Math.max(insets.bottom, 12) }]}>
+        {/* Bottom Action Bar */}
+        <View style={[styles.bottomActionBar, { paddingBottom: Math.max(insets.bottom, 14) }]}>
           {/* Ride Mode Selector (Shared Ride is DEFAULT) */}
           <RideModeSelector
             selectedMode={selectedMode}
@@ -235,7 +260,6 @@ export default function VehicleSelectionScreen() {
 
           {/* Payment Method & Fare Summary */}
           <View style={styles.paymentSummaryRow}>
-            {/* Payment Method Chip */}
             <TouchableOpacity
               style={styles.paymentChip}
               activeOpacity={0.7}
@@ -252,7 +276,6 @@ export default function VehicleSelectionScreen() {
               />
             </TouchableOpacity>
 
-            {/* Total Fare Label and Amount */}
             <View style={styles.fareSummaryColumn}>
               <Text style={styles.fareTypeLabel}>
                 {selectedMode === "personal"
@@ -263,11 +286,11 @@ export default function VehicleSelectionScreen() {
             </View>
           </View>
 
-          {/* Confirm Booking Button */}
+          {/* Confirm Booking CTA */}
           <TouchableOpacity
             style={styles.confirmButton}
             activeOpacity={0.85}
-            onPress={handleConfirmBooking}
+            onPress={() => setConfirmationModalVisible(true)}
           >
             <Text style={styles.confirmButtonText}>
               {selectedMode === "personal"
@@ -301,10 +324,9 @@ export default function VehicleSelectionScreen() {
 
               <Text style={styles.modalTitle}>Booking Selection Ready</Text>
               <Text style={styles.modalSubtitle}>
-                You have reached the end of the initial booking entry flow.
+                You have reached the end of the initial passenger booking entry flow.
               </Text>
 
-              {/* Order Summary */}
               <View style={styles.summaryCard}>
                 <View style={styles.summaryRow}>
                   <Text style={styles.summaryLabel}>Ride Mode:</Text>
@@ -349,7 +371,6 @@ export default function VehicleSelectionScreen() {
                 </View>
               </View>
 
-              {/* Server-Side Exclusivity / Backend Note */}
               <View style={styles.noteBox}>
                 <MaterialIcons name="info-outline" size={16} color="#0D6E00" />
                 <Text style={styles.noteText}>
@@ -370,12 +391,12 @@ export default function VehicleSelectionScreen() {
           </View>
         </Modal>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
+  root: {
     flex: 1,
     backgroundColor: "#FFFFFF",
   },
@@ -389,16 +410,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingBottom: 10,
     backgroundColor: "#FFFFFF",
-    zIndex: 30,
+    zIndex: 999,
+    elevation: 8,
     borderBottomWidth: 1,
     borderBottomColor: "#F1F3FF",
   },
   circleButton: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
@@ -406,7 +428,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    elevation: 2,
+    elevation: 3,
     borderWidth: 1,
     borderColor: "#E5E7EB",
   },
