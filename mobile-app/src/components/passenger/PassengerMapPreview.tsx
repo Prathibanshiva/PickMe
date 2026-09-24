@@ -1,140 +1,125 @@
 // mobile-app/src/components/passenger/PassengerMapPreview.tsx
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import {
-  ActivityIndicator,
-  Platform,
+  NativeSyntheticEvent,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
+import {
+  Camera,
+  type CameraRef,
+  Map,
+  Marker,
+  type PressEvent,
+  UserLocation,
+} from "@maplibre/maplibre-react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import Constants from "expo-constants";
 
 import { Colors, Radius } from "@/theme";
-
-interface Coordinates {
-  latitude: number;
-  longitude: number;
-  title?: string;
-  subtitle?: string;
-}
+import MapService, {
+  DEFAULT_MAP_CENTER,
+  DEFAULT_ZOOM,
+  GeoCoordinates,
+  MapMarkerPoint,
+  OSM_RASTER_STYLE,
+  toLngLat,
+} from "@/services/map.service";
 
 interface PassengerMapPreviewProps {
   mode?: "search" | "route";
   height?: number;
-  pickupCoords?: Coordinates;
-  destinationCoords?: Coordinates;
-  onPickupChange?: (coords: { latitude: number; longitude: number }) => void;
+  pickupCoords?: MapMarkerPoint;
+  destinationCoords?: MapMarkerPoint;
+  onPickupChange?: (coords: GeoCoordinates) => void;
   isInteractivePickup?: boolean;
 }
-
-const DEFAULT_BENGALURU_COORDS = {
-  latitude: 12.9352,
-  longitude: 77.6245,
-};
 
 export default function PassengerMapPreview({
   mode = "search",
   height = 240,
-  pickupCoords = DEFAULT_BENGALURU_COORDS,
+  pickupCoords = DEFAULT_MAP_CENTER,
   destinationCoords,
   onPickupChange,
   isInteractivePickup = false,
 }: PassengerMapPreviewProps) {
-  const mapRef = useRef<MapView | null>(null);
-  const [mapReady, setMapReady] = useState(false);
+  const cameraRef = useRef<CameraRef | null>(null);
 
-  // Check if Android Google Maps key is configured in Expo config
-  const androidConfig = Constants.expoConfig?.android?.config?.googleMaps;
-  const hasAndroidMapsKey = Boolean(
-    androidConfig?.apiKey && androidConfig.apiKey.trim().length > 0
-  );
+  // Compute initial camera view state
+  const initialCenter = useMemo(() => {
+    return toLngLat(pickupCoords);
+  }, [pickupCoords.latitude, pickupCoords.longitude]);
 
-  const initialRegion: Region = {
-    latitude: pickupCoords.latitude,
-    longitude: pickupCoords.longitude,
-    latitudeDelta: 0.035,
-    longitudeDelta: 0.035,
-  };
-
-  // Fit camera to both pickup and destination markers when in route mode
+  // Frame both points in route mode or focus pickup in search mode
   useEffect(() => {
+    if (!cameraRef.current) return;
+
     if (
       mode === "route" &&
-      mapRef.current &&
-      mapReady &&
       destinationCoords &&
       destinationCoords.latitude &&
       destinationCoords.longitude
     ) {
-      mapRef.current.fitToCoordinates(
-        [
-          {
-            latitude: pickupCoords.latitude,
-            longitude: pickupCoords.longitude,
-          },
-          {
-            latitude: destinationCoords.latitude,
-            longitude: destinationCoords.longitude,
-          },
-        ],
-        {
-          edgePadding: { top: 40, right: 40, bottom: 40, left: 40 },
-          animated: true,
-        }
-      );
-    }
-  }, [mode, mapReady, pickupCoords, destinationCoords]);
-
-  const handleRecenter = () => {
-    if (mapRef.current) {
-      mapRef.current.animateToRegion(
-        {
-          latitude: pickupCoords.latitude,
-          longitude: pickupCoords.longitude,
-          latitudeDelta: 0.015,
-          longitudeDelta: 0.015,
-        },
+      MapService.fitPoints(
+        cameraRef.current,
+        [pickupCoords, destinationCoords],
+        { top: 50, right: 50, bottom: 50, left: 50 },
         600
       );
+    } else if (mode === "search") {
+      MapService.recenterCamera(cameraRef.current, pickupCoords, DEFAULT_ZOOM, 500);
+    }
+  }, [
+    mode,
+    pickupCoords.latitude,
+    pickupCoords.longitude,
+    destinationCoords?.latitude,
+    destinationCoords?.longitude,
+  ]);
+
+  const handleRecenter = () => {
+    if (cameraRef.current) {
+      MapService.recenterCamera(cameraRef.current, pickupCoords, DEFAULT_ZOOM, 500);
+    }
+  };
+
+  const handleMapPress = (e: NativeSyntheticEvent<PressEvent>) => {
+    if (isInteractivePickup && onPickupChange && e.nativeEvent?.lngLat) {
+      const [lng, lat] = e.nativeEvent.lngLat;
+      onPickupChange({ latitude: lat, longitude: lng });
     }
   };
 
   return (
     <View style={[styles.container, { height }]}>
-      {/* Real Google Map using PROVIDER_GOOGLE on Android */}
-      <MapView
-        ref={mapRef}
-        provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
+      {/* Real MapLibre Native Map with OpenStreetMap raster tiles */}
+      <Map
         style={StyleSheet.absoluteFill}
-        initialRegion={initialRegion}
-        showsUserLocation={true}
-        showsMyLocationButton={false}
-        showsCompass={false}
-        onMapReady={() => setMapReady(true)}
-        onPress={(e) => {
-          if (isInteractivePickup && onPickupChange) {
-            onPickupChange(e.nativeEvent.coordinate);
-          }
-        }}
+        mapStyle={OSM_RASTER_STYLE}
+        dragPan={true}
+        touchZoom={true}
+        attribution={false}
+        logo={false}
+        onPress={handleMapPress}
       >
-        {/* Real Pickup Marker */}
+        <Camera
+          ref={cameraRef}
+          initialViewState={{
+            center: initialCenter,
+            zoom: DEFAULT_ZOOM,
+          }}
+        />
+
+        {/* Real Device User Location Puck */}
+        <UserLocation animated={true} />
+
+        {/* Pickup Marker */}
         <Marker
-          coordinate={{
-            latitude: pickupCoords.latitude,
-            longitude: pickupCoords.longitude,
-          }}
-          title={pickupCoords.title || "Pickup Location"}
-          description={pickupCoords.subtitle || "Selected pickup"}
-          draggable={isInteractivePickup}
-          onDragEnd={(e) => {
-            if (onPickupChange) {
-              onPickupChange(e.nativeEvent.coordinate);
-            }
-          }}
+          id="pickup-marker"
+          lngLat={toLngLat(pickupCoords)}
+          anchor="bottom"
         >
           <View style={styles.markerContainer}>
             <View style={styles.pickupPinCallout}>
@@ -149,15 +134,12 @@ export default function PassengerMapPreview({
           </View>
         </Marker>
 
-        {/* Real Destination Marker (Route Mode) */}
+        {/* Destination Marker (Route Mode) */}
         {mode === "route" && destinationCoords && destinationCoords.latitude && (
           <Marker
-            coordinate={{
-              latitude: destinationCoords.latitude,
-              longitude: destinationCoords.longitude,
-            }}
-            title={destinationCoords.title || "Destination"}
-            description={destinationCoords.subtitle || "Drop-off location"}
+            id="destination-marker"
+            lngLat={toLngLat(destinationCoords)}
+            anchor="bottom"
           >
             <View style={styles.markerContainer}>
               <View style={[styles.pickupPinCallout, { backgroundColor: "#111827" }]}>
@@ -169,27 +151,14 @@ export default function PassengerMapPreview({
             </View>
           </Marker>
         )}
-      </MapView>
-
-      {/* Explicit error banner if Android Google Maps SDK key is not configured */}
-      {!hasAndroidMapsKey && (
-        <View style={styles.missingKeyBanner}>
-          <MaterialIcons name="warning" size={18} color="#991B1B" />
-          <View style={{ flex: 1 }}>
-            <Text style={styles.missingKeyTitle}>Maps SDK Key Missing</Text>
-            <Text style={styles.missingKeyDesc}>
-              Google Maps Android SDK key not configured. Please configure GOOGLE_MAPS_ANDROID_API_KEY in mobile-app/.env
-            </Text>
-          </View>
-        </View>
-      )}
+      </Map>
 
       {/* Status Badges Matching Stitch Aesthetic */}
       {mode === "search" && (
         <View style={styles.infoPill}>
           <View style={styles.pulsingGreenDot} />
           <Text style={styles.infoPillText}>
-            {isInteractivePickup ? "Tap or drag pin to adjust pickup" : "Google Maps Active"}
+            {isInteractivePickup ? "Tap map to adjust pickup" : "MapLibre & OpenStreetMap"}
           </Text>
         </View>
       )}
@@ -295,33 +264,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "700",
     color: Colors.text.primary,
-  },
-  missingKeyBanner: {
-    position: "absolute",
-    top: 10,
-    left: 12,
-    right: 12,
-    backgroundColor: "#FEF2F2",
-    borderRadius: Radius.md,
-    borderWidth: 1,
-    borderColor: "#FCA5A5",
-    padding: 8,
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 8,
-    zIndex: 20,
-    elevation: 4,
-  },
-  missingKeyTitle: {
-    fontSize: 11,
-    fontWeight: "800",
-    color: "#991B1B",
-  },
-  missingKeyDesc: {
-    fontSize: 10,
-    color: "#7F1D1D",
-    marginTop: 1,
-    lineHeight: 13,
   },
   recenterButton: {
     position: "absolute",

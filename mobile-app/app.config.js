@@ -10,16 +10,6 @@ module.exports = ({ config }) => {
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",
       ],
-      config: {
-        ...(config.android?.config || {}),
-        googleMaps: {
-          apiKey: process.env.GOOGLE_MAPS_ANDROID_API_KEY || "",
-        },
-      },
-    },
-    extra: {
-      ...(config.extra || {}),
-      hasGoogleMapsKey: Boolean(process.env.GOOGLE_MAPS_ANDROID_API_KEY),
     },
   };
 };

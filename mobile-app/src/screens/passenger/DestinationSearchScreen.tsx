@@ -20,12 +20,6 @@ import PassengerMapPreview from "@/components/passenger/PassengerMapPreview";
 import { LocationPoint } from "@/types/ride.types";
 import { Colors, Radius } from "@/theme";
 import {
-  fetchPlaceDetails,
-  fetchPlaceSuggestions,
-  generateSessionToken,
-  PlaceSuggestion,
-} from "@/services/places.service";
-import {
   BENGALURU_FALLBACK_LOCATION,
   getCurrentPickupLocation,
   reverseGeocodeCoordinates,
@@ -55,6 +49,31 @@ const RECENT_DESTINATIONS: LocationPoint[] = [
   },
 ];
 
+const QUICK_SAVED_DESTINATIONS: LocationPoint[] = [
+  ...RECENT_DESTINATIONS,
+  {
+    title: "Indiranagar 100ft Road",
+    subtitle: "Indiranagar, Bengaluru, Karnataka",
+    latitude: 12.9784,
+    longitude: 77.6408,
+    distanceKm: 4.8,
+  },
+  {
+    title: "Ecospace Business Park",
+    subtitle: "Bellandur Outer Ring Road, Bengaluru",
+    latitude: 12.926,
+    longitude: 77.6833,
+    distanceKm: 8.5,
+  },
+  {
+    title: "MG Road Metro Station",
+    subtitle: "MG Road, Bengaluru, Karnataka",
+    latitude: 12.9756,
+    longitude: 77.6066,
+    distanceKm: 6.1,
+  },
+];
+
 export default function DestinationSearchScreen() {
   const insets = useSafeAreaInsets();
 
@@ -64,19 +83,19 @@ export default function DestinationSearchScreen() {
   );
   const [isEditingPickup, setIsEditingPickup] = useState(false);
 
-  // State: Google Places Search
+  // State: Destination Search
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
-  const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
-  const [placesError, setPlacesError] = useState<string | null>(null);
-  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
-
-  // Session Token Lifecycle
-  const sessionTokenRef = useRef<string | null>(null);
-  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // State: Stitch Recent Destinations
   const [recentList, setRecentList] = useState<LocationPoint[]>(RECENT_DESTINATIONS);
+
+  // Filtered destinations based on search query
+  const filteredDestinations = searchQuery.trim().length > 0
+    ? QUICK_SAVED_DESTINATIONS.filter((item) =>
+        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item.subtitle && item.subtitle.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    : [];
 
   // On mount: Fetch actual GPS location for pickup
   useEffect(() => {
@@ -118,84 +137,8 @@ export default function DestinationSearchScreen() {
     }
   };
 
-  // Search input change handler with debouncing
-  const handleSearchTextChange = (text: string) => {
-    setSearchQuery(text);
-    setPlacesError(null);
-
-    // Ensure active session token
-    if (!sessionTokenRef.current) {
-      sessionTokenRef.current = generateSessionToken();
-    }
-
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-
-    if (!text.trim()) {
-      setSuggestions([]);
-      setIsSearching(false);
-      return;
-    }
-
-    setIsSearching(true);
-    debounceTimerRef.current = setTimeout(async () => {
-      try {
-        const results = await fetchPlaceSuggestions(
-          text,
-          sessionTokenRef.current || generateSessionToken(),
-          {
-            latitude: pickupLocation.latitude,
-            longitude: pickupLocation.longitude,
-          }
-        );
-        setSuggestions(results);
-      } catch (err: any) {
-        setPlacesError(err?.message || "Error connecting to Places service");
-        setSuggestions([]);
-      } finally {
-        setIsSearching(false);
-      }
-    }, 350);
-  };
-
-  // Select a Google Place suggestion
-  const handleSelectSuggestion = async (suggestion: PlaceSuggestion) => {
-    setIsLoadingDetails(true);
-    try {
-      const activeToken = sessionTokenRef.current || generateSessionToken();
-      const placeDetails = await fetchPlaceDetails(
-        suggestion.placeId,
-        activeToken
-      );
-
-      // End session token lifecycle after details are retrieved
-      sessionTokenRef.current = null;
-
-      // Navigate to Vehicle Selection with structured coordinates
-      router.push({
-        pathname: "/passenger/vehicle-selection",
-        params: {
-          pickupTitle: pickupLocation.title,
-          pickupSubtitle: pickupLocation.subtitle || "",
-          pickupLat: String(pickupLocation.latitude),
-          pickupLng: String(pickupLocation.longitude),
-          destinationTitle: placeDetails.title,
-          destinationSubtitle: placeDetails.subtitle || "",
-          destLat: String(placeDetails.latitude),
-          destLng: String(placeDetails.longitude),
-          distanceKm: "6.5",
-        },
-      } as any);
-    } catch (err: any) {
-      setPlacesError(err?.message || "Failed to retrieve location details");
-    } finally {
-      setIsLoadingDetails(false);
-    }
-  };
-
-  // Select a recent destination
-  const handleSelectRecent = (dest: LocationPoint) => {
+  // Select a destination and navigate to Vehicle Selection with structured coordinates
+  const handleSelectDestination = (dest: LocationPoint) => {
     router.push({
       pathname: "/passenger/vehicle-selection",
       params: {
@@ -275,7 +218,7 @@ export default function DestinationSearchScreen() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          {/* Real Google Maps Preview Section */}
+          {/* Real MapLibre + OpenStreetMap Preview Section */}
           <PassengerMapPreview
             mode="search"
             height={230}
@@ -288,11 +231,7 @@ export default function DestinationSearchScreen() {
           <View style={styles.searchPanel}>
             <View style={styles.inputContainer}>
               <View style={styles.searchIconBox}>
-                {isSearching ? (
-                  <ActivityIndicator size="small" color={Colors.primary} />
-                ) : (
-                  <Ionicons name="search" size={18} color={Colors.primary} />
-                )}
+                <Ionicons name="search" size={18} color={Colors.primary} />
               </View>
 
               <TextInput
@@ -300,30 +239,19 @@ export default function DestinationSearchScreen() {
                 placeholder="Where do you want to go?"
                 placeholderTextColor="#9CA3AF"
                 value={searchQuery}
-                onChangeText={handleSearchTextChange}
+                onChangeText={setSearchQuery}
                 returnKeyType="search"
               />
 
               {searchQuery.length > 0 && (
                 <TouchableOpacity
                   style={styles.clearSearchButton}
-                  onPress={() => handleSearchTextChange("")}
+                  onPress={() => setSearchQuery("")}
                 >
                   <Ionicons name="close-circle" size={18} color="#9CA3AF" />
                 </TouchableOpacity>
               )}
             </View>
-
-            {/* Explicit Error Banner for Backend Places Configuration */}
-            {placesError && (
-              <View style={styles.errorBanner}>
-                <MaterialIcons name="error-outline" size={18} color="#991B1B" />
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.errorBannerTitle}>Places Service Error</Text>
-                  <Text style={styles.errorBannerText}>{placesError}</Text>
-                </View>
-              </View>
-            )}
 
             {/* Quick Filter Chips (Stitch Aesthetic) */}
             <ScrollView
@@ -335,7 +263,7 @@ export default function DestinationSearchScreen() {
                 style={styles.chip}
                 activeOpacity={0.7}
                 onPress={() =>
-                  handleSelectRecent({
+                  handleSelectDestination({
                     title: "Home",
                     subtitle: "Indiranagar 100ft Road, Bengaluru",
                     latitude: 12.9784,
@@ -352,7 +280,7 @@ export default function DestinationSearchScreen() {
                 style={styles.chip}
                 activeOpacity={0.7}
                 onPress={() =>
-                  handleSelectRecent({
+                  handleSelectDestination({
                     title: "Work",
                     subtitle: "Ecospace Business Park, Bellandur",
                     latitude: 12.926,
@@ -369,7 +297,7 @@ export default function DestinationSearchScreen() {
                 style={styles.chip}
                 activeOpacity={0.7}
                 onPress={() =>
-                  handleSelectRecent({
+                  handleSelectDestination({
                     title: "Favorites",
                     subtitle: "MG Road Metro Station",
                     latitude: 12.9756,
@@ -384,24 +312,17 @@ export default function DestinationSearchScreen() {
             </ScrollView>
           </View>
 
-          {/* Real Google Places Autocomplete Suggestions List */}
+          {/* Search Results / Matching Destinations */}
           {searchQuery.trim().length > 0 ? (
             <View style={styles.suggestionsSection}>
               <Text style={styles.sectionHeaderTitle}>SEARCH RESULTS</Text>
 
-              {isLoadingDetails && (
-                <View style={styles.detailsLoadingRow}>
-                  <ActivityIndicator size="small" color={Colors.primary} />
-                  <Text style={styles.detailsLoadingText}>Fetching place coordinates...</Text>
-                </View>
-              )}
-
-              {suggestions.map((item) => (
+              {filteredDestinations.map((item, idx) => (
                 <TouchableOpacity
-                  key={item.placeId}
+                  key={`dest-${idx}`}
                   style={styles.destinationRow}
                   activeOpacity={0.7}
-                  onPress={() => handleSelectSuggestion(item)}
+                  onPress={() => handleSelectDestination(item)}
                 >
                   <View style={styles.destinationIconCircle}>
                     <Ionicons name="location-sharp" size={18} color={Colors.primary} />
@@ -409,10 +330,10 @@ export default function DestinationSearchScreen() {
 
                   <View style={styles.destinationInfoColumn}>
                     <Text style={styles.destinationTitle} numberOfLines={1}>
-                      {item.mainText}
+                      {item.title}
                     </Text>
                     <Text style={styles.destinationSubtitle} numberOfLines={1}>
-                      {item.secondaryText || item.fullText}
+                      {item.subtitle}
                     </Text>
                   </View>
 
@@ -424,10 +345,13 @@ export default function DestinationSearchScreen() {
                 </TouchableOpacity>
               ))}
 
-              {!isSearching && suggestions.length === 0 && !placesError && (
+              {filteredDestinations.length === 0 && (
                 <View style={styles.emptyStateContainer}>
                   <Text style={styles.emptyStateText}>
-                    No places found for "{searchQuery}".
+                    No saved destinations found for "{searchQuery}".
+                  </Text>
+                  <Text style={[styles.emptyStateText, { marginTop: 6, fontSize: 12, color: Colors.text.secondary }]}>
+                    OpenStreetMap map rendering is active. External geocoding search provider will be integrated in future phase.
                   </Text>
                 </View>
               )}
@@ -452,7 +376,7 @@ export default function DestinationSearchScreen() {
                   key={index}
                   style={styles.destinationRow}
                   activeOpacity={0.7}
-                  onPress={() => handleSelectRecent(item)}
+                  onPress={() => handleSelectDestination(item)}
                 >
                   <View style={styles.destinationIconCircle}>
                     <MaterialIcons
