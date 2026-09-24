@@ -72,6 +72,76 @@ const QUICK_SAVED_DESTINATIONS: LocationPoint[] = [
     longitude: 77.6066,
     distanceKm: 6.1,
   },
+  {
+    title: "Kempegowda International Airport",
+    subtitle: "Devanahalli, Bengaluru, Karnataka",
+    latitude: 13.1979,
+    longitude: 77.7063,
+    distanceKm: 34.2,
+  },
+  {
+    title: "Forum Mall Koramangala",
+    subtitle: "Koramangala, Bengaluru, Karnataka",
+    latitude: 12.9345,
+    longitude: 77.6101,
+    distanceKm: 5.3,
+  },
+  {
+    title: "Manyata Tech Park",
+    subtitle: "Hebbal, Nagawara, Bengaluru",
+    latitude: 13.047,
+    longitude: 77.617,
+    distanceKm: 12.6,
+  },
+  {
+    title: "Whitefield",
+    subtitle: "Whitefield Main Road, Bengaluru",
+    latitude: 12.9698,
+    longitude: 77.7499,
+    distanceKm: 18.1,
+  },
+  {
+    title: "Brigade Road",
+    subtitle: "Central Bengaluru, Karnataka",
+    latitude: 12.9719,
+    longitude: 77.6086,
+    distanceKm: 5.9,
+  },
+  {
+    title: "Manipal Hospital Old Airport Road",
+    subtitle: "HAL Old Airport Road, Bengaluru",
+    latitude: 12.9601,
+    longitude: 77.6488,
+    distanceKm: 7.4,
+  },
+  {
+    title: "Yeshwanthpur Railway Station",
+    subtitle: "Yeshwanthpur, Bengaluru, Karnataka",
+    latitude: 13.0193,
+    longitude: 77.5505,
+    distanceKm: 10.2,
+  },
+  {
+    title: "Electronic City Phase 1",
+    subtitle: "Electronic City, Bengaluru, Karnataka",
+    latitude: 12.8399,
+    longitude: 77.6771,
+    distanceKm: 22.4,
+  },
+  {
+    title: "Koramangala 4th Block",
+    subtitle: "Koramangala, Bengaluru, Karnataka",
+    latitude: 12.9352,
+    longitude: 77.6245,
+    distanceKm: 4.1,
+  },
+  {
+    title: "Ulsoor Lake",
+    subtitle: "Halasuru, Bengaluru, Karnataka",
+    latitude: 12.9817,
+    longitude: 77.6178,
+    distanceKm: 3.7,
+  },
 ];
 
 export default function DestinationSearchScreen() {
@@ -347,11 +417,12 @@ export default function DestinationSearchScreen() {
 
               {filteredDestinations.length === 0 && (
                 <View style={styles.emptyStateContainer}>
+                  <MaterialIcons name="search-off" size={32} color={Colors.text.secondary} style={{ marginBottom: 8 }} />
                   <Text style={styles.emptyStateText}>
-                    No saved destinations found for "{searchQuery}".
+                    No results for "{searchQuery}"
                   </Text>
-                  <Text style={[styles.emptyStateText, { marginTop: 6, fontSize: 12, color: Colors.text.secondary }]}>
-                    OpenStreetMap map rendering is active. External geocoding search provider will be integrated in future phase.
+                  <Text style={[styles.emptyStateText, { marginTop: 4, fontSize: 12, color: Colors.text.secondary }]}>
+                    Try a neighbourhood, landmark, or road name.
                   </Text>
                 </View>
               )}

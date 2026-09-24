@@ -177,7 +177,7 @@ export default function VehicleSelectionScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Real Google Map Preview with Dual Markers and Camera Fit */}
+        {/* MapLibre + OpenStreetMap Preview with Dual Markers and Camera Fit */}
         <PassengerMapPreview
           mode="route"
           height={210}
