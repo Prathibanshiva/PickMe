@@ -4,8 +4,11 @@ const userSchema = new mongoose.Schema(
   {
     phoneNumber: {
       type: String,
-      required: true,
+      required: function () {
+        return this.defaultRole !== "admin";
+      },
       unique: true,
+      sparse: true,
       trim: true,
     },
 
@@ -17,8 +20,8 @@ const userSchema = new mongoose.Schema(
 
     gender: {
       type: String,
-      enum: ["Male", "Female", "Other"],
-      default: "",
+      enum: ["Male", "Female", "Other", null],
+      default: null,
     },
 
     email: {
@@ -28,9 +31,14 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
+    password: {
+      type: String,
+      select: false,
+    },
+
     defaultRole: {
       type: String,
-      enum: ["passenger", "driver"],
+      enum: ["passenger", "driver", "admin"],
       default: "passenger",
     },
 

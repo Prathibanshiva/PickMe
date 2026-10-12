@@ -1,0 +1,479 @@
+<!DOCTYPE html><html lang="en" style=""><head></head><body class="bg-surface text-on-surface antialiased flex justify-center min-h-screen"><svg class="inline-defs-container" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"></svg>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>PickMe - Destination Search</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "outline-variant": "#bccbb2",
+            "secondary-fixed-dim": "#0de600",
+            "secondary": "#046e00",
+            "on-primary-container": "#064b00",
+            "surface-container": "#e9edff",
+            "surface": "#f9f9ff",
+            "surface-container-lowest": "#ffffff",
+            "tertiary": "#5c5f60",
+            "inverse-primary": "#48e32e",
+            "on-secondary-fixed": "#012200",
+            "on-primary": "#ffffff",
+            "on-tertiary-fixed": "#191c1d",
+            "on-tertiary-fixed-variant": "#454748",
+            "on-primary-fixed-variant": "#085300",
+            "primary": "#0d6e00",
+            "tertiary-fixed-dim": "#c5c7c8",
+            "primary-fixed-dim": "#48e32e",
+            "on-surface": "#141b2b",
+            "on-tertiary-container": "#3d4041",
+            "on-primary-fixed": "#012200",
+            "inverse-surface": "#293040",
+            "surface-dim": "#d3daef",
+            "surface-container-highest": "#dce2f7",
+            "on-tertiary": "#ffffff",
+            "surface-tint": "#0d6e00",
+            "error": "#ba1a1a",
+            "surface-bright": "#f9f9ff",
+            "on-error-container": "#93000a",
+            "primary-fixed": "#78ff5c",
+            "on-surface-variant": "#3d4b37",
+            "outline": "#6d7b65",
+            "inverse-on-surface": "#edf0ff",
+            "background": "#f9f9ff",
+            "tertiary-container": "#a9abac",
+            "on-background": "#141b2b",
+            "surface-container-high": "#e1e8fd",
+            "error-container": "#ffdad6",
+            "primary-container": "#1fc600",
+            "surface-variant": "#dce2f7",
+            "on-error": "#ffffff",
+            "tertiary-fixed": "#e1e3e4",
+            "on-secondary": "#ffffff",
+            "secondary-fixed": "#77ff60",
+            "secondary-container": "#0ef900",
+            "on-secondary-fixed-variant": "#035300",
+            "surface-container-low": "#f1f3ff",
+            "on-secondary-container": "#046d00"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "unit": "4px",
+            "section-gap": "32px",
+            "gutter": "12px",
+            "container-padding": "20px",
+            "stack-gap": "16px"
+          },
+          "fontFamily": {
+            "headline-lg": ["Inter"],
+            "display-lg": ["Inter"],
+            "label-bold": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "body-lg": ["Inter"],
+            "fare-display": ["Inter"],
+            "body-sm": ["Inter"],
+            "title-md": ["Inter"]
+          },
+          "fontSize": {
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "label-bold": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "fare-display": ["24px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "800" }],
+            "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "title-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+    /* Pulse ring animation */
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.25); opacity: 0.2; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .animate-pulse-ring {
+      animation: pulse-ring 2.8s infinite ease-in-out;
+    }
+    /* Car subtle float */
+    @keyframes car-bob {
+      0%, 100% { transform: translateY(0px) rotate(var(--rot, 0deg)); }
+      50% { transform: translateY(-2.5px) rotate(var(--rot, 0deg)); }
+    }
+    .car-hover {
+      animation: car-bob 3.2s ease-in-out infinite;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  
+
+<!-- Mobile Container (Max 420px for high-fidelity native device preview) -->
+<main class="w-full max-w-[420px] bg-surface-container-lowest min-h-screen flex flex-col shadow-2xl relative border-x border-surface-container overflow-hidden">
+<!-- Top App Bar & Pickup Location Header -->
+<header class="sticky top-0 z-30 bg-surface-container-lowest/95 backdrop-blur-md border-b border-surface-container-high px-4 py-3 flex items-center gap-3">
+<button aria-label="Go back" class="size-10 rounded-full flex items-center justify-center hover:bg-surface-container transition-colors text-on-surface">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<!-- Pickup location indicator badge -->
+<div class="flex-1 flex items-center gap-2.5 bg-surface-container px-3.5 py-2 rounded-full cursor-pointer hover:bg-surface-container-high transition-colors">
+<span class="size-2.5 rounded-full bg-primary-container ring-4 ring-primary-container/20 shrink-0"></span>
+<div class="flex flex-col min-w-0">
+<span class="text-[10px] font-bold uppercase tracking-wider text-outline font-label-bold">Pickup Location</span>
+<span class="text-xs font-semibold text-on-surface truncate">4th Block, Koramangala, Bengaluru</span>
+</div>
+<span class="material-symbols-outlined text-outline text-base ml-auto">expand_more</span>
+</div>
+<button aria-label="Search map" class="size-10 rounded-full flex items-center justify-center hover:bg-surface-container text-on-surface transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+</header>
+<!-- Scrollable Content Area -->
+<div class="flex-1 flex flex-col overflow-y-auto pb-6">
+<!-- Map View Section with ONLY 3D Isometric Cabs -->
+<section class="relative w-full h-64 bg-surface-container-highest overflow-hidden select-none border-b border-surface-container"><!-- Modern Crisply Styled Navigation Map Background -->
+<div class="absolute inset-0 bg-[#eef4ec]" data-location="Bengaluru, India">
+  <svg class="w-full h-full object-cover" preserveAspectRatio="none" viewBox="0 0 400 260" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="urbanBg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#f3f7f0"></stop>
+        <stop offset="100%" stop-color="#e7eee3"></stop>
+      </linearGradient>
+      <linearGradient id="parkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d8edd2"></stop>
+        <stop offset="100%" stop-color="#cae6c2"></stop>
+      </linearGradient>
+      <linearGradient id="waterGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d2e7fa"></stop>
+        <stop offset="100%" stop-color="#bfe0fa"></stop>
+      </linearGradient>
+    </defs>
+    <!-- Background landbase -->
+    <rect fill="url(#urbanBg)" width="100%" height="100%"></rect>
+    
+    <!-- City Blocks & Green Parks -->
+    <rect x="18" y="18" width="86" height="70" rx="10" fill="#f9fbf8" stroke="#e2ebe0" stroke-width="1.5"></rect>
+    <rect x="118" y="16" width="95" height="58" rx="10" fill="url(#parkGrad)" opacity="0.85"></rect>
+    <path d="M130,30 Q145,22 165,32 T200,38 L195,58 L125,58 Z" fill="#bdddb3" opacity="0.6"></path>
+    <rect x="230" y="18" width="155" height="65" rx="10" fill="#f9fbf8" stroke="#e2ebe0" stroke-width="1.5"></rect>
+    
+    <!-- Lake / Water Accent -->
+    <path d="M310,-10 C350,15 385,25 415,15 L415,-10 Z" fill="url(#waterGrad)"></path>
+    
+    <!-- Lower City Blocks -->
+    <rect x="15" y="160" width="85" height="88" rx="10" fill="#f9fbf8" stroke="#e2ebe0" stroke-width="1.5"></rect>
+    <rect x="115" y="185" width="110" height="65" rx="10" fill="#f9fbf8" stroke="#e2ebe0" stroke-width="1.5"></rect>
+    <rect x="240" y="155" width="145" height="95" rx="10" fill="url(#parkGrad)" opacity="0.75"></rect>
+    <circle cx="325" cy="205" r="26" fill="#bde0b5" opacity="0.55"></circle>
+
+    <!-- Road Network Simulation (Crisp white roads with subtle outline) -->
+    <!-- Secondary streets -->
+    <path d="M0,50 L400,50" stroke="#ffffff" stroke-width="10" stroke-linecap="round"></path>
+    <path d="M0,50 L400,50" stroke="#dbe6d7" stroke-width="1" stroke-dasharray="6 6"></path>
+    <path d="M70,0 L70,260" stroke="#ffffff" stroke-width="10"></path>
+    <path d="M310,0 L310,260" stroke="#ffffff" stroke-width="10"></path>
+
+    <!-- Primary Arterial Diagonal Highway 1 -->
+    <path d="M-20,195 L175,130 L420,110" stroke="#ffffff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"></path>
+    <path d="M-20,195 L175,130 L420,110" stroke="#cce0c8" stroke-width="1.5" stroke-dasharray="7 5"></path>
+
+    <!-- Primary North-South Arterial -->
+    <path d="M175,-10 L175,270" stroke="#ffffff" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"></path>
+    <path d="M175,-10 L175,270" stroke="#cce0c8" stroke-width="1.5" stroke-dasharray="7 5"></path>
+
+    <!-- Crossing Avenue -->
+    <path d="M-10,135 L410,135" stroke="#ffffff" stroke-width="14" stroke-linecap="round"></path>
+    <path d="M-10,135 L410,135" stroke="#dbe6d7" stroke-width="1" stroke-dasharray="6 6"></path>
+    
+    <!-- Smooth connecting slip lane -->
+    <path d="M220,135 C270,135 310,175 310,225" stroke="#ffffff" stroke-width="12" fill="none" stroke-linecap="round"></path>
+  </svg>
+</div>
+
+<!-- Pickup Location GPS Pin (Centered & Concentric Pulsing Rings) -->
+<div class="absolute top-[49%] left-[44%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none z-20">
+  <div class="absolute size-14 rounded-full bg-primary-container/20 animate-pulse-ring"></div>
+  <div class="size-7 rounded-full bg-surface-container-lowest shadow-lg flex items-center justify-center border-2 border-primary">
+    <div class="size-3 rounded-full bg-primary ring-2 ring-white"></div>
+  </div>
+  <span class="absolute -bottom-5 bg-on-surface text-surface-container-lowest font-label-bold text-[9px] px-2 py-0.5 rounded-full shadow-md whitespace-nowrap tracking-tight">
+    You are here
+  </span>
+</div>
+
+<!-- Cab 1: Sedan (ETA 3 min • Sedan) - Top North-South Road -->
+<div class="absolute top-[21%] left-[44%] -translate-x-1/2 -translate-y-1/2 z-20 cursor-pointer group">
+  <div class="car-hover flex flex-col items-center">
+    <div class="mb-1 flex items-center gap-1.5 bg-surface-container-lowest/95 backdrop-blur-sm px-2.5 py-0.5 rounded-full shadow-md border border-outline-variant/50 group-hover:scale-105 transition-transform">
+      <span class="size-1.5 rounded-full bg-primary-container"></span>
+      <span class="text-[10px] font-bold text-on-surface">3 min</span>
+      <span class="text-[9px] text-outline">•</span>
+      <span class="text-[9px] font-semibold text-primary">Sedan</span>
+    </div>
+    <div class="relative w-10 h-14 drop-shadow-[0_4px_8px_rgba(0,0,0,0.22)] transform rotate-[178deg] group-hover:scale-110 transition-transform">
+      <svg viewBox="0 0 48 84" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Tires / Wheels peeking slightly -->
+        <rect x="2" y="14" width="4" height="12" rx="2" fill="#1e293b"></rect>
+        <rect x="42" y="14" width="4" height="12" rx="2" fill="#1e293b"></rect>
+        <rect x="2" y="58" width="4" height="12" rx="2" fill="#1e293b"></rect>
+        <rect x="42" y="58" width="4" height="12" rx="2" fill="#1e293b"></rect>
+        <!-- Side mirrors -->
+        <path d="M4 25 C1 25 1 29 4 30 Z" fill="#0d6e00"></path>
+        <path d="M44 25 C47 25 47 29 44 30 Z" fill="#0d6e00"></path>
+        <!-- Main Body -->
+        <rect x="5" y="4" width="38" height="76" rx="11" fill="#ffffff" stroke="#e2ebe0" stroke-width="1"></rect>
+        <!-- Subtle sporty side accents -->
+        <path d="M8 18 Q24 20 40 18" stroke="#1fc600" stroke-width="1.5" stroke-linecap="round" opacity="0.75"></path>
+        <!-- Front Windshield -->
+        <path d="M9 25 C11 20 37 20 39 25 L36 36 C34 37 14 37 12 36 Z" fill="#1e293b"></path>
+        <path d="M11 25 C14 22 34 22 37 25 L35 28 C33 26 15 26 13 28 Z" fill="#475569" opacity="0.6"></path>
+        <!-- Roof -->
+        <rect x="11" y="35" width="26" height="23" rx="3" fill="#ffffff"></rect>
+        <!-- Top PickMe Brand Accent / Taxi light bar -->
+        <rect x="18" y="43" width="12" height="5" rx="2" fill="#1fc600"></rect>
+        <rect x="21" y="44" width="6" height="3" rx="1" fill="#ffffff"></rect>
+        <!-- Rear Windshield -->
+        <path d="M12 59 C15 58 33 58 36 59 L38 67 C35 69 13 69 10 67 Z" fill="#1e293b"></path>
+        <path d="M13 61 C17 60 31 60 35 61 L36 63 C33 62 15 62 12 63 Z" fill="#475569" opacity="0.6"></path>
+        <!-- Headlights & Taillights -->
+        <rect x="8" y="4.5" width="6" height="2" rx="1" fill="#fef08a"></rect>
+        <rect x="34" y="4.5" width="6" height="2" rx="1" fill="#fef08a"></rect>
+        <rect x="8" y="78" width="6" height="2" rx="1" fill="#ef4444"></rect>
+        <rect x="34" y="78" width="6" height="2" rx="1" fill="#ef4444"></rect>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- Cab 2: Mini (ETA 4 min • Mini) - Southwest Arterial Road -->
+<div class="absolute top-[68%] left-[23%] -translate-x-1/2 -translate-y-1/2 z-20 cursor-pointer group">
+  <div class="car-hover flex flex-col items-center">
+    <div class="mb-1 flex items-center gap-1.5 bg-surface-container-lowest/95 backdrop-blur-sm px-2.5 py-0.5 rounded-full shadow-md border border-outline-variant/50 group-hover:scale-105 transition-transform">
+      <span class="size-1.5 rounded-full bg-primary-container"></span>
+      <span class="text-[10px] font-bold text-on-surface">4 min</span>
+      <span class="text-[9px] text-outline">•</span>
+      <span class="text-[9px] font-semibold text-secondary">Mini</span>
+    </div>
+    <div class="relative w-9 h-12 drop-shadow-[0_4px_8px_rgba(0,0,0,0.22)] transform -rotate-[35deg] group-hover:scale-110 transition-transform">
+      <svg viewBox="0 0 44 72" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Tires / Wheels -->
+        <rect x="1.5" y="12" width="3.5" height="11" rx="1.75" fill="#1e293b"></rect>
+        <rect x="39" y="12" width="3.5" height="11" rx="1.75" fill="#1e293b"></rect>
+        <rect x="1.5" y="49" width="3.5" height="11" rx="1.75" fill="#1e293b"></rect>
+        <rect x="39" y="49" width="3.5" height="11" rx="1.75" fill="#1e293b"></rect>
+        <!-- Side mirrors -->
+        <path d="M4 22 C1.5 22 1.5 26 4 27 Z" fill="#046e00"></path>
+        <path d="M40 22 C42.5 22 42.5 26 40 27 Z" fill="#046e00"></path>
+        <!-- Main Body (Compact hatch shape) -->
+        <rect x="4" y="4" width="36" height="64" rx="10" fill="#ffffff" stroke="#e2ebe0" stroke-width="1"></rect>
+        <!-- Bonnet PickMe accent stripe -->
+        <rect x="19.5" y="6" width="5" height="13" rx="1.5" fill="#1fc600"></rect>
+        <!-- Front Windshield -->
+        <path d="M8 21 C10 17 34 17 36 21 L34 30 C32 31 12 31 10 30 Z" fill="#1e293b"></path>
+        <path d="M9 22 C12 19 32 19 35 22 L33 24 C31 22 13 22 11 24 Z" fill="#64748b" opacity="0.6"></path>
+        <!-- Roof -->
+        <rect x="9" y="29" width="26" height="20" rx="3" fill="#ffffff"></rect>
+        <!-- Subtle roof rack / PickMe tag -->
+        <rect x="17" y="37" width="10" height="4" rx="1.5" fill="#046e00"></rect>
+        <!-- Rear Windshield -->
+        <path d="M9 50 C12 49 32 49 35 50 L36 57 C33 59 11 59 8 57 Z" fill="#1e293b"></path>
+        <!-- Lights -->
+        <rect x="7" y="4.5" width="5" height="2" rx="1" fill="#fef08a"></rect>
+        <rect x="32" y="4.5" width="5" height="2" rx="1" fill="#fef08a"></rect>
+        <rect x="7" y="66" width="5" height="2" rx="1" fill="#ef4444"></rect>
+        <rect x="32" y="66" width="5" height="2" rx="1" fill="#ef4444"></rect>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- Cab 3: XL (ETA 2 min • XL) - East Avenue Road -->
+<div class="absolute top-[48%] left-[78%] -translate-x-1/2 -translate-y-1/2 z-20 cursor-pointer group">
+  <div class="car-hover flex flex-col items-center">
+    <div class="mb-1 flex items-center gap-1.5 bg-surface-container-lowest/95 backdrop-blur-sm px-2.5 py-0.5 rounded-full shadow-md border border-outline-variant/50 group-hover:scale-105 transition-transform">
+      <span class="size-1.5 rounded-full bg-primary-container"></span>
+      <span class="text-[10px] font-bold text-on-surface">2 min</span>
+      <span class="text-[9px] text-outline">•</span>
+      <span class="text-[9px] font-semibold text-primary">XL</span>
+    </div>
+    <div class="relative w-11 h-15 drop-shadow-[0_4px_8px_rgba(0,0,0,0.24)] transform -rotate-[90deg] group-hover:scale-110 transition-transform">
+      <svg viewBox="0 0 52 92" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Tires / Wheels (Sturdier XL profile) -->
+        <rect x="2" y="16" width="4.5" height="14" rx="2" fill="#0f172a"></rect>
+        <rect x="45.5" y="16" width="4.5" height="14" rx="2" fill="#0f172a"></rect>
+        <rect x="2" y="64" width="4.5" height="14" rx="2" fill="#0f172a"></rect>
+        <rect x="45.5" y="64" width="4.5" height="14" rx="2" fill="#0f172a"></rect>
+        <!-- Side mirrors -->
+        <path d="M5 28 C2 28 2 33 5 34 Z" fill="#1e293b"></path>
+        <path d="M47 28 C50 28 50 33 47 34 Z" fill="#1e293b"></path>
+        <!-- Main SUV Body -->
+        <rect x="5" y="4" width="42" height="84" rx="11" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"></rect>
+        <!-- Hood creases -->
+        <line x1="16" y1="7" x2="16" y2="22" stroke="#e2ebe0" stroke-width="1"></line>
+        <line x1="36" y1="7" x2="36" y2="22" stroke="#e2ebe0" stroke-width="1"></line>
+        <!-- Front Windshield -->
+        <path d="M10 26 C13 22 39 22 42 26 L39 38 C37 39 15 39 13 38 Z" fill="#0f172a"></path>
+        <path d="M12 26 C15 24 37 24 40 26 L38 29 C35 27 17 27 14 29 Z" fill="#475569" opacity="0.55"></path>
+        <!-- Panoramic Sunroof / XL Cabin -->
+        <rect x="13" y="37" width="26" height="34" rx="3" fill="#ffffff"></rect>
+        <rect x="15" y="39" width="22" height="17" rx="2" fill="#1e293b"></rect>
+        <!-- Roof Rails -->
+        <rect x="11" y="37" width="2" height="32" rx="1" fill="#1fc600"></rect>
+        <rect x="39" y="37" width="2" height="32" rx="1" fill="#1fc600"></rect>
+        <!-- PickMe subtle cab marker -->
+        <rect x="22" y="59" width="8" height="4" rx="1" fill="#1fc600"></rect>
+        <!-- Rear Windshield -->
+        <path d="M12 72 C16 71 36 71 40 72 L41 81 C38 83 14 83 11 81 Z" fill="#0f172a"></path>
+        <!-- Lights -->
+        <rect x="9" y="4.5" width="7" height="2.5" rx="1" fill="#fef08a"></rect>
+        <rect x="36" y="4.5" width="7" height="2.5" rx="1" fill="#fef08a"></rect>
+        <rect x="9" y="85" width="7" height="2.5" rx="1" fill="#ef4444"></rect>
+        <rect x="36" y="85" width="7" height="2.5" rx="1" fill="#ef4444"></rect>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- Map Recenter / Controls -->
+<div class="absolute bottom-3 right-3 z-20 flex flex-col gap-2">
+  <button aria-label="Current Location" class="size-10 rounded-full bg-surface-container-lowest shadow-md flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors active:scale-95">
+    <span class="material-symbols-outlined text-[20px] text-primary">my_location</span>
+  </button>
+</div>
+
+<!-- Info pill overlay -->
+<div class="absolute top-3 left-3 z-20 bg-surface-container-lowest/90 backdrop-blur-sm border border-outline-variant/50 px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+  <span class="size-2 rounded-full bg-primary animate-pulse"></span>
+  <span class="text-[11px] font-semibold text-on-surface">3 Cabs nearby</span>
+</div></section>
+<!-- Main Search & Destination Panel -->
+<div class="px-4 pt-4 flex flex-col gap-3">
+<!-- Search Input with PickMe Design Language -->
+<div class="relative flex items-center bg-surface-container rounded-xl px-3.5 py-3 border border-transparent focus-within:border-primary-container focus-within:bg-surface-container-lowest focus-within:ring-2 focus-within:ring-primary-container/20 transition-all shadow-sm">
+<div class="size-8 rounded-lg bg-primary-container/15 flex items-center justify-center text-primary shrink-0 mr-3">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">search</span>
+</div>
+<input class="w-full bg-transparent border-0 p-0 text-on-surface placeholder:text-outline text-sm font-medium focus:outline-none focus:ring-0" placeholder="Where do you want to go?" type="text" value="">
+<button class="text-xs font-bold text-primary px-2 py-1 rounded-md hover:bg-primary-container/15 transition-colors shrink-0">
+            Map
+          </button>
+</div>
+<!-- Quick Filter Chips (Home, Work, Favorites) -->
+<div class="flex items-center gap-2.5 overflow-x-auto py-1 no-scrollbar">
+<button class="flex items-center gap-2 px-3.5 py-2 rounded-full bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface shrink-0 transition-all active:scale-95">
+<span class="material-symbols-outlined text-[18px] text-primary" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-xs font-semibold">Home</span>
+</button>
+<button class="flex items-center gap-2 px-3.5 py-2 rounded-full bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface shrink-0 transition-all active:scale-95">
+<span class="material-symbols-outlined text-[18px] text-primary" style="font-variation-settings: 'FILL' 1;">work</span>
+<span class="text-xs font-semibold">Work</span>
+</button>
+<button class="flex items-center gap-2 px-3.5 py-2 rounded-full bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface shrink-0 transition-all active:scale-95">
+<span class="material-symbols-outlined text-[18px] text-[#e11d48]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="text-xs font-semibold">Favorites</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-2 rounded-full bg-surface-container/60 hover:bg-surface-container border border-outline-variant/30 text-on-surface-variant shrink-0 transition-all">
+<span class="material-symbols-outlined text-[16px]">add</span>
+<span class="text-xs font-medium">Add new</span>
+</button>
+</div>
+</div>
+<!-- Recent Destinations List -->
+<section class="mt-4 px-4 flex flex-col">
+<div class="flex items-center justify-between mb-2">
+<h3 class="text-xs font-bold uppercase tracking-wider text-outline font-label-bold">Recent Destinations</h3>
+<button class="text-xs font-semibold text-primary hover:underline">Clear all</button>
+</div>
+<div class="divide-y divide-surface-container-high">
+<!-- Item 1: Oil Mill Road -->
+<div class="flex items-center gap-3.5 py-3.5 cursor-pointer hover:bg-surface-container/50 px-2 -mx-2 rounded-xl transition-colors group">
+<div class="size-10 rounded-full bg-surface-container flex items-center justify-center text-outline group-hover:text-primary group-hover:bg-primary-container/20 transition-colors shrink-0">
+<span class="material-symbols-outlined text-[20px]">history</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold text-on-surface truncate group-hover:text-primary transition-colors">Oil Mill Road</p>
+<p class="text-xs text-outline truncate">Kammanahalli, Bengaluru, Karnataka</p>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="text-[11px] font-medium text-outline">7.2 km</span>
+<span class="material-symbols-outlined text-outline text-lg group-hover:translate-x-0.5 transition-transform">chevron_right</span>
+</div>
+</div>
+<!-- Item 2: Jubilee Revival AG Church -->
+<div class="flex items-center gap-3.5 py-3.5 cursor-pointer hover:bg-surface-container/50 px-2 -mx-2 rounded-xl transition-colors group">
+<div class="size-10 rounded-full bg-surface-container flex items-center justify-center text-outline group-hover:text-primary group-hover:bg-primary-container/20 transition-colors shrink-0">
+<span class="material-symbols-outlined text-[20px]">history</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold text-on-surface truncate group-hover:text-primary transition-colors">Jubilee Revival AG Church</p>
+<p class="text-xs text-outline truncate">Kacharakanahalli, St. Thomas Town, Bengaluru</p>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="text-[11px] font-medium text-outline">5.8 km</span>
+<span class="material-symbols-outlined text-outline text-lg group-hover:translate-x-0.5 transition-transform">chevron_right</span>
+</div>
+</div>
+<!-- Item 3: Central Railway Station -->
+<div class="flex items-center gap-3.5 py-3.5 cursor-pointer hover:bg-surface-container/50 px-2 -mx-2 rounded-xl transition-colors group">
+<div class="size-10 rounded-full bg-surface-container flex items-center justify-center text-outline group-hover:text-primary group-hover:bg-primary-container/20 transition-colors shrink-0">
+<span class="material-symbols-outlined text-[20px]">train</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold text-on-surface truncate group-hover:text-primary transition-colors">KSR Bengaluru City Junction</p>
+<p class="text-xs text-outline truncate">Majestic, Bengaluru, Karnataka</p>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="text-[11px] font-medium text-outline">9.4 km</span>
+<span class="material-symbols-outlined text-outline text-lg group-hover:translate-x-0.5 transition-transform">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- Set location on map button -->
+<button class="mt-2 mb-3 w-full py-3 px-4 rounded-xl border border-outline-variant/60 bg-surface-container/40 hover:bg-surface-container flex items-center justify-center gap-2 text-on-surface font-semibold text-sm transition-colors active:scale-[0.99]">
+<span class="material-symbols-outlined text-primary text-[20px]">pin_drop</span>
+<span class="">Set location on map</span>
+</button>
+</section>
+</div>
+<!-- Standardized PickMe Passenger Bottom Navigation Bar (4 Tabs: Ride, Schedule, Activity, Profile) -->
+<nav class="mt-auto border-t border-outline-variant/30 bg-surface-container-lowest px-3 pt-2 pb-3 shadow-[0_-4px_20px_rgba(0,0,0,0.04)] z-40"><div class="flex items-center justify-around"><a href="#" class="flex flex-col items-center justify-center group py-0.5 min-w-[64px]"><div class="flex h-8 px-5 py-1 items-center justify-center rounded-2xl bg-primary-container/20 text-primary transition-transform group-hover:scale-105 mb-1"><span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">directions_car</span></div><span class="text-primary text-[11px] font-bold tracking-tight">Ride</span></a><a href="#" class="flex flex-col items-center justify-center group py-0.5 min-w-[64px] text-tertiary hover:text-on-surface transition-colors"><div class="flex h-8 items-center justify-center text-tertiary group-hover:text-on-surface transition-transform group-hover:scale-105 mb-1"><span class="material-symbols-outlined text-[22px]">calendar_today</span></div><span class="text-tertiary text-[11px] font-medium tracking-tight">Schedule</span></a><a href="#" class="flex flex-col items-center justify-center group py-0.5 min-w-[64px] text-tertiary hover:text-on-surface transition-colors"><div class="flex h-8 items-center justify-center text-tertiary group-hover:text-on-surface transition-transform group-hover:scale-105 mb-1"><span class="material-symbols-outlined text-[22px]">receipt_long</span></div><span class="text-tertiary text-[11px] font-medium tracking-tight">Activity</span></a><a href="#" class="flex flex-col items-center justify-center group py-0.5 min-w-[64px] text-tertiary hover:text-on-surface transition-colors"><div class="flex h-8 items-center justify-center text-tertiary group-hover:text-on-surface transition-transform group-hover:scale-105 mb-1"><span class="material-symbols-outlined text-[22px]">person</span></div><span class="text-tertiary text-[11px] font-medium tracking-tight">Profile</span></a></div></nav>
+</main>
+
+
+
+
+
+
+</body></html>

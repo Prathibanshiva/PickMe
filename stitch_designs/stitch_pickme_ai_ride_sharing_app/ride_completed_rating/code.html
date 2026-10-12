@@ -1,0 +1,169 @@
+<!DOCTYPE html><html lang="en" style=""><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: 'class', theme: { extend: { colors: { 'inverse-surface': '#293040', 'on-tertiary-container': '#3d4041', 'tertiary-fixed-dim': '#c5c7c8', 'on-background': '#141b2b', 'outline-variant': '#bccbb2', 'on-error': '#ffffff', 'secondary-fixed-dim': '#0de600', 'on-secondary': '#ffffff', 'secondary': '#046e00', 'inverse-on-surface': '#edf0ff', 'on-error-container': '#93000a', 'on-surface-variant': '#3d4b37', 'surface-container-high': '#e1e8fd', 'surface-tint': '#0d6e00', 'surface-container-highest': '#dce2f7', 'on-primary': '#ffffff', 'surface-container-low': '#f1f3ff', 'primary-fixed': '#78ff5c', 'secondary-container': '#0ef900', 'on-secondary-fixed': '#012200', 'tertiary-fixed': '#e1e3e4', 'on-secondary-fixed-variant': '#035300', 'background': '#f9f9ff', 'tertiary-container': '#a9abac', 'on-primary-fixed-variant': '#085300', 'surface-bright': '#f9f9ff', 'primary-container': '#1fc600', 'on-tertiary-fixed-variant': '#454748', 'on-secondary-container': '#046d00', 'on-primary-container': '#064b00', 'primary': '#0d6e00', 'inverse-primary': '#48e32e', 'error': '#ba1a1a', 'surface-container-lowest': '#ffffff', 'on-primary-fixed': '#012200', 'on-tertiary': '#ffffff', 'surface-container': '#e9edff', 'secondary-fixed': '#77ff60', 'on-tertiary-fixed': '#191c1d', 'outline': '#6d7b65', 'surface': '#f9f9ff', 'primary-fixed-dim': '#48e32e', 'on-surface': '#141b2b', 'tertiary': '#5c5f60', 'surface-variant': '#dce2f7', 'surface-dim': '#d3daef', 'error-container': '#ffdad6' }, borderRadius: { 'DEFAULT': '0.25rem', 'lg': '0.5rem', 'xl': '0.75rem', 'full': '9999px' }, spacing: { 'unit': '4px', 'container-padding': '20px', 'stack-gap': '16px', 'gutter': '12px', 'section-gap': '32px' }, fontFamily: { 'headline-lg-mobile': ['Inter'], 'body-sm': ['Inter'], 'body-lg': ['Inter'], 'headline-lg': ['Inter'], 'title-md': ['Inter'], 'label-bold': ['Inter'], 'display-lg': ['Inter'], 'fare-display': ['Inter'] }, fontSize: { 'headline-lg-mobile': ['24px', { lineHeight: '32px', fontWeight: '700' }], 'body-sm': ['14px', { lineHeight: '20px', fontWeight: '400' }], 'body-lg': ['16px', { lineHeight: '24px', fontWeight: '400' }], 'headline-lg': ['32px', { lineHeight: '40px', letterSpacing: '-0.01em', fontWeight: '700' }], 'title-md': ['20px', { lineHeight: '28px', fontWeight: '600' }], 'label-bold': ['12px', { lineHeight: '16px', letterSpacing: '0.05em', fontWeight: '700' }], 'display-lg': ['40px', { lineHeight: '48px', letterSpacing: '-0.02em', fontWeight: '800' }], 'fare-display': ['24px', { lineHeight: '24px', letterSpacing: '-0.01em', fontWeight: '800' }] } } } };</script></head><body class="bg-surface font-body-lg text-body-lg text-on-surface flex flex-col min-h-screen overflow-y-auto"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-14 px-container-padding flex items-center justify-between"><div class="flex items-center gap-gutter"><button class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container-high transition-colors" onclick="history.back()"><span class="material-symbols-outlined text-[24px]">arrow_back</span></button><h1 class="font-title-md text-title-md text-on-surface">Trip Completion</h1></div><div class="flex items-center gap-gutter"><button class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-[20px]">share</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex flex-col relative w-full pt-14 pb-safe px-container-padding bg-surface flex-grow"><div class="flex flex-col w-full pb-24">
+<div class="flex flex-col items-center text-center mt-2 mb-6 relative">
+<div class="relative flex items-center justify-center w-24 h-24 mb-4">
+<div class="absolute inset-0 rounded-full bg-primary-container/20 animate-ping opacity-75"></div>
+<div class="absolute inset-2 rounded-full bg-primary-container/30"></div>
+<div class="relative flex items-center justify-center w-16 h-16 rounded-full bg-primary-container shadow-lg shadow-primary-container/30">
+<span class="material-symbols-outlined text-[36px] text-on-primary-container font-bold" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+<div class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-surface-container-high mb-2">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="font-label-bold text-label-bold text-on-surface-variant uppercase">Trip Completed</span>
+</div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">You have arrived!</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 max-w-[280px]">
+      Dropped off at 100ft Road, Indiranagar at 5:14 PM
+    </p>
+</div>
+<div class="w-full bg-surface-container-lowest rounded-[24px] p-5 shadow-sm mb-4">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-bold text-label-bold text-on-surface-variant uppercase">Final Fare</span>
+<div class="font-display-lg text-display-lg text-on-surface tracking-tight mt-0.5">₹280</div>
+</div>
+<div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary-container/15">
+<span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-bold text-label-bold text-primary uppercase">Cash Paid</span>
+</div>
+</div>
+<div class="flex items-center gap-3 mt-3 p-3 rounded-xl bg-surface-container-low"><div class="w-8 h-8 rounded-full bg-surface-container-lowest flex items-center justify-center shadow-sm"><span class="material-symbols-outlined text-[18px] text-primary">payments</span></div><div class="flex flex-col min-w-0 flex-1"><span class="font-body-sm text-body-sm font-semibold text-on-surface truncate">Cash Payment</span><span class="font-label-bold text-label-bold text-on-surface-variant">Paid to Driver</span></div><span class="font-label-bold text-label-bold text-primary">₹280.00</span></div>
+<div class="mt-4">
+<button class="w-full flex items-center justify-between py-2 text-on-surface-variant hover:text-on-surface transition-colors" id="breakdown-toggle">
+<span class="font-body-sm text-body-sm font-semibold flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-tertiary">receipt_long</span>
+          Fare Breakdown
+        </span>
+<span class="material-symbols-outlined text-[20px] transition-transform duration-200" id="breakdown-chevron">expand_more</span>
+</button>
+<div class="hidden flex-col gap-2.5 pt-2 pb-1" id="fare-breakdown">
+<div class="flex justify-between items-center text-on-surface-variant font-body-sm text-body-sm">
+<span>Base Fare</span>
+<span class="font-medium text-on-surface">₹60.00</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant font-body-sm text-body-sm">
+<span>Distance Fare (6.2 km)</span>
+<span class="font-medium text-on-surface">₹150.00</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant font-body-sm text-body-sm">
+<span>Time Fare (20 mins)</span>
+<span class="font-medium text-on-surface">₹45.00</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant font-body-sm text-body-sm">
+<span>Taxes &amp; Platform Fee</span>
+<span class="font-medium text-on-surface">₹25.00</span>
+</div>
+<div class="h-px bg-surface-container-high my-1"></div>
+<div class="flex justify-between items-center font-title-md text-title-md text-on-surface">
+<span>Total Fare</span>
+<span class="text-primary font-bold">₹280.00</span>
+</div>
+</div>
+</div>
+<div class="mt-3 pt-3 flex justify-center">
+<button class="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-surface-container transition-colors text-primary font-body-sm text-body-sm font-semibold">
+<span class="material-symbols-outlined text-[18px]">download</span>
+        Download Invoice (PDF)
+      </button>
+</div>
+</div>
+<div class="w-full bg-surface-container-lowest rounded-[24px] p-5 shadow-sm mb-4 flex flex-col items-center text-center"><div class="relative mb-3.5"><div class="w-20 h-20 rounded-full overflow-hidden bg-surface-container shadow-md"><img class="w-full h-full object-cover" data-alt="A warm, smiling middle-aged Indian male professional cab driver named Rajesh wearing a tidy collared shirt, studio portrait lighting with soft neutral backdrop and a reassuring friendly demeanor." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCY8NnNI2RqR6N13q4pDj91CPrNZbXpYWFTpQvdeclF7ApfDPasqBA01hLRyEDYzFbRtb4ibjv05Nfef4cHAtc582eiNwRKCJ1_CL2qZtU2T563Q7vN38ZVpSQ6Pz4Wh81z4VuqnSMzrCIbfp31wFn8ivzSLNUhpV2pADA7uSrx47hE0DB_Xw-CaiE6F9diwvA4-5R5V4fy_qGMsPWxBmO95NVQsiwnvvtDkDbH0Ebq9tBwpuLvRzuQaQ"></div><div class="absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded-full bg-primary-container flex items-center gap-0.5 shadow-md"><span class="material-symbols-outlined text-[14px] text-on-primary-container" style="font-variation-settings: 'FILL' 1;">star</span><span class="text-[11px] font-bold text-on-primary-container leading-none">4.9</span></div></div><h3 class="font-title-md text-title-md text-on-surface">Rajesh Kumar</h3><div class="flex items-center gap-1.5 mt-1 text-on-surface-variant font-body-sm text-body-sm"><span class="material-symbols-outlined text-[16px] text-primary">directions_car</span><span class="">Maruti Suzuki Dzire</span><span class="w-1 h-1 rounded-full bg-tertiary"></span><span class="font-semibold text-on-surface">KA 01 AB 1234</span></div><div class="inline-flex items-center gap-1 mt-2 px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant text-[12px] font-medium"><span class="material-symbols-outlined text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">verified_user</span><span class="">Top Rated Driver • 2,400+ trips</span></div><div class="h-px w-full bg-surface-container-high my-4"></div><p class="font-body-lg text-body-lg font-semibold text-on-surface mb-2">How was your ride with Rajesh?</p><div class="flex items-center justify-center gap-2 mb-4" id="star-rating-container"><button class="star-btn p-1 text-primary-container transition-transform active:scale-90" data-star="1" type="button"><span class="material-symbols-outlined text-[36px]" style="font-variation-settings: 'FILL' 1;">star</span></button><button class="star-btn p-1 text-primary-container transition-transform active:scale-90" data-star="2" type="button"><span class="material-symbols-outlined text-[36px]" style="font-variation-settings: 'FILL' 1;">star</span></button><button class="star-btn p-1 text-primary-container transition-transform active:scale-90" data-star="3" type="button"><span class="material-symbols-outlined text-[36px]" style="font-variation-settings: 'FILL' 1;">star</span></button><button class="star-btn p-1 text-primary-container transition-transform active:scale-90" data-star="4" type="button"><span class="material-symbols-outlined text-[36px]" style="font-variation-settings: 'FILL' 1;">star</span></button><button class="star-btn p-1 text-primary-container transition-transform active:scale-90" data-star="5" type="button"><span class="material-symbols-outlined text-[36px]" style="font-variation-settings: 'FILL' 1;">star</span></button></div><div class="w-full text-left mb-2.5"><span class="font-label-bold text-label-bold text-on-surface-variant uppercase">Give a compliment</span></div><div class="flex flex-wrap gap-2 w-full mb-4" id="compliments-container"><button class="compliment-chip px-3.5 py-2 rounded-full font-body-sm text-body-sm transition-all bg-primary-container text-on-primary-container shadow-sm flex items-center gap-1.5" type="button"><span class="material-symbols-outlined text-[16px]">sentiment_satisfied</span>Polite &amp; Professional</button><button class="compliment-chip px-3.5 py-2 rounded-full font-body-sm text-body-sm transition-all bg-primary-container text-on-primary-container shadow-sm flex items-center gap-1.5" type="button"><span class="material-symbols-outlined text-[16px]">airline_seat_recline_extra</span>Smooth Driving</button><button class="compliment-chip px-3.5 py-2 rounded-full font-body-sm text-body-sm transition-all bg-surface-container text-on-surface hover:bg-surface-container-high flex items-center gap-1.5" type="button"><span class="material-symbols-outlined text-[16px]">local_car_wash</span>Clean Car</button><button class="compliment-chip px-3.5 py-2 rounded-full font-body-sm text-body-sm transition-all bg-surface-container text-on-surface hover:bg-surface-container-high flex items-center gap-1.5" type="button"><span class="material-symbols-outlined text-[16px]">alt_route</span>Great Route</button><button class="compliment-chip px-3.5 py-2 rounded-full font-body-sm text-body-sm transition-all bg-surface-container text-on-surface hover:bg-surface-container-high flex items-center gap-1.5" type="button"><span class="material-symbols-outlined text-[16px]">shield</span>Safe Driving</button></div><div class="w-full" id="star-rating-container"><div class="relative w-full rounded-2xl bg-surface-container-low p-3.5 transition-colors focus-within:bg-surface-container"><textarea class="w-full bg-transparent border-0 outline-none resize-none font-body-sm text-body-sm text-on-surface placeholder:text-outline" placeholder="Add a note or feedback for Rajesh (optional)..." rows="2"></textarea></div></div></div>
+
+<div class="w-full flex flex-col items-center gap-3">
+<button class="w-full py-4 rounded-xl bg-primary-container text-on-primary-container font-body-lg text-body-lg font-bold shadow-lg shadow-primary-container/30 transition-transform active:scale-[0.98] flex items-center justify-center gap-2" id="submit-btn" type="button"><span class="">Submit Rating</span><span class="material-symbols-outlined text-[20px]">arrow_forward</span></button>
+<div class="flex items-center justify-between w-full px-2">
+<button class="py-2 text-on-surface-variant hover:text-on-surface font-body-sm text-body-sm font-semibold transition-colors flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[18px]">home</span>
+        Back to Home
+      </button>
+<button class="py-2 text-on-surface-variant hover:text-on-surface font-body-sm text-body-sm font-semibold transition-colors flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[18px]">help</span>
+        Need Help?
+      </button>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    const toggle = document.getElementById('breakdown-toggle');
+    const breakdown = document.getElementById('fare-breakdown');
+    const chevron = document.getElementById('breakdown-chevron');
+    if (toggle && breakdown && chevron) {
+      toggle.addEventListener('click', () => {
+        const isHidden = breakdown.classList.contains('hidden');
+        if (isHidden) {
+          breakdown.classList.remove('hidden');
+          breakdown.classList.add('flex');
+          chevron.style.transform = 'rotate(180deg)';
+        } else {
+          breakdown.classList.add('hidden');
+          breakdown.classList.remove('flex');
+          chevron.style.transform = 'rotate(0deg)';
+        }
+      });
+    }
+
+    let currentRating = 5;
+    const starButtons = document.querySelectorAll('.star-btn');
+    starButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const rating = parseInt(btn.getAttribute('data-star') || '5', 10);
+        currentRating = rating;
+        starButtons.forEach(b => {
+          const val = parseInt(b.getAttribute('data-star') || '0', 10);
+          const icon = b.querySelector('.material-symbols-outlined');
+          if (val <= currentRating) {
+            b.classList.remove('text-tertiary-fixed-dim');
+            b.classList.add('text-primary-container');
+            if (icon) icon.style.fontVariationSettings = "'FILL' 1";
+          } else {
+            b.classList.remove('text-primary-container');
+            b.classList.add('text-tertiary-fixed-dim');
+            if (icon) icon.style.fontVariationSettings = "'FILL' 0";
+          }
+        });
+      });
+    });
+
+    const chips = document.querySelectorAll('.compliment-chip');
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const isSelected = chip.classList.contains('bg-primary-container');
+        if (isSelected) {
+          chip.classList.remove('bg-primary-container', 'text-on-primary-container');
+          chip.classList.add('bg-surface-container', 'text-on-surface');
+        } else {
+          chip.classList.remove('bg-surface-container', 'text-on-surface');
+          chip.classList.add('bg-primary-container', 'text-on-primary-container');
+        }
+      });
+    });
+
+    const tipButtons = document.querySelectorAll('.tip-btn');
+    tipButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tipButtons.forEach(b => {
+          b.classList.remove('bg-primary-container', 'text-on-primary-container', 'shadow-md', 'shadow-primary-container/20', 'font-bold');
+          b.classList.add('bg-surface-container-low', 'text-on-surface', 'font-semibold');
+        });
+        btn.classList.remove('bg-surface-container-low', 'text-on-surface');
+        btn.classList.add('bg-primary-container', 'text-on-primary-container', 'shadow-md', 'shadow-primary-container/20', 'font-bold');
+      });
+    });
+
+    const submitBtn = document.getElementById('submit-btn');
+    if (submitBtn) {
+      submitBtn.addEventListener('click', () => {
+        submitBtn.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span><span>Submitting...</span>';
+        setTimeout(() => {
+          submitBtn.innerHTML = '<span class="material-symbols-outlined text-[20px]">check_circle</span><span>Feedback Sent!</span>';
+          submitBtn.classList.remove('bg-primary-container');
+          submitBtn.classList.add('bg-primary', 'text-on-primary');
+        }, 800);
+      });
+    }
+  })();
+</script></main>
+
+</body></html>

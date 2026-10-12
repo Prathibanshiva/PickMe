@@ -1,0 +1,564 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>Vehicle Selection - PickMe</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#3d4b37",
+                        "inverse-primary": "#48e32e",
+                        "tertiary-fixed-dim": "#c5c7c8",
+                        "outline": "#6d7b65",
+                        "on-secondary-container": "#046d00",
+                        "primary": "#0d6e00",
+                        "surface-dim": "#d3daef",
+                        "background": "#f9f9ff",
+                        "inverse-surface": "#293040",
+                        "primary-fixed-dim": "#48e32e",
+                        "inverse-on-surface": "#edf0ff",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#78ff5c",
+                        "on-secondary-fixed": "#012200",
+                        "surface-container-low": "#f1f3ff",
+                        "secondary": "#046e00",
+                        "on-primary-fixed-variant": "#085300",
+                        "outline-variant": "#bccbb2",
+                        "surface-tint": "#0d6e00",
+                        "surface": "#f9f9ff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#e1e3e4",
+                        "secondary-fixed-dim": "#0de600",
+                        "on-surface": "#141b2b",
+                        "primary-container": "#1fc600",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed": "#191c1d",
+                        "on-background": "#141b2b",
+                        "surface-variant": "#dce2f7",
+                        "on-secondary-fixed-variant": "#035300",
+                        "tertiary": "#5c5f60",
+                        "surface-container-high": "#e1e8fd",
+                        "secondary-fixed": "#77ff60",
+                        "surface-container-highest": "#dce2f7",
+                        "secondary-container": "#0ef900",
+                        "surface-bright": "#f9f9ff",
+                        "on-primary-container": "#064b00",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#3d4041",
+                        "on-primary-fixed": "#012200",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#a9abac",
+                        "on-tertiary-fixed-variant": "#454748",
+                        "surface-container": "#e9edff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px",
+                        "2xl": "1.5rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "gutter": "12px",
+                        "stack-gap": "16px",
+                        "section-gap": "32px",
+                        "container-padding": "20px"
+                    },
+                    "fontFamily": {
+                        "label-bold": ["Inter"],
+                        "title-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "fare-display": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-bold": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "title-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "fare-display": ["24px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "800" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }]
+                    },
+                    boxShadow: {
+                        'soft-active': '0px 10px 30px rgba(0,0,0,0.04)',
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .bounce-tap:active { transform: scale(0.98); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 16px); }
+        body { min-height: max(884px, 100dvh); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-lg min-h-screen flex flex-col relative antialiased overflow-hidden">
+<svg aria-hidden="true" class="inline-defs-container" style="position:absolute;width:0;height:0;overflow:hidden"></svg>
+<!-- Top Navigation Shell -->
+<header class="flex justify-between items-center px-container-padding h-16 w-full fixed top-0 z-50 bg-transparent pointer-events-none">
+<div class="flex items-center gap-2 pointer-events-auto w-full justify-between">
+<button class="h-10 w-10 bg-surface-container-lowest rounded-full shadow-md flex items-center justify-center text-on-surface hover:opacity-80 transition-opacity active:scale-95">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+</button>
+<div class="flex-1 mx-2 bg-surface-container-lowest/90 backdrop-blur-md px-3 py-1.5 rounded-full shadow-md border border-outline-variant/30 flex items-center justify-between text-xs">
+<div class="flex items-center gap-1.5 min-w-0">
+<div class="w-2 h-2 rounded-full bg-primary-container shrink-0"></div>
+<span class="font-bold truncate text-on-surface text-[11px]">5th Ave &amp; 23rd St</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[14px] mx-1 shrink-0">arrow_forward</span>
+<div class="flex items-center gap-1.5 min-w-0">
+<div class="w-2 h-2 rounded-full bg-on-surface shrink-0"></div>
+<span class="font-bold truncate text-on-surface text-[11px]">Grand Central</span>
+</div>
+</div>
+<button class="h-10 w-10 bg-surface-container-lowest rounded-full shadow-md flex items-center justify-center text-on-surface hover:opacity-80 transition-opacity active:scale-95">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+</button>
+</div>
+</header>
+<!-- Map Preview Area -->
+<div class="h-[260px] shrink-0 w-full relative z-0">
+<img class="w-full h-full object-cover" data-alt="A clean, modern, minimalist digital map of a city grid. Roads are crisp white and light grey, with subtle vibrant green highlights indicating a route." data-location="New York City" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBioQztf-9DY5r5fWaapfJ8UlwSL9ayNABzkqRi2onFZNaUmmqIhrs54WuEWyFhHorAp1FXACyj5_lChWX6BqvALfYyClRKeVHn-h-lg_cK3aZxfFLRGWG9ONQ6yxAZ-nN9IP09WP95Tx6jvqOaWcHvYOtNfeybaP6aWvsYaygC7Bmm2-wwhsbNKPGpK4eaVdr-vCa6AvuFuBUmoD0Gjt8_Kv7JtT6mWRfAMEZtQTy3OvogtX1y8qyVrA">
+<svg class="absolute inset-0 w-full h-full pointer-events-none z-10" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<filter height="140%" id="glow" width="140%" x="-20%" y="-20%">
+<feDropShadow dx="0" dy="2" flood-color="#1fc600" flood-opacity="0.4" stdDeviation="3"></feDropShadow>
+</filter>
+</defs>
+<path d="M 125 210 L 195 130 L 245 80 L 260 70 L 315 25" fill="none" filter="url(#glow)" stroke="#1fc600" stroke-linecap="round" stroke-linejoin="round" stroke-width="4.5"></path>
+<path d="M 125 210 L 195 130 L 245 80 L 260 70 L 315 25" fill="none" opacity="0.7" stroke="#ffffff" stroke-dasharray="3 5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+</svg>
+<div class="absolute z-20 pointer-events-none" style="left: 125px; top: 210px; transform: translate(-50%, -50%);">
+<div class="relative flex items-center justify-center">
+<div class="w-7 h-7 rounded-full bg-primary-container/30 animate-ping absolute"></div>
+<div class="w-4 h-4 rounded-full bg-primary-container border-2 border-white shadow-md flex items-center justify-center">
+<div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+</div>
+<div class="absolute -top-7 px-2 py-0.5 bg-on-surface text-white text-[10px] font-bold rounded-full shadow whitespace-nowrap">Pickup: 4 min</div>
+</div>
+</div>
+<div class="absolute z-20 pointer-events-none" style="left: 315px; top: 25px; transform: translate(-50%, -50%);">
+<div class="flex flex-col items-center">
+<div class="bg-on-surface text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-md whitespace-nowrap mb-0.5 flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>Drop-off
+      </div>
+<span class="material-symbols-outlined text-primary text-[20px] drop-shadow-md -mt-1">location_on</span>
+</div>
+</div>
+<div class="absolute z-20 pointer-events-none bg-surface-container-lowest/95 backdrop-blur-sm border border-outline-variant/40 rounded-full px-2 py-1 flex items-center gap-1 shadow-sm" style="left: 200px; top: 110px; transform: translate(-50%, -50%);">
+<span class="material-symbols-outlined text-primary text-[14px]">directions_car</span>
+<span class="text-[10px] font-bold text-on-surface">Sedan 4m</span>
+</div>
+<div class="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-surface to-transparent z-10 pointer-events-none"></div>
+</div>
+<!-- Bottom Sheet / Content Area -->
+<main class="flex-1 bg-surface rounded-t-3xl shadow-[0_-8px_30px_rgba(0,0,0,0.06)] relative z-10 -mt-6 flex flex-col min-h-0">
+<!-- Drag Handle -->
+<div class="w-full flex justify-center pt-3 pb-2 shrink-0">
+<div class="w-12 h-1.5 bg-tertiary-fixed rounded-full"></div>
+</div>
+<div class="px-container-padding flex-1 overflow-y-auto no-scrollbar pb-72">
+<div class="flex items-center justify-between mb-3">
+<h2 class="font-title-md text-title-md text-on-surface font-bold">Choose a ride</h2>
+<div class="flex items-center gap-1 text-[11px] text-primary font-bold bg-surface-container-low px-2.5 py-1 rounded-full border border-primary/20 cursor-pointer">
+<span class="material-symbols-outlined text-[13px]">auto_awesome</span>
+<span>Fastest ETA</span>
+</div>
+</div>
+<!-- Vehicle Selection List -->
+<div class="flex flex-col gap-2.5">
+<!-- Bike Option -->
+<button class="w-full bg-surface-container-lowest border border-outline-variant rounded-2xl p-4 flex items-center justify-between text-left bounce-tap transition-all hover:border-outline relative overflow-hidden" id="card-bike" onclick="selectVehicle('bike')">
+<div class="flex items-center gap-stack-gap">
+<div class="w-16 h-12 bg-surface-container-low rounded-lg flex items-center justify-center shrink-0">
+<svg class="w-12 h-9" fill="none" viewBox="0 0 64 48" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="15" cy="35" fill="#293040" rx="9" ry="9"></ellipse>
+<circle cx="15" cy="35" fill="#e9edff" r="4.5"></circle>
+<circle cx="15" cy="35" fill="#6d7b65" r="2"></circle>
+<ellipse cx="49" cy="35" fill="#293040" rx="9" ry="9"></ellipse>
+<circle cx="49" cy="35" fill="#e9edff" r="4.5"></circle>
+<circle cx="49" cy="35" fill="#6d7b65" r="2"></circle>
+<path d="M15 35 L26 27 L36 27 L43 17 L49 35" stroke="#3d4b37" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+<path d="M22 25 L35 25 Q37 25 38 23 L41 18 Q41.5 17 43 17 L46 17" stroke="#1fc600" stroke-linecap="round" stroke-width="3"></path>
+<path d="M20 23 L32 23 C34 23 35 21 33 19 L25 19 C22 19 20 20 20 23 Z" fill="#141b2b"></path>
+<path d="M41 15 L46 15 L43 21 Z" fill="#1fc600"></path>
+<circle cx="45.5" cy="15" fill="#ffffff" r="1.8"></circle>
+<line stroke="#293040" stroke-linecap="round" stroke-width="2" x1="41" x2="44" y1="13" y2="13"></line>
+<path d="M26 27 L33 35" stroke="#6d7b65" stroke-linecap="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface">Bike</span>
+<span class="bg-surface-container-highest px-2 py-0.5 rounded text-[10px] font-bold text-on-surface-variant">1 min</span>
+<span class="text-[11px] text-on-surface-variant flex items-center gap-0.5"><span class="material-symbols-outlined text-[13px]">person</span>1 seat</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Fastest through traffic</span>
+</div>
+</div>
+<span class="font-fare-display text-fare-display text-on-surface" id="card-fare-bike">₹50</span>
+</button>
+<!-- Auto Option -->
+<button class="w-full bg-surface-container-lowest border border-outline-variant rounded-2xl p-4 flex items-center justify-between text-left bounce-tap transition-all hover:border-outline relative overflow-hidden" id="card-auto" onclick="selectVehicle('auto')">
+<div class="flex items-center gap-stack-gap">
+<div class="w-16 h-12 bg-surface-container-low rounded-lg flex items-center justify-center shrink-0">
+<svg class="w-12 h-9" fill="none" viewBox="0 0 64 48" xmlns="http://www.w3.org/2000/svg">
+<circle cx="15" cy="37" fill="#293040" r="7"></circle>
+<circle cx="15" cy="37" fill="#dce2f7" r="3.5"></circle>
+<circle cx="47" cy="37" fill="#293040" r="7"></circle>
+<circle cx="47" cy="37" fill="#dce2f7" r="3.5"></circle>
+<path d="M13 19 C14 13 18 10 26 10 L43 10 C49 10 52 13 53 18 L53 21 L13 21 Z" fill="#f59e0b"></path>
+<path d="M12 21 L54 21 L53 35 C53 37 50 38 48 38 L16 38 C13 38 11 36 12 33 Z" fill="#1fc600"></path>
+<path d="M43 15 L50 18 L48 27 L39 27 Z" fill="#dce2f7" fill-opacity="0.75" stroke="#141b2b" stroke-linejoin="round" stroke-width="1"></path>
+<path d="M18 21 L29 21 L29 29 L16 29 Z" fill="#141b2b" fill-opacity="0.15"></path>
+<rect fill="#293040" height="9" rx="2" width="12" x="22" y="24"></rect>
+<circle cx="52" cy="30" fill="#ffffff" r="2"></circle>
+<line stroke="#064b00" stroke-width="1.5" x1="13" x2="13" y1="25" y2="34"></line>
+</svg>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface">Auto</span>
+<span class="bg-surface-container-highest px-2 py-0.5 rounded text-[10px] font-bold text-on-surface-variant">3 min</span>
+<span class="text-[11px] text-on-surface-variant flex items-center gap-0.5"><span class="material-symbols-outlined text-[13px]">group</span>3 seats</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Affordable &amp; breezy</span>
+</div>
+</div>
+<span class="font-fare-display text-fare-display text-on-surface" id="card-fare-auto">₹95</span>
+</button>
+<!-- Mini Option -->
+<button class="w-full bg-surface-container-lowest border border-outline-variant rounded-2xl p-4 flex items-center justify-between text-left bounce-tap transition-all hover:border-outline relative overflow-hidden" id="card-mini" onclick="selectVehicle('mini')">
+<div class="flex items-center gap-stack-gap">
+<div class="w-16 h-12 bg-surface-container-low rounded-lg flex items-center justify-center shrink-0">
+<svg class="w-12 h-8" fill="none" viewBox="0 0 64 42" xmlns="http://www.w3.org/2000/svg">
+<circle cx="16" cy="33" fill="#293040" r="6.5"></circle>
+<circle cx="16" cy="33" fill="#bccbb2" r="3"></circle>
+<circle cx="48" cy="33" fill="#293040" r="6.5"></circle>
+<circle cx="48" cy="33" fill="#bccbb2" r="3"></circle>
+<path d="M8 26 C8 24 10 22 13 22 L20 16 C23 13 27 12 33 12 L43 12 C47 12 51 15 53 19 L57 24 C59 25 60 27 60 29 L58 33 C58 34 57 34 56 34 L54 34 C53 31 50 28 46 28 C42 28 39 31 38 34 L26 34 C25 31 22 28 18 28 C14 28 11 31 10 34 L7 34 C6 34 5 32 5 30 L6 27 C6.5 26.5 7.2 26 8 26 Z" fill="#1fc600"></path>
+<path d="M22 17 L32 17 L32 23 L18 23 Z" fill="#dce2f7"></path>
+<path d="M34 17 L44 17 L49 23 L34 23 Z" fill="#dce2f7"></path>
+<circle cx="57" cy="26" fill="#ffffff" r="1.8"></circle>
+<rect fill="#064b00" height="4" rx="1" width="2" x="31" y="25"></rect>
+</svg>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface">Mini</span>
+<span class="bg-surface-container-highest px-2 py-0.5 rounded text-[10px] font-bold text-on-surface-variant">3 min</span>
+<span class="text-[11px] text-on-surface-variant flex items-center gap-0.5"><span class="material-symbols-outlined text-[13px]">group</span>4 seats</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Compact, budget-friendly ac</span>
+</div>
+</div>
+<span class="font-fare-display text-fare-display text-on-surface" id="card-fare-mini">₹145</span>
+</button>
+<!-- Sedan Option (Default Selected) -->
+<button class="w-full bg-surface-container-lowest border-2 border-primary shadow-soft-active rounded-2xl p-4 flex items-center justify-between text-left bounce-tap transition-all relative overflow-hidden" id="card-sedan" onclick="selectVehicle('sedan')">
+<div class="absolute top-0 right-0 bg-primary-container text-on-primary-container font-label-bold text-[10px] px-3 py-1 rounded-bl-lg" id="badge-sedan">Recommended</div>
+<div class="flex items-center gap-stack-gap relative z-10">
+<div class="w-16 h-12 bg-surface-container-low rounded-lg flex items-center justify-center shrink-0">
+<svg class="w-13 h-8" fill="none" viewBox="0 0 68 40" xmlns="http://www.w3.org/2000/svg">
+<circle cx="16" cy="31" fill="#141b2b" r="6"></circle>
+<circle cx="16" cy="31" fill="#78ff5c" r="3"></circle>
+<circle cx="52" cy="31" fill="#141b2b" r="6"></circle>
+<circle cx="52" cy="31" fill="#78ff5c" r="3"></circle>
+<path d="M5 24 C5 22 7 21 10 21 L18 21 L27 13 C29 11 33 10 37 10 L48 10 C51 10 54 12 55 14 L61 21 L64 24 C66 26 66 28 65 29 L63 32 L58 32 C57 29 54 27 50 27 C46 27 43 29 42 32 L26 32 C25 29 22 27 18 27 C14 27 11 29 10 32 L6 32 C5 32 4 30 4 28 Z" fill="#1fc600"></path>
+<path d="M22 20 L29 14 L36 14 L36 20 Z" fill="#dce2f7"></path>
+<path d="M38 14 L47 14 L53 20 L38 20 Z" fill="#dce2f7"></path>
+<path d="M62 23 L65 25 L61 26 Z" fill="#ffffff"></path>
+<rect fill="#046d00" height="4" rx="1" width="2" x="35" y="22"></rect>
+<line stroke="#48e32e" stroke-linecap="round" stroke-width="1" x1="20" x2="48" y1="25" y2="25"></line>
+</svg>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface">Sedan</span>
+<span class="bg-surface-container-highest px-2 py-0.5 rounded text-[10px] font-bold text-on-surface-variant">4 min</span>
+<span class="text-[11px] text-on-surface-variant flex items-center gap-0.5"><span class="material-symbols-outlined text-[13px]">group</span>4 seats</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Comfortable top-rated rides</span>
+</div>
+</div>
+<span class="font-fare-display text-fare-display text-on-surface relative z-10" id="card-fare-sedan">₹195</span>
+</button>
+<!-- SUV Option -->
+<button class="w-full bg-surface-container-lowest border border-outline-variant rounded-2xl p-4 flex items-center justify-between text-left bounce-tap transition-all hover:border-outline relative overflow-hidden" id="card-suv" onclick="selectVehicle('suv')">
+<div class="flex items-center gap-stack-gap">
+<div class="w-16 h-12 bg-surface-container-low rounded-lg flex items-center justify-center shrink-0">
+<svg class="w-13 h-9" fill="none" viewBox="0 0 68 44" xmlns="http://www.w3.org/2000/svg">
+<circle cx="17" cy="35" fill="#141b2b" r="7"></circle>
+<circle cx="17" cy="35" fill="#bccbb2" r="3.5"></circle>
+<circle cx="51" cy="35" fill="#141b2b" r="7"></circle>
+<circle cx="51" cy="35" fill="#bccbb2" r="3.5"></circle>
+<line stroke="#3d4b37" stroke-linecap="round" stroke-width="2.5" x1="22" x2="44" y1="10" y2="10"></line>
+<line stroke="#3d4b37" stroke-width="2" x1="26" x2="26" y1="10" y2="12"></line>
+<line stroke="#3d4b37" stroke-width="2" x1="40" x2="40" y1="10" y2="12"></line>
+<path d="M7 27 C7 25 8 23 11 23 L18 23 L22 13 C23 12 25 11 28 11 L47 11 C50 11 52 13 54 16 L58 23 L63 25 C65 26 66 28 66 31 L64 35 L57 35 C56 31 53 29 48 29 C43 29 40 31 39 35 L28 35 C27 31 24 29 19 29 C14 29 11 31 10 35 L6 35 C5 35 4 32 4 30 Z" fill="#1fc600"></path>
+<path d="M23 15 L31 15 L31 22 L19 22 Z" fill="#dce2f7"></path>
+<path d="M33 15 L43 15 L43 22 L33 22 Z" fill="#dce2f7"></path>
+<path d="M45 15 L49 15 L54 22 L45 22 Z" fill="#dce2f7"></path>
+<circle cx="63" cy="27" fill="#ffffff" r="2"></circle>
+<rect fill="#064b00" height="4" rx="1" width="2" x="30" y="24"></rect>
+<rect fill="#064b00" height="4" rx="1" width="2" x="41" y="24"></rect>
+</svg>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface">SUV</span>
+<span class="bg-surface-container-highest px-2 py-0.5 rounded text-[10px] font-bold text-on-surface-variant">8 min</span>
+<span class="text-[11px] text-on-surface-variant flex items-center gap-0.5"><span class="material-symbols-outlined text-[13px]">group</span>6 seats</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Spacious 6-seater · Extra luggage</span>
+</div>
+</div>
+<span class="font-fare-display text-fare-display text-on-surface" id="card-fare-suv">₹260</span>
+</button>
+</div>
+<!-- Safe bottom spacing inside scroll view to prevent clipping behind fixed footer -->
+<div class="h-10"></div>
+</div>
+</main>
+<!-- Bottom Action Bar (Fixed) -->
+<div class="fixed bottom-0 left-0 w-full bg-surface-container-lowest border-t border-outline-variant p-container-padding pb-safe shadow-[0_-8px_30px_rgba(0,0,0,0.08)] z-30">
+<!-- Ride Mode Selection (Shared Ride default active) -->
+<div class="mb-3 bg-surface-container-low p-1 rounded-xl flex items-center border border-outline-variant/40">
+<button class="flex-1 py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 font-bold text-xs transition-all text-on-surface-variant hover:text-on-surface" id="btn-personal-ride" onclick="selectRideType('personal')">
+<span class="material-symbols-outlined text-[16px]">person</span>
+<span>Personal Ride</span>
+</button>
+<button class="flex-1 py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 font-bold text-xs transition-all bg-surface-container-lowest text-on-surface shadow-sm border border-outline-variant/30" id="btn-shared-ride" onclick="selectRideType('shared')">
+<span class="material-symbols-outlined text-[16px] text-primary">group</span>
+<span>Shared Ride</span>
+<span class="bg-primary-container/20 text-on-primary-container text-[10px] px-1.5 py-0.5 rounded-full font-bold">Save 30%</span>
+</button>
+</div>
+<!-- Personal Ride Banner (Hidden by default in shared mode) -->
+<div class="hidden flex items-center justify-between py-2 px-3 mb-3 bg-primary-container/10 border border-primary-container/30 rounded-xl" id="passenger-personal-banner">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">verified</span>
+<div>
+<span class="font-bold text-xs text-on-surface block leading-tight">Entire car reserved for you</span>
+<span class="text-[11px] text-on-surface-variant">Private ride · Direct route with no stops</span>
+</div>
+</div>
+<span class="text-[11px] font-bold text-primary bg-surface-container-lowest px-2 py-0.5 rounded-full border border-primary/20">Private</span>
+</div>
+<!-- Passenger / Seats Needed Selector (Active by default in shared mode) -->
+<div class="flex justify-between items-center mb-3" id="passenger-count-row">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface-variant shrink-0">
+<span class="material-symbols-outlined text-[18px]">group</span>
+</div>
+<div>
+<span class="font-bold text-sm text-on-surface block leading-tight" id="passenger-count-title">Seats Needed</span>
+<span class="text-[11px] text-on-surface-variant" id="passenger-count-subtext">Select 1 to 4 seats for Sedan</span>
+</div>
+</div>
+<div class="flex items-center bg-surface-container-low rounded-full p-0.5 border border-outline-variant">
+<button class="w-7 h-7 rounded-full bg-surface-container-lowest flex items-center justify-center shadow-sm text-on-surface active:scale-95 transition-transform disabled:opacity-40 disabled:cursor-not-allowed" id="btn-seat-minus" onclick="adjustSeats(-1)" disabled="">
+<span class="material-symbols-outlined text-sm font-bold">remove</span>
+</button>
+<span class="font-bold text-sm px-3 text-on-surface w-8 text-center" id="seats-count-val">1</span>
+<button class="w-7 h-7 rounded-full bg-surface-container-lowest flex items-center justify-center shadow-sm text-on-surface active:scale-95 transition-transform disabled:opacity-40 disabled:cursor-not-allowed" id="btn-seat-plus" onclick="adjustSeats(1)">
+<span class="material-symbols-outlined text-sm font-bold">add</span>
+</button>
+</div>
+</div>
+<!-- Payment & Fare Summary -->
+<div class="flex items-center justify-between py-2 px-1 mb-2 text-xs border-t border-outline-variant/40">
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-1.5 bg-surface-container-low px-2.5 py-1 rounded-full border border-outline-variant/60 cursor-pointer active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary text-[15px]">payments</span>
+<span class="font-bold text-on-surface text-[12px]">Cash</span>
+<span class="material-symbols-outlined text-outline text-[14px]">expand_more</span>
+</div>
+<span class="text-[11px] text-on-surface-variant">Tap to switch to Card</span>
+</div>
+<div class="text-right">
+<span class="text-[10px] text-on-surface-variant uppercase tracking-wider block" id="fare-label">Shared Fare (1 Seat)</span>
+<span class="font-fare-display text-base font-extrabold text-on-surface" id="display-fare-est">₹195</span>
+</div>
+</div>
+<!-- Action Button -->
+<button class="w-full bg-on-surface text-surface py-3.5 rounded-full font-bold text-base bounce-tap transition-all flex justify-between px-6 items-center shadow-lg active:scale-[0.99]">
+<span class="text-white font-semibold text-sm tracking-wide" id="action-btn-text">Confirm Shared Booking</span>
+<div class="flex items-center gap-2">
+<span class="text-primary-fixed text-base font-extrabold" id="display-fare-btn">₹195</span>
+<div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined text-[18px] font-bold">arrow_forward</span>
+</div>
+</div>
+</button>
+</div>
+<script>
+  const vehicles = {
+    bike: { name: 'Bike', maxSeats: 1, personalFare: 75, sharedFarePerSeat: 50 },
+    auto: { name: 'Auto', maxSeats: 3, personalFare: 140, sharedFarePerSeat: 95 },
+    mini: { name: 'Mini', maxSeats: 4, personalFare: 210, sharedFarePerSeat: 145 },
+    sedan: { name: 'Sedan', maxSeats: 4, personalFare: 280, sharedFarePerSeat: 195 },
+    suv: { name: 'SUV', maxSeats: 6, personalFare: 380, sharedFarePerSeat: 260 }
+  };
+
+  let currentMode = 'shared'; // Default active mode
+  let selectedVehicleKey = 'sedan'; // Default selected vehicle
+  let currentSeats = 1;
+
+  function calculateFare() {
+    const v = vehicles[selectedVehicleKey];
+    if (currentMode === 'personal') {
+      return v.personalFare;
+    } else {
+      if (currentSeats === 1) {
+        return v.sharedFarePerSeat;
+      } else {
+        // Shared fare with slight multi-seat combo discount
+        return Math.round(v.sharedFarePerSeat * currentSeats * 0.9);
+      }
+    }
+  }
+
+  function updateCardsFareDisplay() {
+    Object.keys(vehicles).forEach(key => {
+      const fareEl = document.getElementById(`card-fare-${key}`);
+      if (fareEl) {
+        if (currentMode === 'personal') {
+          fareEl.textContent = '₹' + vehicles[key].personalFare;
+        } else {
+          fareEl.textContent = '₹' + vehicles[key].sharedFarePerSeat;
+        }
+      }
+    });
+  }
+
+  function updateUI() {
+    const v = vehicles[selectedVehicleKey];
+    const fare = calculateFare();
+
+    // Cap seats to vehicle max capacity
+    if (currentSeats > v.maxSeats) {
+      currentSeats = v.maxSeats;
+    }
+    if (currentSeats < 1) {
+      currentSeats = 1;
+    }
+
+    // Update Seat Count display
+    const seatValElem = document.getElementById('seats-count-val');
+    if (seatValElem) seatValElem.textContent = currentSeats;
+
+    // Update Seat Subtext
+    const subtext = document.getElementById('passenger-count-subtext');
+    if (subtext) {
+      if (v.maxSeats === 1) {
+        subtext.textContent = `Bike accommodates max 1 passenger`;
+      } else {
+        subtext.textContent = `Select 1 to ${v.maxSeats} seats for ${v.name}`;
+      }
+    }
+
+    // Update +/- button states
+    const minusBtn = document.getElementById('btn-seat-minus');
+    const plusBtn = document.getElementById('btn-seat-plus');
+    if (minusBtn) minusBtn.disabled = (currentSeats <= 1);
+    if (plusBtn) plusBtn.disabled = (currentSeats >= v.maxSeats);
+
+    // Update Card Borders and Styles
+    Object.keys(vehicles).forEach(key => {
+      const card = document.getElementById(`card-${key}`);
+      if (card) {
+        if (key === selectedVehicleKey) {
+          card.className = "w-full bg-surface-container-lowest border-2 border-primary shadow-soft-active rounded-2xl p-4 flex items-center justify-between text-left bounce-tap transition-all relative overflow-hidden";
+        } else {
+          card.className = "w-full bg-surface-container-lowest border border-outline-variant rounded-2xl p-4 flex items-center justify-between text-left bounce-tap transition-all hover:border-outline relative overflow-hidden";
+        }
+      }
+    });
+
+    // Update bottom fares
+    const estFare = document.getElementById('display-fare-est');
+    const btnFare = document.getElementById('display-fare-btn');
+    const fareLabel = document.getElementById('fare-label');
+    const actionBtnText = document.getElementById('action-btn-text');
+
+    if (estFare) estFare.textContent = '₹' + fare;
+    if (btnFare) btnFare.textContent = '₹' + fare;
+
+    if (fareLabel) {
+      if (currentMode === 'personal') {
+        fareLabel.textContent = 'Total Private Fare';
+      } else {
+        fareLabel.textContent = `Shared Fare (${currentSeats} Seat${currentSeats > 1 ? 's' : ''})`;
+      }
+    }
+
+    if (actionBtnText) {
+      actionBtnText.textContent = currentMode === 'personal' ? 'Confirm Booking' : 'Confirm Shared Booking';
+    }
+
+    updateCardsFareDisplay();
+  }
+
+  function selectRideType(type) {
+    currentMode = type;
+    const pBtn = document.getElementById('btn-personal-ride');
+    const sBtn = document.getElementById('btn-shared-ride');
+    const banner = document.getElementById('passenger-personal-banner');
+    const countRow = document.getElementById('passenger-count-row');
+
+    if (type === 'personal') {
+      pBtn.className = 'flex-1 py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 font-bold text-xs transition-all bg-surface-container-lowest text-on-surface shadow-sm border border-outline-variant/30';
+      sBtn.className = 'flex-1 py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 font-bold text-xs transition-all text-on-surface-variant hover:text-on-surface';
+      banner.classList.remove('hidden');
+      countRow.classList.add('hidden');
+    } else {
+      sBtn.className = 'flex-1 py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 font-bold text-xs transition-all bg-surface-container-lowest text-on-surface shadow-sm border border-outline-variant/30';
+      pBtn.className = 'flex-1 py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 font-bold text-xs transition-all text-on-surface-variant hover:text-on-surface';
+      banner.classList.add('hidden');
+      countRow.classList.remove('hidden');
+    }
+
+    updateUI();
+  }
+
+  function selectVehicle(key) {
+    if (vehicles[key]) {
+      selectedVehicleKey = key;
+      const max = vehicles[key].maxSeats;
+      if (currentSeats > max) {
+        currentSeats = max;
+      }
+      updateUI();
+    }
+  }
+
+  function adjustSeats(delta) {
+    const max = vehicles[selectedVehicleKey].maxSeats;
+    currentSeats = Math.max(1, Math.min(max, currentSeats + delta));
+    updateUI();
+  }
+
+  // Initialize UI on load
+  document.addEventListener('DOMContentLoaded', () => {
+    selectRideType('shared');
+    selectVehicle('sedan');
+  });
+</script>
+</body></html>

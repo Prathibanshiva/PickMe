@@ -1,0 +1,428 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-error-container": "#93000a",
+          "surface-container-highest": "#d3e4fe",
+          "surface-bright": "#f8f9ff",
+          "outline-variant": "#bfcab7",
+          "on-surface-variant": "#404a3b",
+          "primary-container": "#0d6e00",
+          "surface-dim": "#cbdbf5",
+          "surface": "#f8f9ff",
+          "on-primary": "#ffffff",
+          "on-primary-fixed": "#012200",
+          "surface-container": "#e5eeff",
+          "error": "#ba1a1a",
+          "surface-tint": "#0d6e00",
+          "tertiary-fixed-dim": "#bfc6dc",
+          "on-secondary": "#ffffff",
+          "on-secondary-container": "#0e7300",
+          "on-error": "#ffffff",
+          "on-tertiary-container": "#d1d8ee",
+          "tertiary": "#404658",
+          "primary": "#085300",
+          "secondary-fixed": "#78ff5c",
+          "error-container": "#ffdad6",
+          "on-tertiary": "#ffffff",
+          "on-secondary-fixed": "#012200",
+          "inverse-on-surface": "#eaf1ff",
+          "secondary-fixed-dim": "#48e32e",
+          "on-primary-container": "#91ee79",
+          "on-primary-fixed-variant": "#085300",
+          "secondary-container": "#64fe48",
+          "background": "#f8f9ff",
+          "inverse-surface": "#213145",
+          "primary-fixed-dim": "#80dc69",
+          "on-tertiary-fixed-variant": "#404758",
+          "outline": "#707a69",
+          "surface-container-low": "#eff4ff",
+          "secondary": "#0d6e00",
+          "tertiary-container": "#575e71",
+          "on-background": "#0b1c30",
+          "surface-container-lowest": "#ffffff",
+          "surface-container-high": "#dce9ff",
+          "on-secondary-fixed-variant": "#085300",
+          "on-tertiary-fixed": "#141b2b",
+          "primary-fixed": "#9bf982",
+          "tertiary-fixed": "#dce2f9",
+          "surface-variant": "#d3e4fe",
+          "on-surface": "#0b1c30",
+          "inverse-primary": "#80dc69"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        "spacing": {
+          "space-md": "1rem",
+          "space-lg": "1.25rem",
+          "space-xs": "0.25rem",
+          "space-xl": "2rem",
+          "gutter": "1.25rem",
+          "space-sm": "0.5rem",
+          "margin": "1.5rem"
+        },
+        "fontFamily": {
+          "numeric-stat": ["Inter"],
+          "body-sm": ["Inter"],
+          "headline-sm": ["Inter"],
+          "title-md": ["Inter"],
+          "display-lg": ["Inter"],
+          "headline-md": ["Inter"],
+          "body-lg": ["Inter"],
+          "label-sm": ["Inter"],
+          "label-lg": ["Inter"],
+          "label-md": ["Inter"],
+          "headline-lg": ["Inter"],
+          "body-md": ["Inter"]
+        },
+        "fontSize": {
+          "numeric-stat": ["28px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+          "headline-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600"}],
+          "title-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+          "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+          "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+          "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600"}],
+          "label-lg": ["13px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+          "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+          "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+          "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+        }
+      }
+    }
+  }</script></head><body class="bg-surface font-body-md text-body-md text-on-surface"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between hidden md:flex"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-lg flex items-center justify-between"><div class="flex items-center gap-3 px-1 py-2">
+  <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdd_U4O9c1ZEYb-dk5tJW7JoTcwAy412hNT7t7CBcKnQhWB6G5viZFnU3feYv-UYqJF_6NQVpcXRzRMPu_kCb5RUEw_CSBdZR2a3CyjEfr6lHHh0_Uorle16GbkghfjXTcdnmpoNLQODbWj0Avmsf1tnVSDLIeDCMEbjDzb2Y71bLOJSygLz3ATi-ves7jDxIxELmLFjhZHZfaB5KDc8uyUQUPthLP2WmNWnqiKW9dQKbNmeVqaiHEbn8904ybjZlA" alt="PickMe Logo" class="h-10 w-auto object-contain max-w-[140px]">
+  <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-[#0D6E00] text-white uppercase tracking-wider">Admin</span>
+</div></div><div class="px-space-md py-space-xs"><div class="px-space-md py-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">Operations</div><nav class="flex flex-col gap-space-xs mt-space-xs" data-active-classes="bg-primary-container text-on-primary font-title-md"><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="dashboard" href="#">Dashboard</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="drivers" href="#">Drivers</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="users" href="#">Users</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="rides" href="#">Rides</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="scheduled" href="#">Scheduled</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="fares" href="#">Fares</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="analytics" href="#">Analytics</a><a aria-current="page" class="flex items-center px-space-md py-space-sm rounded-lg transition-colors font-title-md bg-surface-container-low text-primary font-semibold" data-path="complaints" href="#">Complaints</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="reports" href="#">Reports</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="notifications" href="#">Notifications</a></nav></div><div class="px-space-md py-space-xs mt-space-sm"><div class="px-space-md py-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">Configuration</div><nav class="flex flex-col gap-space-xs mt-space-xs" data-active-classes="bg-primary-container text-on-primary font-title-md"><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="platform-settings" href="#">Platform Settings</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="audit-logs" href="#">Audit Logs</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="admin-profile" href="#">Admin Profile</a></nav></div></div><div class="p-space-md bg-surface-container-low"><div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-lowest"><div class="flex items-center gap-space-sm overflow-hidden"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col min-w-0"><span class="font-title-md text-title-md text-on-surface truncate">Vikramaditya Rao</span><span class="font-body-sm text-body-sm text-on-surface-variant truncate">Operations Admin</span></div></div><button aria-label="Logout" class="p-space-xs rounded text-on-surface-variant hover:text-error hover:bg-error-container transition-colors shrink-0" type="button"><span class="material-symbols-outlined text-[20px]">logout</span></button></div></div></aside><div class="md:pl-64"><header class="fixed top-0 left-0 md:left-64 right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-md md:px-space-xl gap-space-md"><div class="flex items-center gap-space-md"><button aria-label="Open Menu" class="md:hidden p-space-xs text-on-surface hover:bg-surface-container-high rounded transition-colors" type="button"><span class="material-symbols-outlined text-[24px]">menu</span></button><nav class="hidden sm:flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm"><span class="">Console</span><span class="material-symbols-outlined text-[14px]">chevron_right</span><span class="text-on-surface font-title-md text-title-md">Operations Command</span></nav></div><div class="flex items-center gap-space-md flex-1 max-w-md mx-space-sm"><div class="relative w-full"><span class="material-symbols-outlined absolute left-space-md top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span><input class="w-full h-10 pl-10 pr-space-md rounded-lg bg-surface-container-lowest text-on-surface placeholder:text-on-surface-variant font-body-sm text-body-sm outline-none focus:ring-2 focus:ring-secondary transition-all" placeholder="Search drivers, rides, users..." type="text"></div></div><div class="flex items-center gap-space-md shrink-0"><div class="hidden lg:flex items-center gap-space-xs px-space-sm py-space-xs rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm"><span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span><span class="">Operations Active</span></div><button aria-label="Notifications" class="relative p-space-xs rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-error"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-16 w-full min-h-screen bg-surface px-space-md md:px-space-xl py-space-lg"><div class="flex flex-col w-full">
+<div class="flex flex-col gap-space-lg w-full max-w-[1400px] mx-auto pb-space-xl">
+<!-- Header Section -->
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-space-md pt-space-xs">
+<div class="flex flex-col gap-space-xs">
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Complaints</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Review and resolve complaints associated with PickMe rides.</p>
+</div>
+<!-- Quick Export / Dispatch Badge -->
+<div class="flex items-center gap-space-sm">
+<div class="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-surface-container-high text-on-surface-variant font-label-md text-label-md">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="">Regional Ops Queue • Bengaluru &amp; Mumbai Hubs</span>
+</div>
+</div>
+</div>
+<!-- Main Content Card -->
+<div class="flex flex-col bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<!-- Tabs Navigation -->
+<div class="flex items-center gap-space-md px-space-lg pt-space-md bg-surface-container-lowest">
+<button class="relative pb-space-md flex items-center gap-space-xs font-title-md text-title-md text-primary transition-colors" id="tab-open" type="button">
+<span class="">Open</span>
+<span class="px-space-xs py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm">18</span>
+<span class="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full"></span>
+</button>
+<button class="relative pb-space-md flex items-center gap-space-xs font-title-md text-title-md text-on-surface-variant hover:text-on-surface transition-colors" id="tab-review" type="button">
+<span class="">In Review</span>
+<span class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">9</span>
+</button>
+<button class="relative pb-space-md flex items-center gap-space-xs font-title-md text-title-md text-on-surface-variant hover:text-on-surface transition-colors" id="tab-resolved" type="button">
+<span class="">Resolved</span>
+<span class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">142</span>
+</button>
+</div>
+<div class="h-[1px] w-full bg-surface-container-high"></div>
+<!-- Search and Filter Bar -->
+<div class="p-space-lg flex flex-col md:flex-row items-stretch md:items-center justify-between gap-space-md bg-surface-container-lowest">
+<!-- Search Input -->
+<div class="relative flex-1 max-w-lg">
+<span class="material-symbols-outlined absolute left-space-md top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+<input class="w-full h-10 pl-10 pr-space-md rounded-lg bg-surface-container-low text-on-surface placeholder:text-on-surface-variant font-body-sm text-body-sm outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary transition-all" placeholder="Search complaint ID, ride ID, or user..." type="text">
+</div>
+<!-- Filter Controls -->
+<div class="flex items-center gap-space-md flex-wrap">
+<!-- Priority Filter -->
+<div class="flex items-center gap-space-xs">
+<span class="font-label-md text-label-md text-on-surface-variant hidden sm:inline">Priority:</span>
+<div class="relative inline-block">
+<select class="appearance-none h-10 pl-space-md pr-8 rounded-lg bg-surface-container-low text-on-surface font-label-md text-label-md outline-none cursor-pointer focus:ring-2 focus:ring-secondary transition-all">
+<option value="all">All Priorities</option>
+<option value="high">High</option>
+<option value="normal">Normal</option>
+</select>
+<span class="material-symbols-outlined absolute right-space-sm top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-[18px]">expand_more</span>
+</div>
+</div>
+<!-- Date Filter -->
+<div class="flex items-center gap-space-xs">
+<span class="font-label-md text-label-md text-on-surface-variant hidden sm:inline">Date:</span>
+<div class="relative inline-block">
+<select class="appearance-none h-10 pl-space-md pr-8 rounded-lg bg-surface-container-low text-on-surface font-label-md text-label-md outline-none cursor-pointer focus:ring-2 focus:ring-secondary transition-all">
+<option value="all">All Dates</option>
+<option value="today">Today</option>
+<option value="past7">Past 7 Days</option>
+</select>
+<span class="material-symbols-outlined absolute right-space-sm top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-[18px]">expand_more</span>
+</div>
+</div>
+<!-- Quick Reset or Refresh -->
+<button aria-label="Refresh complaint feed" class="h-10 w-10 flex items-center justify-center rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+</button>
+</div>
+</div>
+<!-- Data Table (Strict 7 Columns) -->
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left border-collapse min-w-[960px]">
+<thead>
+<tr class="bg-surface-container-low font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">
+<th class="py-space-md px-space-lg" scope="col">Complaint</th>
+<th class="py-space-md px-space-md" scope="col">Ride ID</th>
+<th class="py-space-md px-space-md" scope="col">User</th>
+<th class="py-space-md px-space-md" scope="col">Role</th>
+<th class="py-space-md px-space-md" scope="col">Priority</th>
+<th class="py-space-md px-space-md" scope="col">Status</th>
+<th class="py-space-md px-space-lg text-right" scope="col">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group">
+<td class="py-space-md px-space-lg">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">Driver did not arrive at pickup</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">CMP-10482 • Koramangala 5th Block</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-title-md text-title-md text-on-surface font-mono tracking-tight">#PKM-88294</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-body-md text-body-md text-on-surface">Priyamvada Rao</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm">Passenger</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                  High
+                </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-[#fef3c7] text-[#92400e] font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-[#d97706] animate-pulse"></span>
+                  Open
+                </span>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="inline-flex items-center justify-center px-space-md py-1.5 rounded-lg bg-surface-container-low hover:bg-primary hover:text-on-primary text-on-surface font-label-md text-label-md transition-colors" type="button">
+                  View
+                </button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group">
+<td class="py-space-md px-space-lg">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">Fare dispute - incorrect toll deduction</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">CMP-10480 • Western Express Highway</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-title-md text-title-md text-on-surface font-mono tracking-tight">#PKM-88310</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-body-md text-body-md text-on-surface">Amit Patel</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm">Passenger</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                  Normal
+                </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-[#fef3c7] text-[#92400e] font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-[#d97706] animate-pulse"></span>
+                  Open
+                </span>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="inline-flex items-center justify-center px-space-md py-1.5 rounded-lg bg-surface-container-low hover:bg-primary hover:text-on-primary text-on-surface font-label-md text-label-md transition-colors" type="button">
+                  View
+                </button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group">
+<td class="py-space-md px-space-lg">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">Driver behaviour complaint</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">CMP-10475 • Indiranagar 100ft Road</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-title-md text-title-md text-on-surface font-mono tracking-tight">#PKM-88250</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-body-md text-body-md text-on-surface">Vikram Sen</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm">Passenger</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                  High
+                </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-[#fef3c7] text-[#92400e] font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-[#d97706] animate-pulse"></span>
+                  Open
+                </span>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="inline-flex items-center justify-center px-space-md py-1.5 rounded-lg bg-surface-container-low hover:bg-primary hover:text-on-primary text-on-surface font-label-md text-label-md transition-colors" type="button">
+                  View
+                </button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group">
+<td class="py-space-md px-space-lg">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">Passenger no-show dispute</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">CMP-10468 • Hitec City Cyber Towers</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-title-md text-title-md text-on-surface font-mono tracking-tight">#PKM-88190</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-body-md text-body-md text-on-surface">Ramesh Gowda</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-space-sm py-0.5 rounded-full bg-secondary-fixed/40 text-on-secondary-fixed font-label-sm text-label-sm">Driver</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                  Normal
+                </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-[#fef3c7] text-[#92400e] font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-[#d97706] animate-pulse"></span>
+                  Open
+                </span>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="inline-flex items-center justify-center px-space-md py-1.5 rounded-lg bg-surface-container-low hover:bg-primary hover:text-on-primary text-on-surface font-label-md text-label-md transition-colors" type="button">
+                  View
+                </button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group">
+<td class="py-space-md px-space-lg">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">Lost item after ride (Backpack)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">CMP-10462 • Bandra Kurla Complex</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-title-md text-title-md text-on-surface font-mono tracking-tight">#PKM-88142</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-body-md text-body-md text-on-surface">Arpitha Sen</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm">Passenger</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                  Normal
+                </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-[#fef3c7] text-[#92400e] font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-[#d97706] animate-pulse"></span>
+                  Open
+                </span>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="inline-flex items-center justify-center px-space-md py-1.5 rounded-lg bg-surface-container-low hover:bg-primary hover:text-on-primary text-on-surface font-label-md text-label-md transition-colors" type="button">
+                  View
+                </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Clean Pagination Footer -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-md px-space-lg py-space-md bg-surface-container-lowest border-t border-surface-container-low">
+<span class="font-body-sm text-body-sm text-on-surface-variant">
+          Showing <span class="font-title-md text-title-md text-on-surface">1</span> to <span class="font-title-md text-title-md text-on-surface">5</span> of <span class="font-title-md text-title-md text-on-surface">18</span> open complaints
+        </span>
+<div class="flex items-center gap-space-sm">
+<button class="inline-flex items-center gap-1 px-space-md py-space-xs rounded-lg bg-surface-container-low text-on-surface-variant opacity-50 cursor-not-allowed font-label-md text-label-md transition-colors" disabled="" type="button">
+<span class="material-symbols-outlined text-[16px]">chevron_left</span>
+<span class="">Previous</span>
+</button>
+<div class="flex items-center gap-1 px-space-xs">
+<span class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-on-primary font-label-md text-label-md">1</span>
+<span class="w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-low font-label-md text-label-md cursor-pointer transition-colors">2</span>
+<span class="w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-low font-label-md text-label-md cursor-pointer transition-colors">3</span>
+<span class="w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-low font-label-md text-label-md cursor-pointer transition-colors">4</span>
+</div>
+<button class="inline-flex items-center gap-1 px-space-md py-space-xs rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors" type="button">
+<span class="">Next</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Simple Tab Toggle Logic for UI responsiveness
+  const tabs = [
+    { id: 'tab-open', activeColor: 'text-primary' },
+    { id: 'tab-review', activeColor: 'text-primary' },
+    { id: 'tab-resolved', activeColor: 'text-primary' }
+  ];
+
+  tabs.forEach(tab => {
+    const el = document.getElementById(tab.id);
+    if (!el) return;
+    el.addEventListener('click', () => {
+      tabs.forEach(t => {
+        const item = document.getElementById(t.id);
+        if (!item) return;
+        item.classList.remove('text-primary');
+        item.classList.add('text-on-surface-variant');
+        const underline = item.querySelector('.absolute');
+        if (underline) underline.remove();
+      });
+      el.classList.add('text-primary');
+      el.classList.remove('text-on-surface-variant');
+      const line = document.createElement('span');
+      line.className = 'absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full';
+      el.appendChild(line);
+    });
+  });
+</script></main></div>
+
+
+
+</body></html>

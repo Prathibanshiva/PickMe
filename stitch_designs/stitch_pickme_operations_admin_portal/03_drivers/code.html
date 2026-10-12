@@ -1,0 +1,522 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface": "#f8f9ff", "error": "#ba1a1a", "on-tertiary": "#ffffff", "tertiary-fixed-dim": "#bfc6dc", "surface-container-highest": "#d3e4fe", "surface-tint": "#0d6e00", "on-secondary": "#ffffff", "outline": "#707a69", "on-surface-variant": "#404a3b", "surface-container-low": "#eff4ff", "on-secondary-fixed-variant": "#085300", "primary": "#085300", "surface-container": "#e5eeff", "on-primary-fixed-variant": "#085300", "inverse-primary": "#80dc69", "surface-dim": "#cbdbf5", "tertiary": "#404658", "inverse-surface": "#213145", "on-surface": "#0b1c30", "inverse-on-surface": "#eaf1ff", "error-container": "#ffdad6", "on-secondary-container": "#0e7300", "primary-fixed": "#9bf982", "secondary-fixed-dim": "#48e32e", "on-error-container": "#93000a", "surface-bright": "#f8f9ff", "on-background": "#0b1c30", "primary-container": "#0d6e00", "on-tertiary-fixed": "#141b2b", "secondary": "#0d6e00", "on-secondary-fixed": "#012200", "on-error": "#ffffff", "surface-variant": "#d3e4fe", "secondary-container": "#64fe48", "on-primary-fixed": "#012200", "surface-container-lowest": "#ffffff", "secondary-fixed": "#78ff5c", "surface-container-high": "#dce9ff", "on-primary-container": "#91ee79", "tertiary-fixed": "#dce2f9", "on-primary": "#ffffff", "on-tertiary-container": "#d1d8ee", "tertiary-container": "#575e71", "outline-variant": "#bfcab7", "on-tertiary-fixed-variant": "#404758", "background": "#f8f9ff", "primary-fixed-dim": "#80dc69" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-md": "1rem", "space-sm": "0.5rem", "space-xs": "0.25rem", "gutter": "1.25rem", "space-xl": "2rem", "space-lg": "1.25rem", "margin": "1.5rem" }, "fontFamily": { "headline-md": ["Inter"], "numeric-stat": ["Inter"], "body-lg": ["Inter"], "headline-sm": ["Inter"], "title-md": ["Inter"], "headline-lg": ["Inter"], "body-sm": ["Inter"], "display-lg": ["Inter"], "label-lg": ["Inter"], "label-md": ["Inter"], "body-md": ["Inter"], "label-sm": ["Inter"] }, "fontSize": { "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}], "numeric-stat": ["28px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}], "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}], "headline-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600"}], "title-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}], "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700"}], "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}], "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}], "label-lg": ["13px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}], "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500"}], "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}], "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600"}] } } } };</script></head><body class="bg-background font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between overflow-y-auto"><div class="flex flex-col"><div class="h-16 flex items-center justify-between px-margin"><div class="flex items-center gap-space-xs"><div class="flex items-center gap-2"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuATF7GISiTCFWWfqyZFhZ34c_thyZy5MJ8N6XfkctHlC1vaoPU2zW2v_D4o3BgrEOLXFGs3J_FLhw00UoVh0iGfUaMVj9wWag7e14V2FFbDMM4j6mHz9CUANScQOvolpfY6y0WxFjwT3w2Zda9MnA01SVIH4H4Ghlayyk5Pun8lcD7CTnQGPyHhdtJSQLrD3aVuwj7YG7uVpUcbK0QtKK5OogeORcg2r5c85hcVaMtfx-KtUfaYs4792FhECFuS3-BZ" alt="PickMe Logo" class="h-8 max-w-[120px] object-contain shrink-0"><span class="inline-flex items-center px-space-xs py-0.5 rounded bg-surface-container-high text-primary font-label-sm text-label-sm uppercase tracking-wider font-semibold">Admin</span></div></div></div><div class="px-space-md py-space-xs"><p class="px-space-sm font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant mb-space-xs">Operations</p><nav class="space-y-0.5" data-active-classes="bg-surface-container-high text-primary font-semibold"><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg font-body-md text-body-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="dashboard" href="#"><span class="material-symbols-outlined text-[20px]">grid_view</span><span class="">Dashboard</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg transition-colors bg-surface-container-high text-primary font-semibold" data-path="drivers" href="#"><span class="material-symbols-outlined text-[20px]">badge</span><span class="">Drivers</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg font-body-md text-body-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="users" href="#"><span class="material-symbols-outlined text-[20px]">group</span><span class="">Users</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg font-body-md text-body-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="rides" href="#"><span class="material-symbols-outlined text-[20px]">commute</span><span class="">Rides</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg font-body-md text-body-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="scheduled" href="#"><span class="material-symbols-outlined text-[20px]">schedule</span><span class="">Scheduled</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg font-body-md text-body-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="fares" href="#"><span class="material-symbols-outlined text-[20px]">payments</span><span class="">Fares</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg font-body-md text-body-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="analytics" href="#"><span class="material-symbols-outlined text-[20px]">analytics</span><span class="">Analytics</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg font-body-md text-body-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="complaints" href="#"><span class="material-symbols-outlined text-[20px]">chat_bubble_outline</span><span class="">Complaints</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg font-body-md text-body-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="reports" href="#"><span class="material-symbols-outlined text-[20px]">description</span><span class="">Reports</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg font-body-md text-body-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="notifications" href="#"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="">Notifications</span></a></nav></div></div><div class="flex flex-col"><div class="px-space-md py-space-xs"><p class="px-space-sm font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant mb-space-xs">Configuration</p><nav class="space-y-0.5" data-active-classes="bg-surface-container-high text-primary font-semibold"><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg font-body-md text-body-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="platform-settings" href="#"><span class="material-symbols-outlined text-[20px]">settings</span><span class="">Platform Settings</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg font-body-md text-body-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="audit-logs" href="#"><span class="material-symbols-outlined text-[20px]">history</span><span class="">Audit Logs</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg font-body-md text-body-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="admin-profile" href="#"><span class="material-symbols-outlined text-[20px]">manage_accounts</span><span class="">Admin Profile</span></a></nav></div><div class="p-space-md mt-space-xs"><div class="flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low"><div class="flex items-center gap-space-sm min-w-0"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="truncate"><p class="font-label-lg text-label-lg text-on-surface truncate">Vikramaditya Rao</p><p class="font-label-sm text-label-sm text-on-surface-variant truncate">Operations Admin</p></div></div><a class="p-1 text-on-surface-variant hover:text-error transition-colors rounded shrink-0" data-path="login" href="#" title="Sign out"><span class="material-symbols-outlined text-[20px]">logout</span></a></div></div></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40"><div class="h-16 w-full px-margin flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-sm"><span class="font-label-md text-label-md text-on-surface-variant">Console</span><span class="font-label-sm text-label-sm text-on-surface-variant">/</span><span class="font-label-md text-label-md text-on-surface font-semibold">Operations Command</span></div><div class="flex items-center gap-space-md flex-1 max-w-lg mx-space-lg"><div class="w-full flex items-center gap-space-xs px-space-sm py-1.5 rounded-lg bg-surface-container-low"><span class="material-symbols-outlined text-on-surface-variant text-[18px]">search</span><input class="w-full bg-transparent font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none" placeholder="Search drivers, rides, users..." type="text"></div></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high"><span class="w-2 h-2 rounded-full bg-secondary-fixed-dim animate-pulse"></span><span class="font-label-sm text-label-sm text-primary font-semibold">Operations Active</span></div><button aria-label="Notifications" class="relative p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-primary"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-surface min-h-screen px-margin py-margin"><div class="flex flex-col w-full">
+<!-- Subtle Ambient Glow -->
+<div class="relative w-full">
+<div class="absolute -top-10 -right-8 w-96 h-96 bg-primary-fixed/20 rounded-full blur-3xl pointer-events-none -z-10"></div>
+<div class="absolute top-28 left-1/4 w-80 h-80 bg-surface-container-highest/40 rounded-full blur-3xl pointer-events-none -z-10"></div>
+<!-- Page Header & Action Toolbar -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md mb-space-lg">
+<div>
+<div class="flex items-center gap-space-xs mb-1">
+<span class="inline-flex items-center justify-center w-6 h-6 rounded-md bg-surface-container-high text-primary">
+<span class="material-symbols-outlined text-[16px]">badge</span>
+</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-semibold">Fleet Network</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-on-surface tracking-tight">Drivers</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">Manage registered fleet partners and verification status across metro hubs.</p>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<button class="inline-flex items-center gap-space-xs px-3.5 py-2.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg shadow-sm hover:bg-surface-container-low transition-all" type="button">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">file_download</span>
+<span class="">Export CSV</span>
+</button>
+<button class="inline-flex items-center gap-space-xs px-4 py-2.5 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg shadow-md hover:bg-on-secondary-fixed-variant active:scale-[0.99] transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">person_add</span>
+<span class="">+ Onboard Driver</span>
+</button>
+</div>
+</div>
+<!-- Quick Status Filter Bar (Segmented Tabs) -->
+<div class="flex items-center justify-between gap-space-md bg-surface-container-lowest p-1.5 rounded-xl shadow-sm mb-space-md overflow-x-auto">
+<div class="flex items-center gap-1 min-w-max" id="statusTabs">
+<button class="flex items-center gap-space-xs px-3.5 py-2 rounded-lg bg-surface-container-high text-primary font-label-lg text-label-lg font-semibold transition-colors" data-filter="all" type="button">
+<span class="">All</span>
+<span class="px-1.5 py-0.5 text-label-sm font-label-sm rounded bg-surface-container-highest text-on-surface">4,210</span>
+</button>
+<button class="flex items-center gap-space-xs px-3.5 py-2 rounded-lg text-on-surface-variant font-label-lg text-label-lg hover:bg-surface-container-low transition-colors" data-filter="pending" type="button">
+<span class="">Pending Review</span>
+<span class="px-1.5 py-0.5 text-label-sm font-label-sm rounded-full bg-error-container/60 text-on-error-container font-semibold animate-pulse">14</span>
+</button>
+<button class="flex items-center gap-space-xs px-3.5 py-2 rounded-lg text-on-surface-variant font-label-lg text-label-lg hover:bg-surface-container-low transition-colors" data-filter="approved" type="button">
+<span class="">Approved</span>
+<span class="px-1.5 py-0.5 text-label-sm font-label-sm rounded bg-surface-container-low text-on-surface-variant">3,980</span>
+</button>
+<button class="flex items-center gap-space-xs px-3.5 py-2 rounded-lg text-on-surface-variant font-label-lg text-label-lg hover:bg-surface-container-low transition-colors" data-filter="rejected" type="button">
+<span class="">Rejected</span>
+<span class="px-1.5 py-0.5 text-label-sm font-label-sm rounded bg-surface-container-low text-on-surface-variant">112</span>
+</button>
+<button class="flex items-center gap-space-xs px-3.5 py-2 rounded-lg text-on-surface-variant font-label-lg text-label-lg hover:bg-surface-container-low transition-colors" data-filter="suspended" type="button">
+<span class="">Suspended</span>
+<span class="px-1.5 py-0.5 text-label-sm font-label-sm rounded bg-surface-container-low text-on-surface-variant">104</span>
+</button>
+</div>
+<div class="hidden lg:flex items-center gap-space-sm pr-2 text-on-surface-variant font-label-sm text-label-sm">
+<span class="inline-flex items-center gap-1.5 text-secondary font-semibold">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+          2,842 Drivers Live Now
+        </span>
+</div>
+</div>
+<!-- Search & 3 Essential Dropdowns -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-space-sm mb-space-md">
+<!-- Search Input -->
+<div class="md:col-span-6 lg:col-span-6 bg-surface-container-lowest rounded-xl shadow-sm px-space-md py-2.5 flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">search</span>
+<input class="w-full bg-transparent font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none" id="driverSearchInput" placeholder="Search by driver name, phone, or vehicle plate..." type="text">
+<kbd class="hidden sm:inline-block px-1.5 py-0.5 text-[10px] uppercase font-semibold text-on-surface-variant bg-surface-container rounded shadow-xs">⌘K</kbd>
+</div>
+<!-- Essential Dropdown 1: Status -->
+<div class="md:col-span-2 lg:col-span-2 relative bg-surface-container-lowest rounded-xl shadow-sm px-3.5 py-2 flex items-center justify-between cursor-pointer group hover:bg-surface-container-low transition-colors">
+<div class="flex flex-col min-w-0">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider text-[10px]">Verification</span>
+<select class="bg-transparent font-label-md text-label-md text-on-surface font-semibold focus:outline-none cursor-pointer appearance-none pr-4">
+<option>All Statuses</option>
+<option>Pending Review</option>
+<option>Approved</option>
+<option>Rejected</option>
+</select>
+</div>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant pointer-events-none absolute right-3">expand_more</span>
+</div>
+<!-- Essential Dropdown 2: Vehicle -->
+<div class="md:col-span-2 lg:col-span-2 relative bg-surface-container-lowest rounded-xl shadow-sm px-3.5 py-2 flex items-center justify-between cursor-pointer group hover:bg-surface-container-low transition-colors">
+<div class="flex flex-col min-w-0">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider text-[10px]">Vehicle</span>
+<select class="bg-transparent font-label-md text-label-md text-on-surface font-semibold focus:outline-none cursor-pointer appearance-none pr-4">
+<option>All Types</option>
+<option>Auto (3-Wheeler)</option>
+<option>Sedan / Dzire</option>
+<option>Hatchback / WagonR</option>
+<option>Premium SUV</option>
+</select>
+</div>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant pointer-events-none absolute right-3">expand_more</span>
+</div>
+<!-- Essential Dropdown 3: City Hub -->
+<div class="md:col-span-2 lg:col-span-2 relative bg-surface-container-lowest rounded-xl shadow-sm px-3.5 py-2 flex items-center justify-between cursor-pointer group hover:bg-surface-container-low transition-colors">
+<div class="flex flex-col min-w-0">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider text-[10px]">Hub Zone</span>
+<select class="bg-transparent font-label-md text-label-md text-on-surface font-semibold focus:outline-none cursor-pointer appearance-none pr-4">
+<option>Bengaluru (All)</option>
+<option>Bengaluru South</option>
+<option>Bengaluru East</option>
+<option>Bengaluru North</option>
+<option>Bengaluru Central</option>
+<option>Mumbai MMR</option>
+<option>Delhi-NCR</option>
+</select>
+</div>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant pointer-events-none absolute right-3">expand_more</span>
+</div>
+</div>
+<!-- Driver Data Table Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden mb-space-md">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/70">
+<th class="py-3 px-space-md w-10 text-center font-label-sm text-label-sm text-on-surface-variant" scope="col"><input type="checkbox" id="selectAllDrivers" class="rounded cursor-pointer text-primary focus:ring-0"></th><th class="py-3 px-space-md font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant" scope="col">Driver</th>
+<th class="py-3 px-space-md font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant" scope="col">Vehicle</th>
+<th class="py-3 px-space-md font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant" scope="col">City</th>
+<th class="py-3 px-space-md font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant" scope="col">Verification</th>
+<th class="py-3 px-space-md font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant" scope="col">Account</th>
+<th class="py-3 px-space-md font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant" scope="col">Online State</th>
+<th class="py-3 px-space-md font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant text-right" scope="col">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y-0" id="driverRows">
+<!-- Row 1: Sunil Gowda (Pending Review / Attention state) -->
+<tr class="hover:bg-surface-container-low transition-colors group"><td class="py-4 px-space-md w-10 text-center"><input type="checkbox" class="driver-select-checkbox rounded cursor-pointer text-primary focus:ring-0"></td>
+<td class="py-4 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="relative shrink-0">
+<img class="w-10 h-10 rounded-full object-cover shadow-xs" data-alt="Close-up professional portrait photo of Indian male driver Sunil Gowda wearing a clean collared shirt against neutral bright background with soft cinematic lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAM8RQ2KDYj4fsuYaHziWPzDowGE2AouI0c2LpNLilDgJucXHQTbn83UBTKxqBKKIJaervHdvzjGJWgnOVikcSShyB5av2T6g6dJeIZilLSG0D7cWIAl0i3toCI9hQRUxEjZdhr0LMF7r1tjUjktmYivFGLTLf3ufnDq9LnwShBqxgsZCLYo7WHDH49jPooEzIOtDE4NMFrCh68YMu1kLbFJiUrr2_hGkfoXrCI-g">
+<span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-outline-variant"></span>
+</div>
+<div class="min-w-0">
+<p class="font-headline-sm text-headline-sm text-on-surface font-semibold truncate leading-tight group-hover:text-primary transition-colors">Sunil Gowda</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant tracking-wider font-mono">DRV-8921</p>
+</div>
+</div>
+</td>
+<td class="py-4 px-space-md">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">electric_rickshaw</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">Bajaj Auto</span>
+</div>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-mono">KA 05 AJ 4921</span>
+</div>
+</td>
+<td class="py-4 px-space-md">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">location_on</span>
+<span class="font-body-md text-body-md text-on-surface">Bengaluru South</span>
+</div>
+</td>
+<td class="py-4 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-error-container/40 text-on-error-container font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                  Pending Review
+                </span>
+</td>
+<td class="py-4 px-space-md">
+<span class="inline-flex items-center px-2 py-0.5 rounded-md bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+                  Under Review
+                </span>
+</td>
+<td class="py-4 px-space-md">
+<div class="inline-flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Offline</span>
+</div>
+</td>
+<td class="py-4 px-space-md text-right">
+<div class="inline-flex items-center justify-end gap-1">
+<button class="px-3 py-1.5 rounded-lg bg-primary text-on-primary font-label-md text-label-md shadow-sm hover:bg-on-secondary-fixed-variant transition-all" type="button">
+                    Review
+                  </button>
+<button aria-label="More actions" class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Anand Murthy (Approved & Online) -->
+<tr class="hover:bg-surface-container-low transition-colors group"><td class="py-4 px-space-md w-10 text-center"><input type="checkbox" class="driver-select-checkbox rounded cursor-pointer text-primary focus:ring-0"></td>
+<td class="py-4 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="relative shrink-0">
+<img class="w-10 h-10 rounded-full object-cover shadow-xs" data-alt="Portrait photo of middle-aged Indian commercial fleet driver Anand Murthy smiling in vehicle cab with green polo uniform, soft natural lighting and sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcX-F2AUykJs6eRCj3RAUTHyAVZUursZ0Wy_BOKMyw-X2JQ0ZkIl2VVFzWzoOdiA_KyLz0Oy0UeDtDZKq_dTh3RfFoJUl7ziE6ICRfr07bx3rYj1wdDK4dLlJ93Ix_W5mBi1JgOKLqMr8RdmuNBEgh_GEM1fSSd3ISG4CIbeN28junpkrl92ibK9b6mOCe-yN-dK5m8YWu6oM5uDak3T9jcXtxO1loiWpKQIqm3Q">
+<span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-secondary shadow-xs"></span>
+</div>
+<div class="min-w-0">
+<p class="font-headline-sm text-headline-sm text-on-surface font-semibold truncate leading-tight group-hover:text-primary transition-colors">Anand Murthy</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant tracking-wider font-mono">DRV-7402</p>
+</div>
+</div>
+</td>
+<td class="py-4 px-space-md">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">directions_car</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">Maruti WagonR</span>
+</div>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-mono">KA 03 NC 7712</span>
+</div>
+</td>
+<td class="py-4 px-space-md">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">location_on</span>
+<span class="font-body-md text-body-md text-on-surface">Bengaluru East</span>
+</div>
+</td>
+<td class="py-4 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                  Approved
+                </span>
+</td>
+<td class="py-4 px-space-md">
+<span class="inline-flex items-center px-2 py-0.5 rounded-md bg-secondary-container/40 text-on-secondary-container font-label-sm text-label-sm font-medium">
+                  Active
+                </span>
+</td>
+<td class="py-4 px-space-md">
+<div class="inline-flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-body-sm text-body-sm text-secondary font-semibold">Online</span>
+</div>
+</td>
+<td class="py-4 px-space-md text-right">
+<div class="inline-flex items-center justify-end gap-1">
+<button class="px-3 py-1.5 rounded-lg text-primary hover:bg-surface-container font-label-md text-label-md transition-all font-semibold" type="button">
+                    View Profile
+                  </button>
+<button aria-label="More actions" class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: Ramesh Gowda (Approved & Online) -->
+<tr class="hover:bg-surface-container-low transition-colors group"><td class="py-4 px-space-md w-10 text-center"><input type="checkbox" class="driver-select-checkbox rounded cursor-pointer text-primary focus:ring-0"></td>
+<td class="py-4 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="relative shrink-0">
+<img class="w-10 h-10 rounded-full object-cover shadow-xs" data-alt="Headshot of Ramesh Gowda, professional ride-hailing driver in Karnataka India, confident relaxed expression wearing smart collar shirt with daylight studio quality illumination." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcwzpwAWNlrwboMRjf2PwNKzjcXx04R7uAA1zHwFQqe0fpwFOzJ0fG5Xf8nw8pFPMoJoSbSzCYJ55SbzCEKN-otDZa-Y-N6SyAuVthz92q8u6y5GuR3e1QCbSbIqwDrT1QFSCKm28h7ozLB8QUhMaiI488Xne2TaBACIX_4l6mPJWIesUy4pS16MPEtiA0WnS_tyxxzNcUglc2ii9pHV3gq-J5Mzhqvr5VCBj9vQ">
+<span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-secondary shadow-xs"></span>
+</div>
+<div class="min-w-0">
+<p class="font-headline-sm text-headline-sm text-on-surface font-semibold truncate leading-tight group-hover:text-primary transition-colors">Ramesh Gowda</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant tracking-wider font-mono">DRV-6110</p>
+</div>
+</div>
+</td>
+<td class="py-4 px-space-md">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">commute</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">Swift Dzire</span>
+</div>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-mono">KA 01 MM 1904</span>
+</div>
+</td>
+<td class="py-4 px-space-md">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">location_on</span>
+<span class="font-body-md text-body-md text-on-surface">Bengaluru North</span>
+</div>
+</td>
+<td class="py-4 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                  Approved
+                </span>
+</td>
+<td class="py-4 px-space-md">
+<span class="inline-flex items-center px-2 py-0.5 rounded-md bg-secondary-container/40 text-on-secondary-container font-label-sm text-label-sm font-medium">
+                  Active
+                </span>
+</td>
+<td class="py-4 px-space-md">
+<div class="inline-flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-body-sm text-body-sm text-secondary font-semibold">Online</span>
+</div>
+</td>
+<td class="py-4 px-space-md text-right">
+<div class="inline-flex items-center justify-end gap-1">
+<button class="px-3 py-1.5 rounded-lg text-primary hover:bg-surface-container font-label-md text-label-md transition-all font-semibold" type="button">
+                    View Profile
+                  </button>
+<button aria-label="More actions" class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4: Syed Farooq (Suspended / Deactivated state) -->
+<tr class="hover:bg-surface-container-low transition-colors group"><td class="py-4 px-space-md w-10 text-center"><input type="checkbox" class="driver-select-checkbox rounded cursor-pointer text-primary focus:ring-0"></td>
+<td class="py-4 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="relative shrink-0">
+<img class="w-10 h-10 rounded-full object-cover shadow-xs opacity-80" data-alt="Portrait photo of Syed Farooq, driver partner in Bangalore India, serious focused expression, muted background with realistic vehicle driver setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUfNQmTjI3eYkox8lgM9buKE2D8aMEm0IwqloHve-3-r2A-R6f4fa54vxGuu7SvhTBeS_4Y8QLW3B9RqQXJGi-nDo_YamCgXwObuGjTDWF72gSxfsw5t0ZgR72FpG0uXyndyDi1bd-m18qD2pJ11zn4yJ1TpEoKOGaWDgNgqjrHc64XwQHUg99ldj-kihoIJwV45w2BYQZzcRUQrEG41pcmz92DlTmrY02YsFDyQ">
+<span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-error"></span>
+</div>
+<div class="min-w-0">
+<p class="font-headline-sm text-headline-sm text-on-surface font-semibold truncate leading-tight group-hover:text-primary transition-colors">Syed Farooq</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant tracking-wider font-mono">DRV-5290</p>
+</div>
+</div>
+</td>
+<td class="py-4 px-space-md">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">electric_rickshaw</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">Bajaj Auto</span>
+</div>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-mono">KA 01 EE 3290</span>
+</div>
+</td>
+<td class="py-4 px-space-md">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">location_on</span>
+<span class="font-body-md text-body-md text-on-surface">Bengaluru Central</span>
+</div>
+</td>
+<td class="py-4 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                  Suspended
+                </span>
+</td>
+<td class="py-4 px-space-md">
+<span class="inline-flex items-center px-2 py-0.5 rounded-md bg-error-container/60 text-on-error-container font-label-sm text-label-sm font-medium">
+                  Suspended
+                </span>
+</td>
+<td class="py-4 px-space-md">
+<div class="inline-flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Offline</span>
+</div>
+</td>
+<td class="py-4 px-space-md text-right">
+<div class="inline-flex items-center justify-end gap-1">
+<button class="px-3 py-1.5 rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high font-label-md text-label-md transition-all font-semibold" type="button">
+                    Reactivate
+                  </button>
+<button aria-label="More actions" class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 5: Karthik Rajan (Approved & Offline) -->
+<tr class="hover:bg-surface-container-low transition-colors group"><td class="py-4 px-space-md w-10 text-center"><input type="checkbox" class="driver-select-checkbox rounded cursor-pointer text-primary focus:ring-0"></td>
+<td class="py-4 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="relative shrink-0">
+<img class="w-10 h-10 rounded-full object-cover shadow-xs" data-alt="Portrait photo of young South Indian male driver Karthik Rajan wearing a neat polo shirt against a brightly lit urban park street backdrop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAIgAZf4fxsBAbcvYIplhK8AcZjFEx379iXFMDRpVy2MIdHin1lXVsKPcWGbdefvXVTjH5RiQP5vENVija-KEbCxw720A3KV_ZMgM51VHMP3hloiMNiCTZMq7E-m1J0oGVi7blpHpsAefMRD3vqK-zivIJJ3ykWba-4vFglgy2PlhB78irDWD0R4i22csVj7E-60yjcnVWEqNNH3CIMJMMeXMBFEuIV9zHqIh2dLA">
+<span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-outline-variant"></span>
+</div>
+<div class="min-w-0">
+<p class="font-headline-sm text-headline-sm text-on-surface font-semibold truncate leading-tight group-hover:text-primary transition-colors">Karthik Rajan</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant tracking-wider font-mono">DRV-4180</p>
+</div>
+</div>
+</td>
+<td class="py-4 px-space-md">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">directions_car</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">Honda City</span>
+</div>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-mono">KA 04 MP 5510</span>
+</div>
+</td>
+<td class="py-4 px-space-md">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">location_on</span>
+<span class="font-body-md text-body-md text-on-surface">Bengaluru South</span>
+</div>
+</td>
+<td class="py-4 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                  Approved
+                </span>
+</td>
+<td class="py-4 px-space-md">
+<span class="inline-flex items-center px-2 py-0.5 rounded-md bg-secondary-container/40 text-on-secondary-container font-label-sm text-label-sm font-medium">
+                  Active
+                </span>
+</td>
+<td class="py-4 px-space-md">
+<div class="inline-flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Offline</span>
+</div>
+</td>
+<td class="py-4 px-space-md text-right">
+<div class="inline-flex items-center justify-end gap-1">
+<button class="px-3 py-1.5 rounded-lg text-primary hover:bg-surface-container font-label-md text-label-md transition-all font-semibold" type="button">
+                    View Profile
+                  </button>
+<button aria-label="More actions" class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Clean Pagination Footer -->
+<div class="px-space-md py-3.5 bg-surface-container-lowest flex flex-col sm:flex-row items-center justify-between gap-space-sm">
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          Showing <span class="font-semibold text-on-surface font-mono">1</span> to <span class="font-semibold text-on-surface font-mono">10</span> of <span class="font-semibold text-on-surface font-mono">4,210</span> drivers
+        </p>
+<div class="flex items-center gap-space-xs">
+<button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container-low text-on-surface-variant opacity-50 cursor-not-allowed font-label-md text-label-md" disabled="" type="button">
+<span class="material-symbols-outlined text-[16px]">chevron_left</span>
+<span class="">Previous</span>
+</button>
+<div class="hidden sm:flex items-center gap-1 px-1">
+<button class="w-8 h-8 rounded-lg bg-primary text-on-primary font-label-md text-label-md font-semibold flex items-center justify-center" type="button">1</button>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-container text-on-surface font-label-md text-label-md font-medium flex items-center justify-center transition-colors" type="button">2</button>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-container text-on-surface font-label-md text-label-md font-medium flex items-center justify-center transition-colors" type="button">3</button>
+<span class="px-1 text-on-surface-variant font-body-sm">...</span>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-container text-on-surface font-label-md text-label-md font-medium flex items-center justify-center transition-colors" type="button">421</button>
+</div>
+<button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container shadow-xs font-label-md text-label-md transition-colors font-medium" type="button">
+<span class="">Next</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Quick Fleet Pulse & Verification Queue Callout (Micro-Bento card) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-start gap-space-sm">
+<div class="p-2 rounded-lg bg-surface-container-high text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">verified</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Speed Verifications</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">14 pending profiles have clean Aadhaar &amp; DL matches. Review ready for 1-click onboard.</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-start gap-space-sm">
+<div class="p-2 rounded-lg bg-surface-container text-on-surface-variant shrink-0">
+<span class="material-symbols-outlined text-[20px]">speed</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Real-Time Dispatch Health</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Average driver wait time to first ride dispatch is 4.2 mins in South Bengaluru corridors.</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-start gap-space-sm">
+<div class="p-2 rounded-lg bg-surface-container-high text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Auto-Sync OCR Active</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Vahan database integration running normal. Zero API latencies detected on registration queries.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Inline Micro-Interaction Script for Search & Tab Toggling -->
+<script>
+    (function() {
+      const searchInput = document.getElementById('driverSearchInput');
+      const tableRows = document.querySelectorAll('#driverRows tr');
+      const tabs = document.querySelectorAll('#statusTabs button');
+
+      if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+          const val = e.target.value.toLowerCase().trim();
+          tableRows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            if (!val || text.includes(val)) {
+              row.style.display = '';
+            } else {
+              row.style.display = 'none';
+            }
+          });
+        });
+      }
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          tabs.forEach(t => {
+            t.classList.remove('bg-surface-container-high', 'text-primary', 'font-semibold');
+            t.classList.add('text-on-surface-variant');
+          });
+          this.classList.remove('text-on-surface-variant');
+          this.classList.add('bg-surface-container-high', 'text-primary', 'font-semibold');
+
+          const filter = this.getAttribute('data-filter');
+          tableRows.forEach(row => {
+            if (filter === 'all') {
+              row.style.display = '';
+            } else if (filter === 'pending') {
+              row.textContent.includes('Pending Review') ? row.style.display = '' : row.style.display = 'none';
+            } else if (filter === 'approved') {
+              row.textContent.includes('Approved') ? row.style.display = '' : row.style.display = 'none';
+            } else if (filter === 'suspended') {
+              row.textContent.includes('Suspended') ? row.style.display = '' : row.style.display = 'none';
+            } else {
+              row.style.display = '';
+            }
+          });
+        });
+      });
+    })();
+  </script>
+</div><div id="driverDrawer" class="fixed inset-0 z-50 hidden"><div id="drawerBackdrop" class="absolute inset-0 bg-inverse-surface/40 backdrop-blur-sm transition-opacity"></div><div class="absolute right-0 top-0 h-full w-full max-w-md bg-surface-container-lowest shadow-md flex flex-col justify-between overflow-y-auto p-margin z-10 transition-transform"><div class="flex flex-col gap-space-md"><div><div class="flex items-center justify-between pb-space-sm border-b border-surface-container"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-primary text-[22px]">verified_user</span><h3 class="font-headline-sm text-headline-sm text-on-surface" id="drawerTitle">Driver Profile &amp; Verification</h3></div><button id="closeDrawerBtn" type="button" class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface"><span class="material-symbols-outlined text-[20px]">close</span></button></div></div><div class="flex items-center gap-space-md bg-surface-container-low p-space-md rounded-xl"><img id="drawerDriverImg" class="w-16 h-16 rounded-full object-cover shadow-xs shrink-0" src="" alt="Driver Portrait"><div class="min-w-0 flex-1"><h4 id="drawerDriverName" class="font-headline-md text-headline-md text-on-surface truncate">Driver Name</h4><p id="drawerDriverId" class="font-mono font-body-sm text-body-sm text-on-surface-variant">DRV-XXXX</p><div class="mt-1"><span id="drawerStatusBadge" class="inline-flex items-center px-2 py-0.5 rounded-full font-label-sm text-label-sm font-semibold">Status</span></div></div></div><div class="space-y-space-sm"><div class="p-space-sm rounded-lg bg-surface-container-lowest border border-surface-container"><p class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Assigned Vehicle</p><p id="drawerVehicle" class="font-headline-sm text-headline-sm text-on-surface mt-0.5">Bajaj Auto</p><p id="drawerPlate" class="font-mono text-body-sm text-on-surface-variant">KA 05 AJ 4921</p></div><div class="p-space-sm rounded-lg bg-surface-container-lowest border border-surface-container"><p class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Hub Region</p><p id="drawerHub" class="font-body-md text-body-md text-on-surface mt-0.5">Bengaluru South</p></div><div class="p-space-sm rounded-lg bg-surface-container-lowest border border-surface-container"><p class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">KYC &amp; Document Verification</p><div class="mt-2 space-y-1.5"><div class="flex items-center justify-between text-body-sm"><span class="text-on-surface">Aadhaar Card (UIDAI OCR)</span><span class="text-secondary font-semibold flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">check_circle</span> Verified</span></div><div class="flex items-center justify-between text-body-sm"><span class="text-on-surface">Driving License (Vahan API)</span><span class="text-secondary font-semibold flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">check_circle</span> Verified</span></div><div class="flex items-center justify-between text-body-sm"><span class="text-on-surface">Vehicle Registration &amp; Insurance</span><span class="text-primary font-semibold flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">task_alt</span> Active</span></div></div></div></div></div><div class="pt-space-md border-t border-surface-container flex items-center gap-space-sm"><button id="approveDriverBtn" type="button" class="flex-1 py-2.5 px-space-md rounded-lg bg-primary text-on-primary font-label-lg text-label-lg font-semibold hover:bg-on-secondary-fixed-variant transition-colors flex items-center justify-center gap-1.5"><span class="material-symbols-outlined text-[18px]">check</span> Approve Driver</button><button id="suspendDriverBtn" type="button" class="py-2.5 px-space-md rounded-lg bg-error-container text-on-error-container font-label-lg text-label-lg font-semibold hover:bg-error-container/80 transition-colors flex items-center justify-center gap-1.5"><span class="material-symbols-outlined text-[18px]">block</span> Suspend</button></div></div></div><div id="interactiveDriverLogic" class="hidden" aria-hidden="true"><div data-init="true"></div></div></main></div>
+
+</body></html>

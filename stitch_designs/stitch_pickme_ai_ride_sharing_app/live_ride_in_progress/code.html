@@ -1,0 +1,393 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>PickMe - Live Ride In Progress</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#0d6e00",
+          "primary-container": "#1fc600",
+          "on-primary": "#ffffff",
+          "on-primary-container": "#064b00",
+          "secondary": "#046e00",
+          "surface": "#ffffff",
+          "surface-container-low": "#f8fafc",
+          "surface-container": "#f1f5f9",
+          "surface-container-high": "#e2e8f0",
+          "on-surface": "#0f172a",
+          "on-surface-variant": "#475569",
+          "outline": "#cbd5e1",
+          "outline-variant": "#e2e8f0",
+          "brand-green": "#1FC600",
+          "brand-dark": "#0d6e00"
+        },
+        fontFamily: {
+          sans: ["Inter", "sans-serif"]
+        },
+        boxShadow: {
+          'sheet': '0 -8px 30px -4px rgba(15, 23, 42, 0.12), 0 -2px 6px -1px rgba(15, 23, 42, 0.04)',
+          'subtle': '0 2px 8px -2px rgba(15, 23, 42, 0.08)'
+        }
+      }
+    }
+  }
+</script>
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #f8fafc;
+    font-family: 'Inter', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .route-dash-live {
+    stroke-dasharray: 6 6;
+    animation: dash-animation 1.4s linear infinite;
+  }
+  @keyframes dash-animation {
+    from { stroke-dashoffset: 24; }
+    to { stroke-dashoffset: 0; }
+  }
+  .ripple-beacon {
+    animation: ripple 2s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  }
+  @keyframes ripple {
+    0% { transform: scale(0.6); opacity: 0.8; }
+    100% { transform: scale(2.4); opacity: 0; }
+  }
+  /* Hide scrollbar for smooth visual aesthetic */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>
+</head>
+<body class="bg-slate-900 flex justify-center items-center min-h-screen">
+<!-- Mobile Container (393px typical iOS viewport) -->
+<div class="relative w-full max-w-[393px] h-[852px] bg-white overflow-hidden shadow-2xl flex flex-col select-none">
+<!-- ================= FIXED UNDERLAY MAP ================= -->
+<div class="absolute inset-0 w-full h-full pointer-events-auto bg-[#F4F6F4]">
+<!-- High Clarity Vector Map of Bengaluru (Koramangala to Indiranagar) -->
+<svg class="w-full h-full object-cover" fill="none" viewBox="0 0 393 852" xmlns="http://www.w3.org/2000/svg">
+<!-- Land use / Greenspaces -->
+<rect fill="#F4F6F4" height="852" width="393"></rect>
+<!-- Parks & Greens -->
+<!-- Defense / Golf Course Green -->
+<path d="M 230,160 C 270,140 340,160 380,210 C 370,270 310,290 260,260 Z" fill="#E2EEDC"></path>
+<text fill="#5F7B55" font-size="9" font-weight="600" opacity="0.8" x="290" y="220">ASC Golf Ground</text>
+<!-- Ejipura / Agara green pocket -->
+<path d="M 20,440 C 60,420 110,430 120,480 C 110,510 50,520 20,480 Z" fill="#E2EEDC"></path>
+<text fill="#5F7B55" font-size="9" font-weight="600" opacity="0.8" x="40" y="470">Regional Park</text>
+<!-- Bellandur Lake boundary subtle hint -->
+<path d="M 310,480 C 360,490 390,540 390,620 L 330,640 C 290,560 300,510 310,480 Z" fill="#E1ECF4"></path>
+<!-- Minor Street Network -->
+<g stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+<path d="M -20,130 L 410,140"></path>
+<path d="M -20,220 L 220,230 L 410,240"></path>
+<path d="M -10,310 L 410,290"></path>
+<path d="M -10,410 L 400,390"></path>
+<path d="M -10,520 L 390,530"></path>
+<path d="M 50,-10 L 70,390"></path>
+<path d="M 140,-10 L 150,420"></path>
+<path d="M 220,280 L 230,590"></path>
+<path d="M 330,-10 L 340,490"></path>
+<!-- Koramangala Grid -->
+<path d="M 40,470 L 220,490"></path>
+<path d="M 30,520 L 230,540"></path>
+<path d="M 80,430 L 100,600"></path>
+<path d="M 150,440 L 170,610"></path>
+</g>
+<!-- Secondary Arterials -->
+<g stroke="#E5E9EE" stroke-linecap="round" stroke-linejoin="round" stroke-width="6">
+<path d="M 50,780 L 120,530 L 180,350 L 260,190 L 310,-10"></path> <!-- Inner Ring Road Base -->
+<path d="M -10,360 L 180,350 L 390,320"></path> <!-- Old Airport Road -->
+<path d="M 160,260 L 390,240"></path> <!-- 100ft Road cross -->
+<path d="M 40,560 L 260,560"></path> <!-- 80ft Road Koramangala -->
+</g>
+<!-- Major Roads / Primary Corridors -->
+<g stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="7">
+<path d="M 70,620 L 120,500 L 180,350 L 260,190 L 300,60"></path>
+<path d="M -10,350 L 180,350 L 400,330"></path>
+<path d="M 260,190 L 280,30"></path> <!-- 100ft Rd Indiranagar -->
+</g>
+<!-- Road Names Labels -->
+<text fill="#94A3B8" font-size="9" font-weight="700" letter-spacing="0.05em" x="286" y="110">100 FT ROAD, INDIRANAGAR</text>
+<text fill="#94A3B8" font-size="8.5" font-weight="700" letter-spacing="0.05em" x="75" y="342">OLD AIRPORT RD</text>
+<text fill="#94A3B8" font-size="8.5" font-weight="700" letter-spacing="0.04em" x="195" y="295">DOMLUR FLYOVER</text>
+<text fill="#94A3B8" font-size="8.5" font-weight="700" letter-spacing="0.04em" x="65" y="585">80 FT RD, KORAMANGALA</text>
+<!-- ROUTE LINE -->
+<!-- 1. Completed Path (Koramangala 4th Block -> Domlur junction) -->
+<path d="M 85,570 L 120,500 L 180,350 L 202,308" fill="none" stroke="#92DD82" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"></path>
+<!-- 2. Upcoming Remaining Path (Domlur -> 100 Ft Rd Indiranagar) -->
+<path class="route-dash-live" d="M 202,308 L 225,260 L 260,190 L 275,115" fill="none" stroke="#1FC600" stroke-linecap="round" stroke-linejoin="round" stroke-width="6"></path>
+<!-- Pickup Marker (Completed) -->
+<g transform="translate(85, 570)">
+<circle cx="0" cy="0" fill="#64748B" r="5"></circle>
+<circle cx="0" cy="0" fill="#FFFFFF" r="2.5"></circle>
+</g>
+<!-- Destination Marker Pin (Indiranagar 100ft Road) -->
+<g transform="translate(275, 115)">
+<!-- Beacon Ripple -->
+<circle class="ripple-beacon" cx="0" cy="0" fill="#1FC600" opacity="0.25" r="14"></circle>
+<circle cx="0" cy="0" fill="#0F172A" r="8"></circle>
+<circle cx="0" cy="0" fill="#1FC600" r="4"></circle>
+<!-- Callout Banner -->
+<g transform="translate(14, -14)">
+<rect fill="#0F172A" height="22" rx="6" width="94" x="0" y="0"></rect>
+<path d="M -4 11 L 0 8 L 0 14 Z" fill="#0F172A"></path>
+<text fill="#FFFFFF" font-size="9" font-weight="700" x="8" y="14">100ft Rd Drop-off</text>
+</g>
+</g>
+<!-- VEHICLE POSITION (Live Moving Car on Domlur junction / heading toward 100ft road) -->
+<g transform="translate(202, 308) rotate(-28)">
+<!-- Car Shadow -->
+<ellipse cx="1" cy="2" fill="#000000" opacity="0.22" rx="13" ry="22"></ellipse>
+<!-- Car Body (Clean Top-Down Sedan Vector in PickMe Brand Theme) -->
+<rect fill="#FFFFFF" height="36" rx="6" stroke="#0F172A" stroke-width="1.8" width="20" x="-10" y="-18"></rect>
+<!-- Windshields & Windows -->
+<path d="M -8 -8 L 8 -8 L 6 -2 L -6 -2 Z" fill="#1E293B"></path>
+<path d="M -7 6 L 7 6 L 8 13 L -8 13 Z" fill="#1E293B"></path>
+<rect fill="#1E293B" height="6" width="2" x="-8.5" y="-1"></rect>
+<rect fill="#1E293B" height="6" width="2" x="6.5" y="-1"></rect>
+<!-- Roof PickMe Green Decal -->
+<rect fill="#1FC600" height="6" rx="2" width="12" x="-6" y="-1"></rect>
+<!-- Headlights -->
+<rect fill="#FDE047" height="1.5" rx="0.5" width="3" x="-8" y="-18"></rect>
+<rect fill="#FDE047" height="1.5" rx="0.5" width="3" x="5" y="-18"></rect>
+<!-- Tail lights -->
+<rect fill="#EF4444" height="1.5" rx="0.5" width="3" x="-8" y="16.5"></rect>
+<rect fill="#EF4444" height="1.5" rx="0.5" width="3" x="5" y="16.5"></rect>
+</g>
+</svg>
+<!-- Speed & Direction Badge on vehicle -->
+<div class="absolute top-[284px] left-[138px] bg-slate-900 text-white px-2 py-0.5 rounded-full shadow-md text-[10px] font-bold flex items-center gap-1 border border-slate-700 pointer-events-none">
+<span class="w-1.5 h-1.5 rounded-full bg-brand-green animate-pulse"></span>
+<span>38 km/h</span>
+</div>
+<!-- FLOATING TOP CONTROLS -->
+<!-- Status & Back / Safety Strip -->
+<div class="absolute top-11 left-4 right-4 z-20 flex items-center justify-between pointer-events-auto">
+<button aria-label="Back" class="w-10 h-10 rounded-full bg-white/95 backdrop-blur-md shadow-md border border-slate-200/80 flex items-center justify-center text-slate-800 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+</button>
+<!-- Maneuver Navigation Pill -->
+<div class="flex-1 mx-2.5 bg-slate-900/95 text-white backdrop-blur-md px-3.5 py-2 rounded-2xl shadow-lg border border-slate-800 flex items-center gap-2.5">
+<div class="w-7 h-7 rounded-lg bg-brand-green/20 text-brand-green flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">turn_right</span>
+</div>
+<div class="min-w-0 flex-1">
+<p class="text-[12px] font-bold leading-tight truncate text-white">In 450m, turn right</p>
+<p class="text-[10px] text-slate-400 truncate">onto 80 Feet Rd / Domlur</p>
+</div>
+</div>
+<!-- Audio Mute Toggle -->
+<button aria-label="Audio Nav" class="w-10 h-10 rounded-full bg-white/95 backdrop-blur-md shadow-md border border-slate-200/80 flex items-center justify-center text-slate-700 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[20px]">volume_up</span>
+</button>
+</div>
+<!-- Floating Map Quick Tools (Right side) -->
+<div class="absolute right-4 top-[175px] z-20 flex flex-col gap-2">
+<!-- Recenter button -->
+<button class="w-10 h-10 rounded-full bg-white shadow-md border border-slate-200 flex items-center justify-center text-slate-700 active:scale-95 transition-transform hover:bg-slate-50" title="Re-center route">
+<span class="material-symbols-outlined text-[20px] text-brand-dark">my_location</span>
+</button>
+<!-- Traffic Layer toggle -->
+<button class="w-10 h-10 rounded-full bg-white shadow-md border border-slate-200 flex items-center justify-center text-slate-700 active:scale-95 transition-transform hover:bg-slate-50" title="Traffic status">
+<span class="material-symbols-outlined text-[20px] text-slate-600">traffic</span>
+</button>
+<!-- Live Safety Pin Neutral -->
+<button class="w-10 h-10 rounded-full bg-white shadow-md border border-emerald-200 flex items-center justify-center text-brand-dark active:scale-95 transition-transform hover:bg-emerald-50" title="Ride Secured">
+<span class="material-symbols-outlined text-[20px] text-emerald-600" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</button>
+</div>
+</div>
+<!-- ================= SCROLL-OVER BOTTOM SHEET ================= -->
+<!-- Starts offset at 46vh, smoothly scrolls over the map to fully cover it -->
+<div class="relative z-30 w-full h-full overflow-y-auto no-scrollbar scroll-smooth">
+<!-- Empty transparent pusher to let upper map breathe initially -->
+<div class="h-[43vh] w-full pointer-events-none"></div>
+<!-- Solid White Sheet Content (Slides up cleanly over the map) -->
+<div class="bg-white rounded-t-3xl shadow-sheet min-h-[75vh] pb-10 border-t border-slate-100 flex flex-col">
+<!-- Sticky Grab Handle & High Level Status Strip -->
+<div class="sticky top-0 bg-white/95 backdrop-blur-md rounded-t-3xl pt-2.5 pb-2 px-5 z-40 border-b border-slate-100/80">
+<div class="w-10 h-1.5 bg-slate-300 rounded-full mx-auto mb-2.5"></div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="relative flex h-2.5 w-2.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-green opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-green"></span>
+</span>
+<span class="text-[13px] font-bold tracking-tight text-slate-900 uppercase">On Trip to Indiranagar</span>
+</div>
+<!-- ETA Countdown Pill -->
+<div class="bg-emerald-50 border border-emerald-200/80 text-brand-dark px-2.5 py-1 rounded-full flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+<span class="text-[12px] font-extrabold">18 min</span>
+<span class="text-[11px] text-emerald-700/80 font-medium">• 5.4 km</span>
+</div>
+</div>
+</div>
+<!-- Main Sheet Body -->
+<div class="px-5 pt-3 space-y-4">
+<!-- Driver & Vehicle Card -->
+<div class="bg-slate-50 rounded-2xl p-3.5 border border-slate-200/80 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<!-- Driver Avatar -->
+<div class="relative">
+<img alt="Driver Rajesh Kumar" class="w-13 h-13 w-[52px] h-[52px] rounded-full object-cover ring-2 ring-white shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1ygsVw9ki99zXPCq_VXwEDIkkCY-4E6RSgYEtgMocmovD73MCN24plpH3e257PaDFcjgiaetM5cQ7czASdpAVr7qzdLhQtVGIGSlfIuE3pkhkaW-5WrddPH9-1R8f5ZomhH5aZu44AQxhxevAYyrYn_AfKmyB3Qbx_Zv1w3QfEBma5sKbqsllFfLHpI19RKjSLkps9oRuGoV13h49LfwIR_yA2w_tmLP_0Gtq1qqw06OmpvUNqxHaNw">
+<div class="absolute -bottom-1 -right-1 bg-white px-1.5 py-0.5 rounded-full border border-slate-200 shadow-xs flex items-center gap-0.5">
+<span class="text-[10px] font-bold text-slate-900">4.9</span>
+<span class="material-symbols-outlined text-[10px] text-amber-500" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<h3 class="font-bold text-[15px] text-slate-900 leading-tight">Rajesh Kumar</h3>
+<span class="material-symbols-outlined text-[16px] text-blue-600" style="font-variation-settings: 'FILL' 1;" title="Verified Driver">verified</span>
+</div>
+<p class="text-[12px] text-slate-500 leading-tight mt-0.5">White Maruti Suzuki Dzire</p>
+<p class="text-[10px] text-emerald-700 font-semibold mt-0.5">Top Rated • 4,200+ trips</p>
+</div>
+</div>
+<!-- License Plate Badge -->
+<div class="flex flex-col items-end">
+<div class="bg-white px-2.5 py-1.5 rounded-lg border-2 border-slate-800 shadow-sm flex flex-col items-center">
+<span class="text-[8px] font-black text-slate-500 leading-none tracking-wider">IND</span>
+<span class="text-[13px] font-extrabold tracking-wider text-slate-900 font-mono">KA 01 AB 1234</span>
+</div>
+</div>
+</div>
+<!-- Primary Action Contact Row (Neutral / Brand Styled Pills) -->
+<div class="grid grid-cols-2 gap-2.5">
+<a class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-800 font-semibold text-[13px] border border-slate-200 transition-colors" href="tel:919876543210">
+<span class="material-symbols-outlined text-[18px] text-slate-700">call</span>
+<span>Call Driver</span>
+</a>
+<button class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-800 font-semibold text-[13px] border border-slate-200 transition-colors">
+<span class="material-symbols-outlined text-[18px] text-slate-700">chat_bubble</span>
+<span>Send Message</span>
+</button>
+</div>
+<!-- Trip Progress Bar Indicator -->
+<div class="space-y-1.5 pt-1">
+<div class="flex justify-between text-[11px] font-semibold text-slate-500"><div class="flex items-center gap-1.5"><span class="text-[10px] font-bold uppercase tracking-wider bg-brand-green/20 text-brand-dark px-1.5 py-0.5 rounded">Next Stop</span><span class="text-brand-dark font-bold text-[12px]">Domlur Flyover</span></div><span class="text-slate-600 font-semibold">6 mins away (1.8 km)</span></div>
+<div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200/60">
+<div class="h-full bg-brand-green rounded-full w-[65%] transition-all duration-500"></div>
+</div>
+</div>
+<!-- Route Timeline Component (Koramangala to Indiranagar) -->
+<div class="bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-xs space-y-3">
+<div class="flex items-center justify-between pb-1 border-b border-slate-100">
+<span class="text-[12px] font-bold text-slate-800 uppercase tracking-wide">Live Route Timeline</span>
+<span class="text-[11px] text-slate-500 font-medium">OTP: <strong class="text-slate-900 font-mono">4892</strong> (Verified)</span>
+</div>
+<!-- Pickup -->
+<div class="flex gap-3 relative">
+<div class="flex flex-col items-center">
+<div class="w-3.5 h-3.5 rounded-full bg-slate-400 flex items-center justify-center ring-4 ring-slate-100">
+<div class="w-1.5 h-1.5 bg-white rounded-full"></div>
+</div>
+<div class="w-0.5 h-10 bg-slate-200 my-0.5"></div>
+</div>
+<div class="flex-1 pb-1">
+<div class="flex justify-between items-start">
+<p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Picked Up • 4:54 PM</p>
+<span class="text-[10px] text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded font-medium">Completed</span>
+</div>
+<p class="text-[13px] font-bold text-slate-800">4th Block, Koramangala</p>
+<p class="text-[11px] text-slate-500">Near Sony World Signal, 80ft Road</p>
+</div>
+</div><div class="flex gap-3 relative"><div class="flex flex-col items-center"><div class="w-3.5 h-3.5 rounded-full bg-emerald-50 border-2 border-brand-green flex items-center justify-center ring-4 ring-emerald-100/60 z-10"><span class="w-1.5 h-1.5 rounded-full bg-brand-green animate-ping"></span></div><div class="w-0.5 h-10 bg-slate-200 my-0.5"></div></div><div class="flex-1 pb-1"><div class="flex justify-between items-start"><div class="flex items-center gap-1.5"><span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-full uppercase tracking-wider">Upcoming Stop</span></div><span class="text-[11px] font-bold text-brand-dark">In 6 min</span></div><p class="text-[13px] font-bold text-slate-900 mt-0.5">Domlur Flyover Junction</p><p class="text-[11px] text-slate-500">Approaching in 1.8 km • Traffic flowing smooth</p></div></div>
+<!-- Destination -->
+<div class="flex gap-3">
+<div class="flex flex-col items-center">
+<div class="w-3.5 h-3.5 rounded-full bg-brand-green flex items-center justify-center ring-4 ring-emerald-100">
+<div class="w-1.5 h-1.5 bg-white rounded-sm"></div>
+</div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<p class="text-[11px] font-bold text-brand-dark uppercase tracking-wider">Destination • Est. 5:12 PM</p>
+<span class="text-[11px] font-bold text-slate-800">5.4 km left</span>
+</div>
+<p class="text-[13px] font-bold text-slate-900">100ft Road, Indiranagar</p>
+<p class="text-[11px] text-slate-500">Opposite Toit Brewpub, Stage 2</p>
+</div>
+</div>
+</div>
+<!-- Fare & Payment Summary -->
+<div class="bg-slate-50 rounded-2xl p-3.5 border border-slate-200/80 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-brand-dark shadow-xs">
+<span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+</div>
+<div>
+<p class="text-[11px] text-slate-500 font-medium">Payment Method</p>
+<p class="text-[13px] font-bold text-slate-900 flex items-center gap-1">
+                UPI AutoPay <span class="text-[10px] bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-semibold">GPay</span>
+</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-[10px] uppercase font-bold text-slate-400">Guaranteed Fare</p>
+<p class="text-[18px] font-black text-slate-900 leading-none mt-0.5">₹280</p>
+<p class="text-[10px] text-emerald-600 font-medium mt-0.5">No Surge Locked</p>
+</div>
+</div>
+<!-- In-Ride Safety & Support Actions (No red shield icons) -->
+<div class="space-y-2 pt-1">
+<div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider px-1">Trip Tools &amp; Security</div>
+<div class="grid grid-cols-2 gap-2.5">
+<!-- Share Trip Status Neutral Pill -->
+<button class="flex items-center gap-2 p-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-left shadow-xs transition-colors group">
+<div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">share</span>
+</div>
+<div class="min-w-0">
+<p class="text-[12px] font-bold text-slate-800 leading-tight">Share Trip</p>
+<p class="text-[10px] text-slate-500 truncate">Live location link</p>
+</div>
+</button>
+<!-- Safety & Support Center (Brand Green / Slate theme, no alarming red) -->
+<button class="flex items-center gap-2 p-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-left shadow-xs transition-colors group">
+<div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">support_agent</span>
+</div>
+<div class="min-w-0">
+<p class="text-[12px] font-bold text-slate-800 leading-tight">Safety &amp; Help</p>
+<p class="text-[10px] text-slate-500 truncate">24/7 dedicated desk</p>
+</div>
+</button>
+</div>
+</div>
+<!-- Additional In-Ride Options -->
+<div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[12px]">
+<button class="text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">edit_location_alt</span>
+<span>Change Drop-off</span>
+</button>
+<button class="text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">receipt_long</span>
+<span>Split Fare</span>
+</button>
+<button class="text-slate-400 hover:text-rose-600 font-medium transition-colors">
+            Emergency
+          </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+</body></html>

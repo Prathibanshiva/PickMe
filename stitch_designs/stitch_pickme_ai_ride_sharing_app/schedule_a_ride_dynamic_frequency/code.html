@@ -1,0 +1,577 @@
+<!DOCTYPE html><html lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Schedule a Ride - PickMe</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary-fixed-dim": "#c5c7c8",
+            "primary": "#0d6e00",
+            "secondary-container": "#0ef900",
+            "outline-variant": "#bccbb2",
+            "on-background": "#141b2b",
+            "secondary": "#046e00",
+            "background": "#f9f9ff",
+            "surface-container-low": "#f1f3ff",
+            "surface-variant": "#dce2f7",
+            "surface-bright": "#f9f9ff",
+            "surface-tint": "#0d6e00",
+            "inverse-primary": "#48e32e",
+            "on-secondary-fixed-variant": "#035300",
+            "on-tertiary": "#ffffff",
+            "on-secondary-container": "#046d00",
+            "primary-fixed": "#78ff5c",
+            "outline": "#6d7b65",
+            "error-container": "#ffdad6",
+            "on-surface": "#141b2b",
+            "on-primary-container": "#064b00",
+            "primary-fixed-dim": "#48e32e",
+            "tertiary-fixed": "#e1e3e4",
+            "on-secondary-fixed": "#012200",
+            "surface-dim": "#d3daef",
+            "surface": "#f9f9ff",
+            "on-primary": "#ffffff",
+            "surface-container-highest": "#dce2f7",
+            "on-primary-fixed": "#012200",
+            "primary-container": "#1fc600",
+            "tertiary": "#5c5f60",
+            "secondary-fixed-dim": "#0de600",
+            "on-surface-variant": "#3d4b37",
+            "surface-container-high": "#e1e8fd",
+            "tertiary-container": "#a9abac",
+            "secondary-fixed": "#77ff60",
+            "on-error": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "on-error-container": "#93000a",
+            "inverse-surface": "#293040",
+            "surface-container": "#e9edff",
+            "on-primary-fixed-variant": "#085300",
+            "on-secondary": "#ffffff",
+            "on-tertiary-container": "#3d4041",
+            "on-tertiary-fixed-variant": "#454748",
+            "on-tertiary-fixed": "#191c1d",
+            "inverse-on-surface": "#edf0ff",
+            "error": "#ba1a1a"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "2xl": "1rem",
+            "3xl": "1.5rem",
+            "full": "9999px"
+          },
+          "fontFamily": {
+            "sans": ["Inter", "sans-serif"],
+            "headline-lg": ["Inter"],
+            "title-md": ["Inter"]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .material-symbols-outlined.fill {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-[#f0f3f8] text-on-surface font-sans antialiased min-h-screen flex justify-center items-start sm:py-6">
+<!-- Mobile Screen Wrapper (Max 420px for high-fidelity mobile experience) -->
+<div class="w-full max-w-[420px] min-h-screen bg-surface-container-lowest shadow-2xl relative flex flex-col overflow-x-hidden border-x border-outline-variant/30 pb-36">
+<!-- 1. TOP APP BAR / HEADER -->
+<header class="sticky top-0 z-30 bg-surface-container-lowest/95 backdrop-blur-md px-4 py-3 border-b border-surface-container flex items-center justify-between">
+<button aria-label="Go back" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container-low transition-colors text-on-surface">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<div class="text-center">
+<h1 class="text-base font-bold text-on-surface tracking-tight">Schedule a Ride</h1>
+<p class="text-[11px] font-semibold text-primary uppercase tracking-wider">PICKME KINETIC</p>
+</div>
+<button aria-label="Help &amp; Calendar info" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container-low transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-[22px]">calendar_month</span>
+</button>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 px-4 pt-3 space-y-4">
+<!-- 2. PICKUP & DROP LOCATION CARD -->
+<section class="bg-surface-container-low rounded-3xl p-4 relative border border-surface-container shadow-sm">
+<div class="flex items-start gap-3">
+<!-- Connector Dots Line -->
+<div class="flex flex-col items-center pt-1.5 shrink-0">
+<span class="w-3.5 h-3.5 rounded-full border-2 border-primary bg-primary-fixed flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+</span>
+<div class="w-[2px] h-10 bg-outline-variant/50 my-1 dashed"></div>
+<span class="material-symbols-outlined fill text-primary text-[18px]">location_on</span>
+</div>
+<!-- Pickup & Drop inputs -->
+<div class="flex-1 flex flex-col justify-between space-y-3">
+<!-- Pickup point -->
+<div class="pr-8">
+<p class="text-[11px] font-semibold text-on-surface-variant uppercase tracking-wider">Pickup Location</p>
+<p class="text-sm font-semibold text-on-surface leading-tight mt-0.5 truncate">4th Block, Koramangala, Bengaluru</p>
+<p class="text-[11px] text-outline font-normal">Near Sony World Junction</p>
+</div>
+<div class="h-px w-full bg-surface-variant"></div>
+<!-- Destination point -->
+<div class="pr-8">
+<p class="text-[11px] font-semibold text-primary uppercase tracking-wider">Drop-off Destination</p>
+<p class="text-sm font-semibold text-on-surface leading-tight mt-0.5 truncate">100ft Road, Indiranagar</p>
+<p class="text-[11px] text-outline font-normal">Opposite Toit Brewpub</p>
+</div>
+</div>
+<!-- Swap Button -->
+<button aria-label="Swap pickup and destination" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-surface-container-lowest border border-outline-variant/40 shadow-sm flex items-center justify-center text-on-surface hover:bg-surface-container transition-transform active:rotate-180">
+<span class="material-symbols-outlined text-[18px]">swap_vert</span>
+</button>
+</div>
+</section>
+<!-- 3. RIDE FREQUENCY SECTION (Immediately after Pickup & Drop) -->
+<section class="space-y-2.5">
+<div class="flex items-center justify-between">
+<h2 class="text-xs font-bold text-on-surface uppercase tracking-wider">Ride Frequency</h2>
+<span class="text-[11px] font-medium text-primary" id="frequency-state-indicator">Single Trip</span>
+</div>
+<!-- 4 Interactive Tabs -->
+<div class="grid grid-cols-4 gap-1.5 bg-surface-container-low p-1 rounded-2xl border border-surface-container">
+<button class="freq-tab py-2 text-[11px] font-bold rounded-xl bg-surface-container-lowest text-primary shadow-sm border border-outline-variant/20 transition-all" id="tab-onetime" onclick="setFrequency('onetime')">
+  One-Time
+</button>
+<button class="freq-tab py-2 text-[11px] font-medium rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" id="tab-daily" onclick="setFrequency('daily')">
+  Daily
+</button>
+<button class="freq-tab py-2 text-[11px] font-medium rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" id="tab-weekdays" onclick="setFrequency('weekdays')">
+  Weekdays
+</button>
+<button class="freq-tab py-2 text-[11px] font-medium rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" id="tab-custom" onclick="setFrequency('custom')">
+  Custom
+</button>
+</div>
+<!-- DYNAMIC CONTAINER 1: ONE-TIME (SELECT DATE) -->
+<div class="space-y-2" id="section-date">
+<div class="flex items-center justify-between">
+<h3 class="text-xs font-bold text-on-surface uppercase tracking-wider">Select Date</h3>
+<span class="text-[11px] font-medium text-primary">IST (GMT +5:30)</span>
+</div>
+<div class="flex gap-2 overflow-x-auto no-scrollbar py-0.5">
+<!-- Date Pill 1: Active -->
+<button class="shrink-0 px-3.5 py-2.5 rounded-2xl bg-primary text-on-primary font-medium text-xs shadow-sm flex flex-col items-center min-w-[82px] border border-primary">
+<span class="text-[10px] uppercase font-bold opacity-90">Today</span>
+<span class="text-sm font-bold mt-0.5">24 Oct</span>
+</button>
+<!-- Date Pill 2 -->
+<button class="shrink-0 px-3.5 py-2.5 rounded-2xl bg-surface-container-low text-on-surface hover:bg-surface-container font-medium text-xs border border-outline-variant/30 flex flex-col items-center min-w-[82px] transition-colors">
+<span class="text-[10px] text-on-surface-variant font-medium uppercase">Tomorrow</span>
+<span class="text-sm font-bold text-on-surface mt-0.5">25 Oct</span>
+</button>
+<!-- Date Pill 3 -->
+<button class="shrink-0 px-3.5 py-2.5 rounded-2xl bg-surface-container-low text-on-surface hover:bg-surface-container font-medium text-xs border border-outline-variant/30 flex flex-col items-center min-w-[82px] transition-colors">
+<span class="text-[10px] text-on-surface-variant font-medium uppercase">Wednesday</span>
+<span class="text-sm font-bold text-on-surface mt-0.5">26 Oct</span>
+</button>
+<!-- Calendar Button -->
+<button class="shrink-0 px-3 py-2.5 rounded-2xl bg-surface-container-low text-on-surface border border-outline-variant/30 flex items-center justify-center gap-1.5 min-w-[70px] hover:bg-surface-container">
+<span class="material-symbols-outlined text-[18px] text-primary">edit_calendar</span>
+<span class="text-xs font-semibold">More</span>
+</button>
+</div>
+</div>
+<!-- DYNAMIC CONTAINER 2: DAILY (Information Badge) -->
+<div class="hidden rounded-2xl bg-[#eefae9] border border-primary/20 p-3.5 flex items-center gap-3" id="section-daily-banner">
+<div class="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[24px]">event_repeat</span>
+</div>
+<div>
+<p class="text-xs font-bold text-on-surface">Repeats Every Day</p>
+<p class="text-[11px] text-on-surface-variant mt-0.5">Automatically schedules for each morning at your selected time.</p>
+</div>
+</div>
+<!-- DYNAMIC CONTAINER 3: WEEKDAYS (Mon-Fri selector pills) -->
+<div class="hidden space-y-2" id="section-weekdays">
+<div class="flex items-center justify-between">
+<h3 class="text-xs font-bold text-on-surface uppercase tracking-wider">Active Weekdays</h3>
+<span class="text-[11px] font-semibold text-primary">Mon - Fri Routine</span>
+</div>
+<div class="grid grid-cols-7 gap-1">
+<div class="py-2.5 rounded-xl bg-primary text-on-primary font-bold text-xs text-center border border-primary">Mon</div>
+<div class="py-2.5 rounded-xl bg-primary text-on-primary font-bold text-xs text-center border border-primary">Tue</div>
+<div class="py-2.5 rounded-xl bg-primary text-on-primary font-bold text-xs text-center border border-primary">Wed</div>
+<div class="py-2.5 rounded-xl bg-primary text-on-primary font-bold text-xs text-center border border-primary">Thu</div>
+<div class="py-2.5 rounded-xl bg-primary text-on-primary font-bold text-xs text-center border border-primary">Fri</div>
+<div class="py-2.5 rounded-xl bg-surface-container-low/50 text-outline font-medium text-xs text-center border border-outline-variant/20 opacity-50 cursor-not-allowed">Sat</div>
+<div class="py-2.5 rounded-xl bg-surface-container-low/50 text-outline font-medium text-xs text-center border border-outline-variant/20 opacity-50 cursor-not-allowed">Sun</div>
+</div>
+</div>
+<!-- DYNAMIC CONTAINER 4: CUSTOM (Toggleable Days) -->
+<div class="hidden space-y-2" id="section-custom">
+<div class="flex items-center justify-between">
+<h3 class="text-xs font-bold text-on-surface uppercase tracking-wider">Select Days</h3>
+<span class="text-[11px] text-outline">Tap to customize</span>
+</div>
+<div class="grid grid-cols-7 gap-1">
+<button class="custom-day-pill py-2.5 rounded-xl bg-primary text-on-primary font-bold text-xs text-center border border-primary transition-all" onclick="toggleCustomDay(this)" type="button">Mon</button>
+<button class="custom-day-pill py-2.5 rounded-xl bg-primary text-on-primary font-bold text-xs text-center border border-primary transition-all" onclick="toggleCustomDay(this)" type="button">Tue</button>
+<button class="custom-day-pill py-2.5 rounded-xl bg-primary text-on-primary font-bold text-xs text-center border border-primary transition-all" onclick="toggleCustomDay(this)" type="button">Wed</button>
+<button class="custom-day-pill py-2.5 rounded-xl bg-primary text-on-primary font-bold text-xs text-center border border-primary transition-all" onclick="toggleCustomDay(this)" type="button">Thu</button>
+<button class="custom-day-pill py-2.5 rounded-xl bg-primary text-on-primary font-bold text-xs text-center border border-primary transition-all" onclick="toggleCustomDay(this)" type="button">Fri</button>
+<button class="custom-day-pill py-2.5 rounded-xl bg-surface-container-low text-on-surface font-medium text-xs text-center border border-outline-variant/30 transition-all" onclick="toggleCustomDay(this)" type="button">Sat</button>
+<button class="custom-day-pill py-2.5 rounded-xl bg-surface-container-low text-on-surface font-medium text-xs text-center border border-outline-variant/30 transition-all" onclick="toggleCustomDay(this)" type="button">Sun</button>
+</div>
+</div>
+<!-- PICKUP TIME SLOT & ARRIVAL GUARANTEE (Common to all frequency modes) -->
+<div class="space-y-2 pt-1">
+<div class="flex items-center justify-between">
+<h3 class="text-xs font-bold text-on-surface uppercase tracking-wider">Pickup Time Slot</h3>
+<span class="text-xs text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-primary">schedule</span>
+30 min slots
+</span>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<button class="time-slot-btn py-2.5 px-2 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface border border-outline-variant/30 text-center transition-colors" onclick="selectTimeSlot('09:30 AM', this)">
+<p class="text-xs font-bold">09:30</p>
+<p class="text-[10px] text-on-surface-variant font-medium">AM</p>
+</button>
+<button class="time-slot-btn py-2.5 px-2 rounded-xl bg-primary-container text-on-primary-container font-bold border-2 border-primary text-center shadow-sm" onclick="selectTimeSlot('10:00 AM', this)">
+<p class="text-xs font-bold">10:00</p>
+<p class="text-[10px] font-semibold">AM</p>
+</button>
+<button class="time-slot-btn py-2.5 px-2 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface border border-outline-variant/30 text-center transition-colors" onclick="selectTimeSlot('10:30 AM', this)">
+<p class="text-xs font-bold">10:30</p>
+<p class="text-[10px] text-on-surface-variant font-medium">AM</p>
+</button>
+<button class="py-2.5 px-2 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface border border-outline-variant/30 text-center flex flex-col items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-[16px] text-outline">more_time</span>
+<p class="text-[10px] font-bold text-on-surface-variant mt-0.5">Custom</p>
+</button>
+</div>
+<!-- Timeliness Guarantee Badge -->
+<div class="rounded-2xl bg-[#f0fbf0] border border-primary/20 p-2.5 flex items-start gap-2.5 mt-2">
+<div class="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-primary text-[16px]">verified</span>
+</div>
+<p class="text-[11px] leading-relaxed text-on-surface-variant">
+<strong class="text-on-surface font-semibold">Arrival Guarantee:</strong> Driver arrives 5–10 mins before <span id="guarantee-time-text" class="">10:00 AM</span>. Free cancellation up to 30 mins prior.
+</p>
+</div>
+</div>
+</section>
+<!-- 4. AVAILABLE FLEET SELECTION -->
+<section class="space-y-2.5 pt-1">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="text-xs font-bold text-on-surface uppercase tracking-wider">Available Fleet</h2>
+<p class="text-[10px] text-outline font-medium">Fares include taxes &amp; toll • Cash payment accepted</p>
+</div>
+<span class="text-[11px] text-primary font-bold">4 Options</span>
+</div>
+<div class="space-y-2">
+<!-- Sedan Prime (Selected Card) -->
+<div class="fleet-card p-3.5 rounded-2xl bg-surface-container-lowest border-2 border-primary shadow-sm flex items-center justify-between cursor-pointer relative overflow-hidden transition-all" id="fleet-sedan" onclick="selectFleet('Sedan Prime', '₹310', this)">
+<div class="absolute -right-6 -top-6 w-14 h-14 bg-primary/10 rounded-full pointer-events-none"></div>
+<div class="flex items-center gap-3">
+<div class="fleet-icon-wrapper w-12 h-12 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[28px] text-primary">directions_car</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="fleet-name font-bold text-sm text-on-surface">Sedan Prime</span>
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-1.5 py-0.5 rounded-full uppercase">Top Rated</span>
+</div>
+<div class="flex items-center gap-2 text-[11px] text-on-surface-variant mt-0.5">
+<span class="flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[13px] text-outline">person</span> 4 seats
+</span>
+<span class="">•</span>
+<span class="">Comfort AC</span>
+<span class="">•</span>
+<span class="text-primary font-medium">Spacious boot</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<span class="text-base font-extrabold text-on-surface tracking-tight">₹310</span>
+<p class="text-[10px] text-outline font-medium">Estimated</p>
+</div>
+</div>
+<!-- PickMe Mini -->
+<div class="fleet-card p-3 rounded-2xl bg-surface-container-low/70 border border-outline-variant/30 hover:border-outline hover:bg-surface-container-low flex items-center justify-between cursor-pointer transition-all" id="fleet-mini" onclick="selectFleet('PickMe Mini', '₹240', this)">
+<div class="flex items-center gap-3">
+<div class="fleet-icon-wrapper w-11 h-11 rounded-xl bg-surface-container-lowest border border-surface-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[24px] text-on-surface-variant">electric_car</span>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="fleet-name font-semibold text-sm text-on-surface">PickMe Mini</span>
+</div>
+<div class="flex items-center gap-2 text-[11px] text-on-surface-variant mt-0.5">
+<span class="flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[13px] text-outline">person</span> 4 seats
+</span>
+<span class="">•</span>
+<span class="">Pocket-friendly</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<span class="text-sm font-bold text-on-surface">₹240</span>
+<p class="text-[10px] text-outline">Estimated</p>
+</div>
+</div>
+<!-- PickMe Auto -->
+<div class="fleet-card p-3 rounded-2xl bg-surface-container-low/70 border border-outline-variant/30 hover:border-outline hover:bg-surface-container-low flex items-center justify-between cursor-pointer transition-all" id="fleet-auto" onclick="selectFleet('PickMe Auto', '₹95', this)">
+<div class="flex items-center gap-3">
+<div class="fleet-icon-wrapper w-11 h-11 rounded-xl bg-surface-container-lowest border border-surface-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[24px] text-on-surface-variant">electric_rickshaw</span>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="fleet-name font-semibold text-sm text-on-surface">PickMe Auto</span>
+</div>
+<div class="flex items-center gap-2 text-[11px] text-on-surface-variant mt-0.5">
+<span class="flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[13px] text-outline">person</span> 3 seats
+</span>
+<span class="">•</span>
+<span class="">Quick hops</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<span class="text-sm font-bold text-on-surface">₹95</span>
+<p class="text-[10px] text-outline">Estimated</p>
+</div>
+</div>
+<!-- PickMe Bike -->
+<div class="fleet-card p-3 rounded-2xl bg-surface-container-low/70 border border-outline-variant/30 hover:border-outline hover:bg-surface-container-low flex items-center justify-between cursor-pointer transition-all" id="fleet-bike" onclick="selectFleet('PickMe Bike', '₹70', this)">
+<div class="flex items-center gap-3">
+<div class="fleet-icon-wrapper w-11 h-11 rounded-xl bg-surface-container-lowest border border-surface-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[24px] text-on-surface-variant">two_wheeler</span>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="fleet-name font-semibold text-sm text-on-surface">PickMe Bike</span>
+</div>
+<div class="flex items-center gap-2 text-[11px] text-on-surface-variant mt-0.5">
+<span class="flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[13px] text-outline">person</span> 1 seat
+</span>
+<span class="">•</span>
+<span class="">Beat the traffic</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<span class="text-sm font-bold text-on-surface">₹70</span>
+<p class="text-[10px] text-outline">Estimated</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Payment Method Reminder (Cash) -->
+<section class="bg-surface-container-low rounded-2xl p-3 border border-surface-container flex items-center justify-between mb-4">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary shadow-xs">
+<span class="material-symbols-outlined text-[18px]">payments</span>
+</div>
+<div>
+<p class="text-xs font-bold text-on-surface">Cash Payment</p>
+<p class="text-[11px] text-on-surface-variant font-normal">Pay directly to driver upon drop-off</p>
+</div>
+</div>
+<button class="text-xs font-semibold text-primary hover:underline px-1 py-0.5">
+Change
+</button>
+</section>
+</main>
+<!-- 5. STICKY BOTTOM SUMMARY & CTA -->
+<div class="fixed bottom-[65px] left-0 right-0 max-w-[420px] mx-auto z-20 bg-surface-container-lowest/95 backdrop-blur-md px-4 py-3 border-t border-surface-container shadow-lg">
+<div class="flex items-center justify-between mb-2">
+<div>
+<span class="text-[11px] text-on-surface-variant font-semibold uppercase tracking-wide">Selected Plan</span>
+<p class="text-sm font-bold text-on-surface" id="plan-summary-text">Sedan Prime • 10:00 AM</p>
+</div>
+<div class="text-right">
+<span class="text-[11px] text-outline">Total Fare</span>
+<p class="text-lg font-extrabold text-primary tracking-tight" id="plan-fare-text">₹310</p>
+</div>
+</div>
+<button class="w-full h-12 rounded-2xl bg-primary-container hover:bg-[#19b000] text-on-primary-container font-extrabold text-sm tracking-wide shadow-md flex items-center justify-center gap-2 active:scale-[0.99] transition-all" id="cta-button">
+<span id="cta-button-text" class="">Schedule Sedan Prime</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+<!-- 6. EXACT BOTTOM NAVIGATION BAR (Schedule Active) -->
+<nav class="fixed bottom-0 left-0 right-0 max-w-[420px] mx-auto z-20 bg-surface-container-lowest border-t border-surface-container flex items-center justify-around px-2 py-2 shadow-lg">
+  <!-- Ride (Inactive) -->
+  <a class="flex flex-col items-center justify-center py-1 px-3 text-on-surface-variant hover:text-primary transition-colors" href="#">
+    <span class="material-symbols-outlined text-[24px]">local_taxi</span>
+    <span class="text-[11px] font-medium leading-tight mt-0.5">Ride</span>
+  </a>
+
+  <!-- Schedule (Active: soft light green pill background, green icon, bold label) -->
+  <a class="flex flex-col items-center justify-center bg-[#eefae9] text-primary rounded-xl px-4 py-1.5 transition-all" href="#">
+    <span class="material-symbols-outlined fill text-[22px] text-primary">calendar_month</span>
+    <span class="text-[11px] font-bold text-primary leading-tight mt-0.5">Schedule</span>
+  </a>
+
+  <!-- Activity (Inactive) -->
+  <a class="flex flex-col items-center justify-center py-1 px-3 text-on-surface-variant hover:text-primary transition-colors" href="#">
+    <span class="material-symbols-outlined text-[24px]">receipt_long</span>
+    <span class="text-[11px] font-medium leading-tight mt-0.5">Activity</span>
+  </a>
+
+  <!-- Profile (Inactive) -->
+  <a class="flex flex-col items-center justify-center py-1 px-3 text-on-surface-variant hover:text-primary transition-colors" href="#">
+    <span class="material-symbols-outlined text-[24px]">person</span>
+    <span class="text-[11px] font-medium leading-tight mt-0.5">Profile</span>
+  </a>
+</nav>
+</div>
+<!-- Interactive Hierarchy Script -->
+<script>
+  let currentFrequency = 'onetime';
+  let selectedTime = '10:00 AM';
+  let selectedVehicle = 'Sedan Prime';
+  let selectedFare = '₹310';
+
+  function updateSummary() {
+    let freqLabel = '';
+    if (currentFrequency === 'onetime') freqLabel = '';
+    else if (currentFrequency === 'daily') freqLabel = 'Daily • ';
+    else if (currentFrequency === 'weekdays') freqLabel = 'Weekdays • ';
+    else if (currentFrequency === 'custom') freqLabel = 'Custom • ';
+
+    document.getElementById('plan-summary-text').innerText = `${selectedVehicle} • ${freqLabel}${selectedTime}`;
+    document.getElementById('plan-fare-text').innerText = selectedFare;
+    document.getElementById('cta-button-text').innerText = `Schedule ${selectedVehicle}`;
+    document.getElementById('guarantee-time-text').innerText = selectedTime;
+  }
+
+  function setFrequency(freq) {
+    currentFrequency = freq;
+    const tabs = ['onetime', 'daily', 'weekdays', 'custom'];
+    tabs.forEach(t => {
+      const btn = document.getElementById('tab-' + t);
+      if (t === freq) {
+        btn.className = "freq-tab py-2 text-[11px] font-bold rounded-xl bg-surface-container-lowest text-primary shadow-sm border border-outline-variant/20 transition-all";
+      } else {
+        btn.className = "freq-tab py-2 text-[11px] font-medium rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all";
+      }
+    });
+
+    const indicator = document.getElementById('frequency-state-indicator');
+    const secDate = document.getElementById('section-date');
+    const secDaily = document.getElementById('section-daily-banner');
+    const secWeekdays = document.getElementById('section-weekdays');
+    const secCustom = document.getElementById('section-custom');
+
+    secDate.classList.add('hidden');
+    secDaily.classList.add('hidden');
+    secWeekdays.classList.add('hidden');
+    secCustom.classList.add('hidden');
+
+    if (freq === 'onetime') {
+      secDate.classList.remove('hidden');
+      indicator.innerText = 'Single Trip';
+    } else if (freq === 'daily') {
+      secDaily.classList.remove('hidden');
+      indicator.innerText = 'Repeats Daily';
+    } else if (freq === 'weekdays') {
+      secWeekdays.classList.remove('hidden');
+      indicator.innerText = 'Mon to Fri';
+    } else if (freq === 'custom') {
+      secCustom.classList.remove('hidden');
+      indicator.innerText = 'Selected Days';
+    }
+    updateSummary();
+  }
+
+  function selectTimeSlot(timeStr, btnEl) {
+    selectedTime = timeStr;
+    document.querySelectorAll('.time-slot-btn').forEach(btn => {
+      btn.className = "time-slot-btn py-2.5 px-2 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface border border-outline-variant/30 text-center transition-colors";
+      const p1 = btn.querySelector('p:first-child');
+      const p2 = btn.querySelector('p:last-child');
+      if (p1) p1.className = "text-xs font-bold";
+      if (p2) p2.className = "text-[10px] text-on-surface-variant font-medium";
+    });
+
+    btnEl.className = "time-slot-btn py-2.5 px-2 rounded-xl bg-primary-container text-on-primary-container font-bold border-2 border-primary text-center shadow-sm";
+    const p1 = btnEl.querySelector('p:first-child');
+    const p2 = btnEl.querySelector('p:last-child');
+    if (p1) p1.className = "text-xs font-bold";
+    if (p2) p2.className = "text-[10px] font-semibold";
+
+    updateSummary();
+  }
+
+  function toggleCustomDay(btn) {
+    const isSelected = btn.classList.contains('bg-primary');
+    if (isSelected) {
+      btn.className = "custom-day-pill py-2.5 rounded-xl bg-surface-container-low text-on-surface font-medium text-xs text-center border border-outline-variant/30 transition-all";
+    } else {
+      btn.className = "custom-day-pill py-2.5 rounded-xl bg-primary text-on-primary font-bold text-xs text-center border border-primary transition-all";
+    }
+  }
+
+  function selectFleet(name, fare, cardEl) {
+    selectedVehicle = name;
+    selectedFare = fare;
+
+    document.querySelectorAll('.fleet-card').forEach(card => {
+      card.className = "fleet-card p-3 rounded-2xl bg-surface-container-low/70 border border-outline-variant/30 hover:border-outline hover:bg-surface-container-low flex items-center justify-between cursor-pointer transition-all";
+      const iconWrap = card.querySelector('.fleet-icon-wrapper');
+      if (iconWrap) {
+        iconWrap.className = "fleet-icon-wrapper w-11 h-11 rounded-xl bg-surface-container-lowest border border-surface-container flex items-center justify-center shrink-0";
+        const iconSpan = iconWrap.querySelector('span');
+        if (iconSpan) iconSpan.className = "material-symbols-outlined text-[24px] text-on-surface-variant";
+      }
+      const badge = card.querySelector('.absolute');
+      if (badge) badge.remove();
+    });
+
+    cardEl.className = "fleet-card p-3.5 rounded-2xl bg-surface-container-lowest border-2 border-primary shadow-sm flex items-center justify-between cursor-pointer relative overflow-hidden transition-all";
+    const iconWrap = cardEl.querySelector('.fleet-icon-wrapper');
+    if (iconWrap) {
+      iconWrap.className = "fleet-icon-wrapper w-12 h-12 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center shrink-0";
+      const iconSpan = iconWrap.querySelector('span');
+      if (iconSpan) iconSpan.className = "material-symbols-outlined text-[28px] text-primary";
+    }
+
+    if (!cardEl.querySelector('.bg-primary\\/10.rounded-full')) {
+      const decorativeGlow = document.createElement('div');
+      decorativeGlow.className = "absolute -right-6 -top-6 w-14 h-14 bg-primary/10 rounded-full pointer-events-none";
+      cardEl.prepend(decorativeGlow);
+    }
+
+    updateSummary();
+  }
+</script>
+
+
+</body></html>

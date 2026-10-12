@@ -1,0 +1,123 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>PickMe - Notifications</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#085300",
+                        "on-background": "#141b2b",
+                        "surface-bright": "#f9f9ff",
+                        "inverse-surface": "#293040",
+                        "primary": "#0d6e00",
+                        "on-tertiary-container": "#3d4041",
+                        "tertiary-container": "#a9abac",
+                        "on-secondary-fixed": "#012200",
+                        "outline": "#6d7b65",
+                        "tertiary": "#5c5f60",
+                        "tertiary-fixed-dim": "#c5c7c8",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#e9edff",
+                        "on-secondary-container": "#046d00",
+                        "surface-variant": "#dce2f7",
+                        "secondary-fixed": "#77ff60",
+                        "outline-variant": "#bccbb2",
+                        "on-surface": "#141b2b",
+                        "secondary": "#046e00",
+                        "surface": "#f9f9ff",
+                        "secondary-fixed-dim": "#0de600",
+                        "surface-container-high": "#e1e8fd",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#012200",
+                        "tertiary-fixed": "#e1e3e4",
+                        "primary-container": "#1fc600",
+                        "inverse-primary": "#48e32e",
+                        "surface-container-low": "#f1f3ff",
+                        "inverse-on-surface": "#edf0ff",
+                        "primary-fixed-dim": "#48e32e",
+                        "on-tertiary-fixed-variant": "#454748",
+                        "background": "#f9f9ff",
+                        "surface-tint": "#0d6e00",
+                        "secondary-container": "#0ef900",
+                        "surface-dim": "#d3daef",
+                        "surface-container-highest": "#dce2f7",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#78ff5c",
+                        "on-tertiary-fixed": "#191c1d",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed-variant": "#035300",
+                        "on-primary-container": "#064b00",
+                        "on-surface-variant": "#3d4b37",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap": "32px",
+                        "gutter": "12px",
+                        "stack-gap": "16px",
+                        "unit": "4px",
+                        "container-padding": "20px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "fare-display": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "title-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "fare-display": ["24px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "800" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "label-bold": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "title-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    },
+                    "boxShadow": {
+                        "soft": "0px 4px 20px rgba(0, 0, 0, 0.04)"
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background antialiased min-h-screen flex flex-col font-body-lg text-body-lg">
+<!-- TopAppBar -->
+<header class="bg-surface-container-lowest text-on-surface w-full top-0 sticky z-40 border-b border-surface-variant flex justify-between items-center px-container-padding h-14 shadow-sm"><div class="flex items-center gap-3"><button class="flex items-center justify-center p-2 rounded-full hover:bg-surface-container-low transition-colors active:scale-95 text-on-surface"><span class="material-symbols-outlined text-[24px]">arrow_back</span></button><h1 class="font-title-md text-title-md font-bold text-on-surface">Notifications</h1></div><button class="text-primary font-label-bold text-label-bold hover:bg-surface-container-low px-3 py-1.5 rounded-full transition-colors active:scale-95">Mark all read</button></header>
+<!-- Main Canvas -->
+<main class="flex-grow w-full max-w-2xl mx-auto px-container-padding py-stack-gap pb-32"><div class="flex items-center gap-2 overflow-x-auto py-2 mb-4 scrollbar-none"><button class="flex items-center px-4 py-1.5 rounded-full bg-primary text-on-primary font-label-bold text-body-sm shadow-sm flex-shrink-0 transition-transform active:scale-95">All (4)</button><button class="flex items-center px-4 py-1.5 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-container font-label-bold text-body-sm flex-shrink-0 border border-outline-variant transition-colors active:scale-95">Rides</button><button class="flex items-center px-4 py-1.5 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-container font-label-bold text-body-sm flex-shrink-0 border border-outline-variant transition-colors active:scale-95">Offers</button><button class="flex items-center px-4 py-1.5 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-container font-label-bold text-body-sm flex-shrink-0 border border-outline-variant transition-colors active:scale-95">Account</button></div><div class="flex flex-col gap-3"><!-- Notification 1 (Unread - Live Trip) --><div class="relative bg-surface-container-lowest rounded-xl p-4 shadow-soft border border-primary-container border-l-4 border-l-primary-container flex items-start gap-3.5 transition-transform active:scale-[0.99] cursor-pointer"><div class="w-11 h-11 rounded-full bg-[#E8F8E5] flex items-center justify-center flex-shrink-0 text-primary"><span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">directions_car</span></div><div class="flex-grow min-w-0"><div class="flex justify-between items-start mb-1 gap-2"><div class="flex items-center gap-2"><h3 class="font-title-md text-[16px] leading-5 font-bold text-on-surface">Your driver is arriving</h3><span class="w-2 h-2 rounded-full bg-primary-container flex-shrink-0"></span></div><span class="font-label-bold text-[12px] text-primary whitespace-nowrap">Just now</span></div><p class="font-body-sm text-[13px] leading-relaxed text-on-surface-variant">Alex in a Black Toyota Camry (DL 01 AB 1234) is 2 mins away from 4th Block, Koramangala.</p></div></div><!-- Notification 2 (Unread - Schedule Alert) --><div class="relative bg-surface-container-lowest rounded-xl p-4 shadow-soft border border-primary-container border-l-4 border-l-primary-container flex items-start gap-3.5 transition-transform active:scale-[0.99] cursor-pointer"><div class="w-11 h-11 rounded-full bg-[#E3F2FD] flex items-center justify-center flex-shrink-0 text-[#1976D2]"><span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">alarm</span></div><div class="flex-grow min-w-0"><div class="flex justify-between items-start mb-1 gap-2"><div class="flex items-center gap-2"><h3 class="font-title-md text-[16px] leading-5 font-bold text-on-surface">Ride Scheduled for 10:00 AM</h3><span class="w-2 h-2 rounded-full bg-primary-container flex-shrink-0"></span></div><span class="font-label-bold text-[12px] text-primary whitespace-nowrap">15m ago</span></div><p class="font-body-sm text-[13px] leading-relaxed text-on-surface-variant">Your recurring office commute Sedan Prime has been confirmed. Zero surge locked at ₹310.</p></div></div><!-- Notification 3 (Offer) --><div class="relative bg-surface-container-lowest rounded-xl p-4 shadow-soft border border-outline-variant flex items-start gap-3.5 transition-transform active:scale-[0.99] cursor-pointer hover:bg-surface-bright"><div class="w-11 h-11 rounded-full bg-[#F3E5F5] flex items-center justify-center flex-shrink-0 text-[#7B1FA2]"><span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">local_offer</span></div><div class="flex-grow min-w-0"><div class="flex justify-between items-start mb-1 gap-2"><h3 class="font-title-md text-[16px] leading-5 font-bold text-on-surface">20% off your next weekend ride!</h3><span class="font-label-bold text-[12px] text-tertiary-container whitespace-nowrap">2 hours ago</span></div><p class="font-body-sm text-[13px] leading-relaxed text-on-surface-variant">Use code <strong class="text-on-surface font-bold">WEEKEND20</strong> for up to ₹50 off on Sedan or SUV bookings.</p></div></div><!-- Notification 4 (Receipt) --><div class="relative bg-surface rounded-xl p-4 border border-surface-variant flex items-start gap-3.5 opacity-90 transition-transform active:scale-[0.99] cursor-pointer hover:bg-surface-bright"><div class="w-11 h-11 rounded-full bg-surface-variant flex items-center justify-center flex-shrink-0 text-tertiary"><span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 0;">receipt_long</span></div><div class="flex-grow min-w-0"><div class="flex justify-between items-start mb-1 gap-2"><h3 class="font-title-md text-[16px] leading-5 font-bold text-on-surface">Cash Receipt Generated</h3><span class="font-label-bold text-[12px] text-tertiary-container whitespace-nowrap">Yesterday</span></div><p class="font-body-sm text-[13px] leading-relaxed text-tertiary">Trip completed to 100ft Road, Indiranagar. ₹280 cash collected by driver Rajesh K.</p></div></div></div><div class="mt-6 flex justify-center"><p class="font-label-bold text-[12px] text-tertiary-container">No older notifications</p></div></main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-4 py-2 z-50 flex justify-around items-center h-16"><a href="#" class="flex flex-col items-center justify-center text-slate-400 hover:text-slate-600 transition-colors"><span class="material-symbols-outlined text-[24px]">directions_car</span><span class="text-[11px] font-medium mt-0.5">Ride</span></a><a href="#" class="flex flex-col items-center justify-center text-slate-400 hover:text-slate-600 transition-colors"><span class="material-symbols-outlined text-[24px]">calendar_today</span><span class="text-[11px] font-medium mt-0.5">Schedule</span></a><a href="#" class="flex flex-col items-center justify-center text-slate-400 hover:text-slate-600 transition-colors"><span class="material-symbols-outlined text-[24px]">receipt_long</span><span class="text-[11px] font-medium mt-0.5">Activity</span></a><a href="#" class="flex flex-col items-center justify-center bg-green-50 text-[#1fc600] rounded-xl px-3 py-1 transition-colors"><span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">person</span><span class="text-[11px] font-bold mt-0.5">Profile</span></a></nav>
+
+
+</body></html>
