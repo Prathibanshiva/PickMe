@@ -35,6 +35,12 @@ const createOrGetDriverProfile = async (req, res) => {
         rejectionReason:
           driverProfile.rejectionReason,
 
+        rejectionCode:
+          driverProfile.rejectionCode || "",
+
+        verifiedBy:
+          driverProfile.verifiedBy || null,
+
         profilePhoto:
           driverProfile.profilePhoto,
 
@@ -193,7 +199,11 @@ const submitDriverProfile = async (req, res) => {
 
     driverProfile.rejectionReason = "";
 
+    driverProfile.rejectionCode = "";
+
     driverProfile.verifiedAt = null;
+
+    driverProfile.verifiedBy = null;
 
     await driverProfile.save();
 
@@ -211,6 +221,12 @@ const submitDriverProfile = async (req, res) => {
 
         rejectionReason:
           driverProfile.rejectionReason,
+
+        rejectionCode:
+          driverProfile.rejectionCode || "",
+
+        verifiedBy:
+          driverProfile.verifiedBy || null,
 
         profilePhoto:
           driverProfile.profilePhoto,

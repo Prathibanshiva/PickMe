@@ -1,0 +1,597 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-error-container": "#93000a",
+          "surface-container-highest": "#d3e4fe",
+          "surface-bright": "#f8f9ff",
+          "outline-variant": "#bfcab7",
+          "on-surface-variant": "#404a3b",
+          "primary-container": "#0d6e00",
+          "surface-dim": "#cbdbf5",
+          "surface": "#f8f9ff",
+          "on-primary": "#ffffff",
+          "on-primary-fixed": "#012200",
+          "surface-container": "#e5eeff",
+          "error": "#ba1a1a",
+          "surface-tint": "#0d6e00",
+          "tertiary-fixed-dim": "#bfc6dc",
+          "on-secondary": "#ffffff",
+          "on-secondary-container": "#0e7300",
+          "on-error": "#ffffff",
+          "on-tertiary-container": "#d1d8ee",
+          "tertiary": "#404658",
+          "primary": "#085300",
+          "secondary-fixed": "#78ff5c",
+          "error-container": "#ffdad6",
+          "on-tertiary": "#ffffff",
+          "on-secondary-fixed": "#012200",
+          "inverse-on-surface": "#eaf1ff",
+          "secondary-fixed-dim": "#48e32e",
+          "on-primary-container": "#91ee79",
+          "on-primary-fixed-variant": "#085300",
+          "secondary-container": "#64fe48",
+          "background": "#f8f9ff",
+          "inverse-surface": "#213145",
+          "primary-fixed-dim": "#80dc69",
+          "on-tertiary-fixed-variant": "#404758",
+          "outline": "#707a69",
+          "surface-container-low": "#eff4ff",
+          "secondary": "#0d6e00",
+          "tertiary-container": "#575e71",
+          "on-background": "#0b1c30",
+          "surface-container-lowest": "#ffffff",
+          "surface-container-high": "#dce9ff",
+          "on-secondary-fixed-variant": "#085300",
+          "on-tertiary-fixed": "#141b2b",
+          "primary-fixed": "#9bf982",
+          "tertiary-fixed": "#dce2f9",
+          "surface-variant": "#d3e4fe",
+          "on-surface": "#0b1c30",
+          "inverse-primary": "#80dc69"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        "spacing": {
+          "space-md": "1rem",
+          "space-lg": "1.25rem",
+          "space-xs": "0.25rem",
+          "space-xl": "2rem",
+          "gutter": "1.25rem",
+          "space-sm": "0.5rem",
+          "margin": "1.5rem"
+        },
+        "fontFamily": {
+          "numeric-stat": ["Inter"],
+          "body-sm": ["Inter"],
+          "headline-sm": ["Inter"],
+          "title-md": ["Inter"],
+          "display-lg": ["Inter"],
+          "headline-md": ["Inter"],
+          "body-lg": ["Inter"],
+          "label-sm": ["Inter"],
+          "label-lg": ["Inter"],
+          "label-md": ["Inter"],
+          "headline-lg": ["Inter"],
+          "body-md": ["Inter"]
+        },
+        "fontSize": {
+          "numeric-stat": ["28px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+          "headline-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600"}],
+          "title-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+          "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+          "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+          "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600"}],
+          "label-lg": ["13px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+          "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+          "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+          "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+        }
+      }
+    }
+  }</script></head><body class="bg-surface font-body-md text-body-md text-on-surface"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between hidden md:flex"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-lg flex items-center justify-between"><div class="flex items-center gap-3 px-1 py-2">
+  <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdd_U4O9c1ZEYb-dk5tJW7JoTcwAy412hNT7t7CBcKnQhWB6G5viZFnU3feYv-UYqJF_6NQVpcXRzRMPu_kCb5RUEw_CSBdZR2a3CyjEfr6lHHh0_Uorle16GbkghfjXTcdnmpoNLQODbWj0Avmsf1tnVSDLIeDCMEbjDzb2Y71bLOJSygLz3ATi-ves7jDxIxELmLFjhZHZfaB5KDc8uyUQUPthLP2WmNWnqiKW9dQKbNmeVqaiHEbn8904ybjZlA" alt="PickMe Logo" class="h-10 w-auto object-contain max-w-[140px]">
+  <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-[#0D6E00] text-white uppercase tracking-wider">Admin</span>
+</div></div><div class="px-space-md py-space-xs"><div class="px-space-md py-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">Operations</div><nav class="flex flex-col gap-space-xs mt-space-xs" data-active-classes="bg-primary-container text-on-primary font-title-md"><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="dashboard" href="#">Dashboard</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="drivers" href="#">Drivers</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="users" href="#">Users</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="rides" href="#">Rides</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="scheduled" href="#">Scheduled</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="fares" href="#">Fares</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="analytics" href="#">Analytics</a><a aria-current="page" class="flex items-center px-space-md py-space-sm rounded-lg transition-colors bg-surface-container-low text-primary font-title-md font-semibold" data-path="complaints" href="#">Complaints</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="reports" href="#">Reports</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="notifications" href="#">Notifications</a></nav></div><div class="px-space-md py-space-xs mt-space-sm"><div class="px-space-md py-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">Configuration</div><nav class="flex flex-col gap-space-xs mt-space-xs" data-active-classes="bg-primary-container text-on-primary font-title-md"><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="platform-settings" href="#">Platform Settings</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="audit-logs" href="#">Audit Logs</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-title-md text-title-md" data-path="admin-profile" href="#">Admin Profile</a></nav></div></div><div class="p-space-md bg-surface-container-low"><div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-lowest"><div class="flex items-center gap-space-sm overflow-hidden"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col min-w-0"><span class="font-title-md text-title-md text-on-surface truncate">Vikramaditya Rao</span><span class="font-body-sm text-body-sm text-on-surface-variant truncate">Operations Admin</span></div></div><button aria-label="Logout" class="p-space-xs rounded text-on-surface-variant hover:text-error hover:bg-error-container transition-colors shrink-0" type="button"><span class="material-symbols-outlined text-[20px]">logout</span></button></div></div></aside><div class="md:pl-64"><header class="fixed top-0 left-0 md:left-64 right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-md md:px-space-xl gap-space-md"><div class="flex items-center gap-space-md"><button aria-label="Open Menu" class="md:hidden p-space-xs text-on-surface hover:bg-surface-container-high rounded transition-colors" type="button"><span class="material-symbols-outlined text-[24px]">menu</span></button><nav class="hidden sm:flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm"><span class="">Console</span><span class="material-symbols-outlined text-[14px]">chevron_right</span><span class="text-on-surface font-title-md text-title-md">Operations Command</span></nav></div><div class="flex items-center gap-space-md flex-1 max-w-md mx-space-sm"><div class="relative w-full"><span class="material-symbols-outlined absolute left-space-md top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span><input class="w-full h-10 pl-10 pr-space-md rounded-lg bg-surface-container-lowest text-on-surface placeholder:text-on-surface-variant font-body-sm text-body-sm outline-none focus:ring-2 focus:ring-secondary transition-all" placeholder="Search drivers, rides, users..." type="text"></div></div><div class="flex items-center gap-space-md shrink-0"><div class="hidden lg:flex items-center gap-space-xs px-space-sm py-space-xs rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm"><span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span><span class="">Operations Active</span></div><button aria-label="Notifications" class="relative p-space-xs rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-error"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-16 w-full min-h-screen bg-surface px-space-md md:px-space-xl py-space-lg"><div class="flex flex-col w-full">
+<!-- Top Context Navigation & Header Bar -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm mb-space-lg">
+<div class="flex flex-col gap-space-xs">
+<a class="inline-flex items-center gap-space-xs text-on-surface-variant hover:text-primary transition-colors font-title-md text-title-md w-fit" href="#">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span>
+<span class="">Back to Complaints</span>
+</a>
+<div class="flex items-center gap-space-md flex-wrap mt-space-xs">
+<span class="font-numeric-stat text-numeric-stat text-on-surface tracking-tight">CMP-10482</span>
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-label-sm text-label-sm tracking-wider uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse"></span>
+          Open
+        </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm tracking-wider uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+          High Priority
+        </span>
+</div>
+</div>
+<!-- Quick Telemetry & Status Badges -->
+<div class="flex items-center gap-space-sm self-start md:self-auto">
+<div class="flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-surface-container-low text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">domain</span>
+<span class="">Bengaluru Hub (BLR-EAST)</span>
+</div>
+<div class="flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-surface-container-low text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+<span class="">SLA: 01h 45m remaining</span>
+</div>
+</div>
+</div>
+<!-- Primary Operations Bento Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<!-- Left Column: Core Ticket Details & Telemetry (7 Columns) -->
+<div class="lg:col-span-7 flex flex-col gap-gutter">
+<!-- Complaint Summary Card -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md relative overflow-hidden">
+<div class="flex items-start justify-between gap-space-md">
+<div class="flex flex-col gap-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Complaint Title</span>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Fare dispute — Driver took unauthorized long route</h1>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface-variant shrink-0 bg-surface-container-low px-space-sm py-1 rounded">
+<span class="material-symbols-outlined text-[15px]">event</span>
+<span class="font-label-md text-label-md">Today, 09:15 AM IST</span>
+</div>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col gap-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Passenger Statement</span>
+<p class="font-body-md text-body-md text-on-surface leading-relaxed">
+            Passenger states driver deviated 4.2 km from the designated Outer Ring Road corridor through heavy local traffic despite objections, causing a ₹120 fare surge discrepancy and a 25-minute delay.
+          </p>
+</div>
+<!-- Telemetry Variance Strip -->
+<div class="grid grid-cols-3 gap-space-sm pt-space-xs">
+<div class="flex flex-col p-space-sm rounded-lg bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Reported Deviation</span>
+<span class="font-headline-sm text-headline-sm text-error mt-0.5">+4.2 km</span>
+</div>
+<div class="flex flex-col p-space-sm rounded-lg bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Fare Discrepancy</span>
+<span class="font-headline-sm text-headline-sm text-error mt-0.5">+₹120.00</span>
+</div>
+<div class="flex flex-col p-space-sm rounded-lg bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Time Variance</span>
+<span class="font-headline-sm text-headline-sm text-on-surface mt-0.5">+25 mins</span>
+</div>
+</div>
+</section>
+<!-- Ride Context Section -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">local_taxi</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Associated Ride Details</h2>
+</div>
+<a class="inline-flex items-center gap-space-xs px-space-sm py-1 rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors text-primary font-title-md text-title-md" href="#">
+<span class="">View Ride (#PKM-88294)</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+<!-- Corridors & Profiles -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md pt-space-xs">
+<!-- Passenger Profile Pill -->
+<div class="flex items-center gap-space-md p-space-md rounded-lg bg-surface-container-low">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[20px]">person</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Passenger</span>
+<span class="font-title-md text-title-md text-on-surface truncate">Priyamvada Rao</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">USR-10824 • 4.88 Rating</span>
+</div>
+</div>
+<!-- Driver Profile Pill -->
+<div class="flex items-center gap-space-md p-space-md rounded-lg bg-surface-container-low">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-secondary-container text-[20px]">sports_motorsports</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Driver</span>
+<span class="font-title-md text-title-md text-on-surface truncate">Anand Murthy</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">DRV-7402 • Tier-1 Verified</span>
+</div>
+</div>
+</div>
+<!-- Ride Matrix Table -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm pt-space-xs">
+<div class="flex flex-col p-space-sm rounded-lg bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Vehicle Details</span>
+<div class="flex items-center gap-space-xs mt-1">
+<span class="font-title-md text-title-md text-on-surface">Maruti Suzuki Dzire</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm uppercase">KA 05 MJ 8921</span>
+</div>
+</div>
+<div class="flex flex-col p-space-sm rounded-lg bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Service Configuration</span>
+<div class="flex items-center gap-space-xs mt-1">
+<span class="inline-flex items-center gap-1 font-title-md text-title-md text-on-surface">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+                Shared Ride (2 Passengers)
+              </span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">• Pool Code PL-9</span>
+</div>
+</div>
+<div class="md:col-span-2 flex flex-col p-space-sm rounded-lg bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Corridor Trajectory</span>
+<div class="flex items-center gap-space-sm mt-1 text-on-surface font-title-md text-title-md">
+<span class="truncate">Indiranagar 100ft Rd</span>
+<span class="material-symbols-outlined text-primary text-[18px] shrink-0">arrow_right_alt</span>
+<span class="truncate">RMZ Ecospace, Bellandur</span>
+</div>
+</div>
+<!-- Fare Breakdown Comparison -->
+<div class="md:col-span-2 p-space-md rounded-lg bg-surface-container flex items-center justify-between">
+<div class="flex items-center gap-space-lg">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Estimated Fare</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">₹142.00</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">remove</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Fare Charged</span>
+<span class="font-headline-sm text-headline-sm text-error">₹262.00</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-error">Variance Unapproved</span>
+<div class="font-title-md text-title-md text-error">+₹120.00 Overcharge</div>
+</div>
+</div>
+</div>
+<!-- Telemetry Map Preview Component -->
+<div class="mt-space-xs relative rounded-lg overflow-hidden bg-surface-container-high h-44 flex flex-col justify-between p-space-md" data-location="Indiranagar to Bellandur, Bengaluru">
+<div class="flex items-center justify-between z-10">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-0.5 rounded bg-surface/90 backdrop-blur text-on-surface font-label-sm text-label-sm uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+              GPS Trace: Route Inconsistency Detected
+            </span>
+<span class="px-space-sm py-0.5 rounded bg-surface/90 text-on-surface font-label-sm text-label-sm">
+              Outer Ring Road Segment
+            </span>
+</div>
+<div class="flex items-center justify-between z-10">
+<div class="flex items-center gap-space-md text-on-surface font-label-md text-label-md bg-surface/90 px-space-sm py-1 rounded">
+<span class="inline-flex items-center gap-1"><span class="w-2.5 h-1 bg-secondary rounded"></span> Assigned Corridor (14.2 km)</span>
+<span class="inline-flex items-center gap-1"><span class="w-2.5 h-1 bg-error rounded"></span> Actual Logged Route (18.4 km)</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Complaint Timeline Section -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">history</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Event Timeline</h2>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">4 Logged Events</span>
+</div>
+<div class="relative pl-6 flex flex-col gap-space-lg mt-space-sm">
+<!-- Timeline Vertical Track -->
+<div class="absolute left-2.5 top-2 bottom-3 w-0.5 bg-surface-container-highest"></div>
+<!-- Event 1 -->
+<div class="relative flex flex-col gap-0.5">
+<div class="absolute -left-[19px] top-1 w-3 h-3 rounded-full bg-primary ring-4 ring-surface-container-lowest"></div>
+<div class="flex items-baseline justify-between">
+<span class="font-title-md text-title-md text-on-surface">Complaint submitted</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Today, 09:15 AM</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Passenger submitted via PickMe iOS app</p>
+</div>
+<!-- Event 2 -->
+<div class="relative flex flex-col gap-0.5">
+<div class="absolute -left-[19px] top-1 w-3 h-3 rounded-full bg-primary ring-4 ring-surface-container-lowest"></div>
+<div class="flex items-baseline justify-between">
+<span class="font-title-md text-title-md text-on-surface">Assigned for review</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Today, 09:18 AM</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Auto-assigned to Tier-1 Operations Queue</p>
+</div>
+<!-- Event 3 -->
+<div class="relative flex flex-col gap-0.5">
+<div class="absolute -left-[19px] top-1 w-3 h-3 rounded-full bg-primary ring-4 ring-surface-container-lowest"></div>
+<div class="flex items-baseline justify-between">
+<span class="font-title-md text-title-md text-on-surface">Administrator reviewed</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Today, 09:32 AM</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Review started by Vikramaditya Rao</p>
+</div>
+<!-- Event 4 (Current) -->
+<div class="relative flex flex-col gap-0.5">
+<div class="absolute -left-[19px] top-1 w-3 h-3 rounded-full bg-amber-500 ring-4 ring-surface-container-lowest animate-pulse"></div>
+<div class="flex items-baseline justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="font-title-md text-title-md text-amber-900">Resolution Pending</span>
+<span class="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-label-sm text-label-sm uppercase">Current</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">In Progress</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Awaiting administrative adjudication</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Admin Actions & Notes Workspace (5 Columns) -->
+<div class="lg:col-span-5 flex flex-col gap-gutter">
+<!-- Primary Administrative Decision Card -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">gavel</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Operational Actions</h2>
+</div>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant uppercase">Adjudication</span>
+</div>
+<!-- Resolve Action Interactive Block -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface">Resolve this complaint?</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Mark incident settled and finalize customer record.</span>
+</div>
+<span class="material-symbols-outlined text-primary text-[22px]">check_circle</span>
+</div>
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant" for="resolution-note">
+              Resolution Note (Required for closure)
+            </label>
+<textarea class="w-full p-space-sm rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-body-sm outline-none focus:bg-surface-container-lowest transition-all placeholder:text-on-surface-variant" id="resolution-note" placeholder="State basis of resolution, adjusted corridor status, or closing remarks..." rows="3">Fare discrepancy verified via telemetry. Unauthorized deviation recorded against driver record. Ticket closed after operational review.</textarea>
+</div>
+<button class="w-full flex items-center justify-center gap-space-xs py-space-sm px-space-md rounded-lg bg-primary hover:bg-primary-container text-on-primary font-title-md text-title-md shadow-sm transition-all active:scale-[0.99]" id="resolve-btn" type="button">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span class="">Confirm Resolution</span>
+</button>
+</div>
+<!-- Secondary Action: Issue Warning -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface">Driver Corridor Warning</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Notify driver about unauthorized deviations.</span>
+</div>
+<span class="material-symbols-outlined text-amber-700 text-[20px]">warning</span>
+</div>
+<button class="w-full flex items-center justify-center gap-space-xs py-space-sm px-space-md rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-title-md text-title-md transition-colors" id="warning-btn" type="button">
+<span class="material-symbols-outlined text-[18px]">notification_important</span>
+<span class="">Issue Warning to Driver (DRV-7402)</span>
+</button>
+</div>
+</section>
+<!-- Internal Administrative Notes Section -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">sticky_note_2</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Internal Audit Notes</h2>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Internal Only</span>
+</div>
+<!-- Existing Notes Log -->
+<div class="flex flex-col gap-space-sm" id="notes-container">
+<div class="p-space-md rounded-lg bg-surface-container flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="font-title-md text-title-md text-on-surface">Vikramaditya Rao</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Operations Admin</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Today, 09:34 AM</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface leading-relaxed">
+              GPS telemetry confirms 3.8 km deviation from optimal corridor. Discrepancy substantiated. Outer Ring Road flow was clear during the trip window.
+            </p>
+</div>
+</div>
+<!-- Add Note Input Block -->
+<div class="flex flex-col gap-space-sm pt-space-xs">
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant" for="new-internal-note">
+              Add Operations Note
+            </label>
+<textarea class="w-full p-space-sm rounded-lg bg-surface-container-low text-on-surface font-body-sm text-body-sm outline-none focus:bg-surface-container-lowest transition-all placeholder:text-on-surface-variant" id="new-internal-note" placeholder="Document investigation findings, driver phone interaction, or telemetry verifications..." rows="3"></textarea>
+</div>
+<div class="flex justify-end">
+<button class="inline-flex items-center gap-space-xs py-2 px-space-md rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-title-md text-title-md transition-colors" id="save-note-btn" type="button">
+<span class="material-symbols-outlined text-[16px]">add_comment</span>
+<span class="">Save Note</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Driver History & Incident Frequency Snapshot -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Driver Compliance Index</span>
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="flex flex-col p-space-sm rounded-lg bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Completed Trips (30d)</span>
+<span class="font-headline-sm text-headline-sm text-on-surface mt-0.5">384 Rides</span>
+</div>
+<div class="flex flex-col p-space-sm rounded-lg bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Corridor Compliance</span>
+<span class="font-headline-sm text-headline-sm text-primary mt-0.5">97.4%</span>
+</div>
+<div class="flex flex-col p-space-sm rounded-lg bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Prior Fare Disputes</span>
+<span class="font-headline-sm text-headline-sm text-on-surface mt-0.5">1 Prior (Substantiated)</span>
+</div>
+<div class="flex flex-col p-space-sm rounded-lg bg-surface-container-low">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Driver Status</span>
+<span class="font-headline-sm text-headline-sm text-primary mt-0.5">Active</span>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- Resolution Confirmation Modal Overlay (Hidden by Default) -->
+<div class="fixed inset-0 bg-inverse-surface/40 backdrop-blur-sm z-50 flex items-center justify-center p-space-md hidden" id="resolution-modal">
+<div class="bg-surface-container-lowest rounded-xl p-space-xl max-w-lg w-full shadow-2xl flex flex-col gap-space-md">
+<div class="flex items-center gap-space-sm text-primary">
+<span class="material-symbols-outlined text-[28px]">verified</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Confirm Complaint Resolution</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+        Are you sure you want to resolve <strong class="text-on-surface font-title-md">CMP-10482</strong>? This will record the outcome in the driver's telemetry log and mark the operational ticket as closed.
+      </p>
+<div class="p-space-sm rounded-lg bg-surface-container-low text-on-surface font-body-sm text-body-sm">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant block mb-1">Attached Final Note:</span>
+<span class="italic" id="modal-note-preview">Fare discrepancy verified via telemetry. Unauthorized deviation recorded.</span>
+</div>
+<div class="flex items-center justify-end gap-space-sm pt-space-xs">
+<button class="py-space-sm px-space-md rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-title-md text-title-md transition-colors" id="modal-cancel-btn" type="button">
+          Cancel
+        </button>
+<button class="py-space-sm px-space-md rounded-lg bg-primary hover:bg-primary-container text-on-primary font-title-md text-title-md shadow-sm transition-colors" id="modal-confirm-btn" type="button">
+          Mark As Resolved
+        </button>
+</div>
+</div>
+</div>
+<!-- Warning Confirmation Modal Overlay (Hidden by Default) -->
+<div class="fixed inset-0 bg-inverse-surface/40 backdrop-blur-sm z-50 flex items-center justify-center p-space-md hidden" id="warning-modal">
+<div class="bg-surface-container-lowest rounded-xl p-space-xl max-w-lg w-full shadow-2xl flex flex-col gap-space-md">
+<div class="flex items-center gap-space-sm text-amber-700">
+<span class="material-symbols-outlined text-[28px]">notification_important</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Issue Corridor Warning</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+        This dispatch notice will be delivered directly to <strong class="text-on-surface font-title-md">Anand Murthy (DRV-7402)</strong> and registered against their route efficiency metrics.
+      </p>
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant" for="warning-text">Notice Details</label>
+<textarea class="w-full p-space-sm rounded-lg bg-surface-container-low text-on-surface font-body-sm text-body-sm outline-none" id="warning-text" rows="3">Notice: Unauthorized detour on ride #PKM-88294 flagged. Outer Ring Road compliance is mandatory for shared corridor trips. Continued variance may affect dispatch tier.</textarea>
+</div>
+<div class="flex items-center justify-end gap-space-sm pt-space-xs">
+<button class="py-space-sm px-space-md rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-title-md text-title-md transition-colors" id="warning-cancel-btn" type="button">
+          Dismiss
+        </button>
+<button class="py-space-sm px-space-md rounded-lg bg-amber-700 hover:bg-amber-800 text-on-primary font-title-md text-title-md transition-colors" id="warning-confirm-btn" type="button">
+          Dispatch Warning
+        </button>
+</div>
+</div>
+</div>
+<!-- Client-side Interactive Behaviors -->
+<script>
+    (function() {
+      // Modal controls for Resolution
+      const resolveBtn = document.getElementById('resolve-btn');
+      const resolveModal = document.getElementById('resolution-modal');
+      const modalCancelBtn = document.getElementById('modal-cancel-btn');
+      const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+      const resolutionNoteArea = document.getElementById('resolution-note');
+      const modalNotePreview = document.getElementById('modal-note-preview');
+
+      // Modal controls for Warning
+      const warningBtn = document.getElementById('warning-btn');
+      const warningModal = document.getElementById('warning-modal');
+      const warningCancelBtn = document.getElementById('warning-cancel-btn');
+      const warningConfirmBtn = document.getElementById('warning-confirm-btn');
+
+      // Internal Note elements
+      const saveNoteBtn = document.getElementById('save-note-btn');
+      const newInternalNote = document.getElementById('new-internal-note');
+      const notesContainer = document.getElementById('notes-container');
+
+      // Trigger Resolution Modal
+      if (resolveBtn && resolveModal) {
+        resolveBtn.addEventListener('click', () => {
+          const text = resolutionNoteArea.value.trim();
+          modalNotePreview.textContent = text || 'No resolution note specified.';
+          resolveModal.classList.remove('hidden');
+        });
+      }
+
+      if (modalCancelBtn && resolveModal) {
+        modalCancelBtn.addEventListener('click', () => {
+          resolveModal.classList.add('hidden');
+        });
+      }
+
+      if (modalConfirmBtn && resolveModal) {
+        modalConfirmBtn.addEventListener('click', () => {
+          resolveModal.classList.add('hidden');
+          resolveBtn.disabled = true;
+          resolveBtn.innerHTML = '<span class="material-symbols-outlined text-[18px]">done_all</span><span>Complaint Resolved</span>';
+          resolveBtn.classList.remove('bg-primary', 'hover:bg-primary-container');
+          resolveBtn.classList.add('bg-surface-container-highest', 'text-on-surface-variant', 'cursor-not-allowed');
+          
+          // Update Status Badge in Top Bar
+          const openBadge = document.querySelector('.bg-amber-100');
+          if (openBadge) {
+            openBadge.className = 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm tracking-wider uppercase';
+            openBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>Resolved';
+          }
+        });
+      }
+
+      // Trigger Warning Modal
+      if (warningBtn && warningModal) {
+        warningBtn.addEventListener('click', () => {
+          warningModal.classList.remove('hidden');
+        });
+      }
+
+      if (warningCancelBtn && warningModal) {
+        warningCancelBtn.addEventListener('click', () => {
+          warningModal.classList.add('hidden');
+        });
+      }
+
+      if (warningConfirmBtn && warningModal) {
+        warningConfirmBtn.addEventListener('click', () => {
+          warningModal.classList.add('hidden');
+          warningBtn.disabled = true;
+          warningBtn.innerHTML = '<span class="material-symbols-outlined text-[18px]">done</span><span>Warning Dispatched to Driver</span>';
+          warningBtn.classList.add('opacity-60', 'cursor-not-allowed');
+        });
+      }
+
+      // Add New Internal Note
+      if (saveNoteBtn && newInternalNote && notesContainer) {
+        saveNoteBtn.addEventListener('click', () => {
+          const content = newInternalNote.value.trim();
+          if (!content) return;
+
+          const now = new Date();
+          const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+          const noteDiv = document.createElement('div');
+          noteDiv.className = 'p-space-md rounded-lg bg-surface-container flex flex-col gap-space-xs';
+          noteDiv.innerHTML = `
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-space-xs">
+                <span class="font-title-md text-title-md text-on-surface">Vikramaditya Rao</span>
+                <span class="px-1.5 py-0.2 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Operations Admin</span>
+              </div>
+              <span class="font-label-sm text-label-sm text-on-surface-variant">Today, ${timeStr} IST</span>
+            </div>
+            <p class="font-body-sm text-body-sm text-on-surface leading-relaxed">${content}</p>
+          `;
+
+          notesContainer.prepend(noteDiv);
+          newInternalNote.value = '';
+        });
+      }
+    })();
+  </script>
+</div></main></div>
+
+
+
+</body></html>

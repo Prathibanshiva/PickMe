@@ -1,0 +1,271 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "on-error-container": "#93000a", "surface-variant": "#dce2f7", "on-surface": "#141b2b", "secondary-fixed": "#77ff60", "on-secondary": "#ffffff", "surface-dim": "#d3daef", "on-tertiary-fixed-variant": "#454748", "inverse-primary": "#48e32e", "inverse-on-surface": "#edf0ff", "surface": "#f9f9ff", "background": "#f9f9ff", "on-primary-fixed": "#012200", "surface-container-highest": "#dce2f7", "primary-fixed-dim": "#48e32e", "secondary": "#046e00", "on-tertiary-fixed": "#191c1d", "primary": "#0d6e00", "on-primary": "#ffffff", "on-tertiary-container": "#3d4041", "surface-container": "#e9edff", "tertiary": "#5c5f60", "primary-container": "#1fc600", "on-tertiary": "#ffffff", "secondary-fixed-dim": "#0de600", "on-secondary-fixed": "#012200", "on-primary-fixed-variant": "#085300", "inverse-surface": "#293040", "on-error": "#ffffff", "surface-container-high": "#e1e8fd", "surface-container-low": "#f1f3ff", "tertiary-fixed": "#e1e3e4", "surface-container-lowest": "#ffffff", "on-secondary-container": "#046d00", "surface-tint": "#0d6e00", "tertiary-fixed-dim": "#c5c7c8", "on-primary-container": "#064b00", "outline": "#6d7b65", "primary-fixed": "#78ff5c", "on-surface-variant": "#3d4b37", "on-secondary-fixed-variant": "#035300", "error": "#ba1a1a", "secondary-container": "#0ef900", "error-container": "#ffdad6", "outline-variant": "#bccbb2", "on-background": "#141b2b", "surface-bright": "#f9f9ff", "tertiary-container": "#a9abac" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "container-padding": "20px", "unit": "4px", "gutter": "12px", "stack-gap": "16px", "section-gap": "32px" }, fontFamily: { "label-bold": ["Inter"], "fare-display": ["Inter"], "display-lg": ["Inter"], "body-sm": ["Inter"], "headline-lg-mobile": ["Inter"], "headline-lg": ["Inter"], "title-md": ["Inter"], "body-lg": ["Inter"] }, fontSize: { "label-bold": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }], "fare-display": ["24px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "800" }], "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "title-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } }</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-lg text-body-lg text-on-surface flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-gutter flex items-center justify-between"><div class="flex items-center gap-unit"><button aria-label="Go back" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container transition-colors" onclick="history.back()"><span class="material-symbols-outlined text-[24px]">arrow_back</span></button><h1 class="font-title-md text-title-md text-on-surface font-semibold tracking-tight">Profile Details</h1></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 bg-surface pb-safe"><div class="flex flex-col w-full px-container-padding pb-8">
+<!-- Profile Delight Status & Metric Pill -->
+<div class="flex items-center justify-between mt-2 mb-stack-gap">
+<div class="flex items-center gap-2">
+<span class="inline-flex w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-bold text-label-bold text-primary tracking-wider uppercase">Active Account</span>
+</div>
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-bold text-label-bold">
+<span class="material-symbols-outlined text-[15px] text-primary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-semibold text-on-surface">4.94</span>
+<span class="text-tertiary">(184 rides)</span>
+</div>
+</div>
+<!-- Top Hero / Profile Section -->
+<div class="relative w-full rounded-2xl bg-surface-container-lowest shadow-sm p-6 flex flex-col items-center text-center">
+<!-- Ambient glowing subtle gradient blob -->
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 w-48 h-48 bg-gradient-to-b from-primary-fixed/30 to-transparent rounded-full blur-2xl pointer-events-none"></div>
+<!-- Avatar Container with Tactile Ring & Camera Action -->
+<div class="relative group">
+<div class="w-24 h-24 rounded-full overflow-hidden shadow-md bg-surface-container-high relative">
+<img class="w-full h-full object-cover" data-alt="A clean studio portrait of Rahul, a friendly South Asian man in his late twenties wearing a modern navy collar shirt, smiling warmly against a bright neutral studio backdrop, high resolution commercial headshot aesthetic with soft lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFpZ7iJGcEjTyi8ecRE0VaVZPpn-ONOcY3xFEACSEtGMY2P7IVPx2UcNGJ0_ie4ilEC2FZm3Y1oMF5x3G1nJ_eUae79WlkIMlJjuvcmflZsxjzDZDPdlsD2UNXNyenfZ1kdXLrCoYnK64vqkyzGMp6Iv0V5IyIIY4wCriwJrw3BApbLmCkrfcuznGmABwe-anztf4_qtDPAzOvwduIOQnJD7AFZJ-gioDbcSveEfeqNVqIKukhMQnekQ">
+</div>
+<button aria-label="Update profile photo" class="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-md active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-[17px]">photo_camera</span>
+</button>
+</div>
+<!-- Name & Handle -->
+<h2 class="mt-3.5 font-headline-lg-mobile text-headline-lg-mobile text-on-surface tracking-tight">Rahul Sharma</h2>
+<p class="font-body-sm text-body-sm text-tertiary">rahul.sharma@example.com</p>
+<!-- Verification Badge (Phone & Email Verified) -->
+<div class="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-secondary-fixed/30 text-on-secondary-fixed">
+<span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-bold text-label-bold font-semibold text-on-primary-fixed">Phone &amp; Email Verified</span>
+</div>
+</div>
+<!-- Editable Profile Information Card -->
+<div class="mt-stack-gap flex flex-col gap-unit">
+<div class="flex items-center justify-between px-1 mb-1">
+<span class="font-label-bold text-label-bold uppercase tracking-wider text-tertiary">Personal Information</span>
+<span class="font-body-sm text-body-sm text-primary font-medium">Tap to edit</span>
+</div>
+<div class="w-full bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden flex flex-col">
+<!-- Full Name Row -->
+<div class="group px-4 py-3.5 flex items-center justify-between active:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex items-center gap-3.5 min-w-0">
+<div class="w-9 h-9 rounded-xl bg-surface-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">person</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-bold text-label-bold text-tertiary">Full Name</span>
+<span class="font-body-lg text-body-lg font-medium text-on-surface truncate">Rahul Sharma</span>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-tertiary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+</div>
+<div class="h-[1px] w-full bg-surface-container"></div>
+<!-- Phone Number Row (with Verified pill) -->
+<div class="group px-4 py-3.5 flex items-center justify-between active:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex items-center gap-3.5 min-w-0">
+<div class="w-9 h-9 rounded-xl bg-surface-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">call</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-label-bold text-label-bold text-tertiary">Phone Number</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-label-bold font-bold bg-primary/10 text-primary uppercase">Verified</span>
+</div>
+<span class="font-body-lg text-body-lg font-medium text-on-surface truncate">+91 98765 43210</span>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-tertiary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+</div>
+<div class="h-[1px] w-full bg-surface-container"></div>
+<!-- Email Row -->
+<div class="group px-4 py-3.5 flex items-center justify-between active:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex items-center gap-3.5 min-w-0">
+<div class="w-9 h-9 rounded-xl bg-surface-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">mail</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-label-bold text-label-bold text-tertiary">Email Address</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-label-bold font-bold bg-primary/10 text-primary uppercase">Verified</span>
+</div>
+<span class="font-body-lg text-body-lg font-medium text-on-surface truncate">rahul.sharma@example.com</span>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-tertiary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+</div>
+<div class="h-[1px] w-full bg-surface-container"></div>
+<!-- Gender Row -->
+<div class="group px-4 py-3.5 flex items-center justify-between active:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex items-center gap-3.5 min-w-0">
+<div class="w-9 h-9 rounded-xl bg-surface-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">wc</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-bold text-label-bold text-tertiary">Gender</span>
+<span class="font-body-lg text-body-lg font-medium text-on-surface truncate">Male</span>
+</div>
+</div>
+<div class="flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-[20px]">expand_more</span>
+</div>
+</div>
+<div class="h-[1px] w-full bg-surface-container"></div>
+<!-- DOB Row -->
+<div class="group px-4 py-3.5 flex items-center justify-between active:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex items-center gap-3.5 min-w-0">
+<div class="w-9 h-9 rounded-xl bg-surface-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">calendar_month</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-bold text-label-bold text-tertiary">Date of Birth</span>
+<span class="font-body-lg text-body-lg font-medium text-on-surface truncate">14 Aug 1994</span>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-tertiary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Read-Only Membership Banner -->
+<div class="mt-4 w-full bg-surface-container-low rounded-2xl p-4 flex items-center justify-between">
+<div class="flex items-center gap-3.5 min-w-0">
+<div class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">PickMe member since March 2022</span>
+<span class="font-label-bold text-label-bold text-tertiary truncate">Gold Tier Passenger • Top 5% Rider</span>
+</div>
+</div>
+<div class="flex items-center justify-center text-outline-variant shrink-0 ml-2">
+<span class="material-symbols-outlined text-[20px]">lock</span>
+</div>
+</div>
+<!-- Emergency Contacts Section -->
+<div class="mt-section-gap flex flex-col gap-2.5">
+<div class="flex items-center justify-between">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface font-semibold">Emergency Contacts</h3>
+<p class="font-body-sm text-body-sm text-tertiary">Shared automatically during active rides or SOS triggers</p>
+</div>
+<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-secondary-fixed/40 text-on-secondary-fixed font-label-bold text-[11px] font-bold">2/5</span>
+</div>
+<!-- Contact Pills / Chips Row -->
+<div class="flex flex-wrap gap-2.5 mt-1" id="emergency-chips-container">
+<!-- Chip 1: Mom -->
+<div class="inline-flex items-center gap-2 pl-3.5 pr-2 py-2 rounded-full bg-surface-container-lowest shadow-sm text-on-surface transition-transform active:scale-95" id="chip-contact-1">
+<div class="w-5 h-5 rounded-full bg-secondary-fixed/50 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
+<div class="flex items-baseline gap-1 font-body-sm text-body-sm">
+<span class="font-semibold text-on-surface">Mom</span>
+<span class="text-tertiary text-[12px]">(+91 98765 11223)</span>
+</div>
+<button aria-label="Remove Mom from emergency contacts" class="w-6 h-6 rounded-full flex items-center justify-center text-tertiary hover:text-error hover:bg-error-container/40 transition-colors ml-0.5" onclick="document.getElementById('chip-contact-1').remove()" type="button">
+<span class="material-symbols-outlined text-[15px]">close</span>
+</button>
+</div>
+<!-- Chip 2: David -->
+<div class="inline-flex items-center gap-2 pl-3.5 pr-2 py-2 rounded-full bg-surface-container-lowest shadow-sm text-on-surface transition-transform active:scale-95" id="chip-contact-2">
+<div class="w-5 h-5 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[13px]">person</span>
+</div>
+<div class="flex items-baseline gap-1 font-body-sm text-body-sm">
+<span class="font-semibold text-on-surface">David</span>
+<span class="text-tertiary text-[12px]">(+91 91234 56789)</span>
+</div>
+<button aria-label="Remove David from emergency contacts" class="w-6 h-6 rounded-full flex items-center justify-center text-tertiary hover:text-error hover:bg-error-container/40 transition-colors ml-0.5" onclick="document.getElementById('chip-contact-2').remove()" type="button">
+<span class="material-symbols-outlined text-[15px]">close</span>
+</button>
+</div>
+<!-- Chip 3: + Add Contact Button -->
+<button class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-surface-container text-primary font-body-sm text-body-sm font-semibold active:scale-95 transition-all hover:bg-primary-fixed/40" id="add-contact-btn" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span>Add Contact</span>
+</button>
+</div>
+<!-- Safety Micro-Card Delight -->
+<div class="mt-2 p-3 rounded-xl bg-surface-container-low flex items-start gap-2.5">
+<span class="material-symbols-outlined text-primary text-[19px] mt-0.5">security</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+        Your safety contacts receive real-time GPS tracking and vehicle details when you toggle Ride Shield.
+      </p>
+</div>
+</div>
+<!-- Primary Save Action Button -->
+<div class="mt-section-gap w-full">
+<button class="w-full h-14 rounded-2xl bg-primary-container text-on-primary-fixed font-headline-lg-mobile text-[16px] font-bold flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-all" id="save-btn" type="button">
+<span class="material-symbols-outlined text-[20px]" id="save-icon">check</span>
+<span id="save-text">Save Changes</span>
+</button>
+<p class="text-center font-body-sm text-body-sm text-tertiary mt-2.5">Changes to email &amp; phone take effect immediately</p>
+</div>
+</div>
+<script>
+  (function() {
+    const saveBtn = document.getElementById('save-btn');
+    const saveIcon = document.getElementById('save-icon');
+    const saveText = document.getElementById('save-text');
+
+    if (saveBtn) {
+      saveBtn.addEventListener('click', function() {
+        saveIcon.textContent = 'hourglass_top';
+        saveText.textContent = 'Saving...';
+        
+        setTimeout(() => {
+          saveIcon.textContent = 'task_alt';
+          saveText.textContent = 'Saved Successfully!';
+          saveBtn.classList.remove('bg-primary-container');
+          saveBtn.classList.add('bg-primary', 'text-on-primary');
+
+          setTimeout(() => {
+            saveIcon.textContent = 'check';
+            saveText.textContent = 'Save Changes';
+            saveBtn.classList.add('bg-primary-container');
+            saveBtn.classList.remove('bg-primary', 'text-on-primary');
+          }, 1800);
+        }, 600);
+      });
+    }
+
+    const addBtn = document.getElementById('add-contact-btn');
+    const container = document.getElementById('emergency-chips-container');
+
+    if (addBtn && container) {
+      addBtn.addEventListener('click', function() {
+        const contactName = prompt("Enter Contact Name (e.g. Sister, Alex):", "Alex");
+        if (!contactName) return;
+        const contactPhone = prompt("Enter Phone Number:", "+91 98111 22334");
+        if (!contactPhone) return;
+
+        const newChip = document.createElement('div');
+        newChip.className = "inline-flex items-center gap-2 pl-3.5 pr-2 py-2 rounded-full bg-surface-container-lowest shadow-sm text-on-surface transition-transform active:scale-95";
+        newChip.innerHTML = `
+          <div class="w-5 h-5 rounded-full bg-secondary-fixed/50 flex items-center justify-center text-primary">
+            <span class="material-symbols-outlined text-[13px]">person</span>
+          </div>
+          <div class="flex items-baseline gap-1 font-body-sm text-body-sm">
+            <span class="font-semibold text-on-surface">${contactName}</span>
+            <span class="text-tertiary text-[12px]">(${contactPhone})</span>
+          </div>
+          <button type="button" aria-label="Remove contact" class="w-6 h-6 rounded-full flex items-center justify-center text-tertiary hover:text-error transition-colors ml-0.5">
+            <span class="material-symbols-outlined text-[15px]">close</span>
+          </button>
+        `;
+
+        newChip.querySelector('button').addEventListener('click', function() {
+          newChip.remove();
+        });
+
+        container.insertBefore(newChip, addBtn);
+      });
+    }
+  })();
+</script></main></body></html>

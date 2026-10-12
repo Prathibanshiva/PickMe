@@ -1,0 +1,624 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-error-container": "#93000a",
+          "surface-container-highest": "#d3e4fe",
+          "surface-bright": "#f8f9ff",
+          "outline-variant": "#bfcab7",
+          "on-surface-variant": "#404a3b",
+          "primary-container": "#0d6e00",
+          "surface-dim": "#cbdbf5",
+          "surface": "#f8f9ff",
+          "on-primary": "#ffffff",
+          "on-primary-fixed": "#012200",
+          "surface-container": "#e5eeff",
+          "error": "#ba1a1a",
+          "surface-tint": "#0d6e00",
+          "tertiary-fixed-dim": "#bfc6dc",
+          "on-secondary": "#ffffff",
+          "on-secondary-container": "#0e7300",
+          "on-error": "#ffffff",
+          "on-tertiary-container": "#d1d8ee",
+          "tertiary": "#404658",
+          "primary": "#085300",
+          "secondary-fixed": "#78ff5c",
+          "error-container": "#ffdad6",
+          "on-tertiary": "#ffffff",
+          "on-secondary-fixed": "#012200",
+          "inverse-on-surface": "#eaf1ff",
+          "secondary-fixed-dim": "#48e32e",
+          "on-primary-container": "#91ee79",
+          "on-primary-fixed-variant": "#085300",
+          "secondary-container": "#64fe48",
+          "background": "#f8f9ff",
+          "inverse-surface": "#213145",
+          "primary-fixed-dim": "#80dc69",
+          "on-tertiary-fixed-variant": "#404758",
+          "outline": "#707a69",
+          "surface-container-low": "#eff4ff",
+          "secondary": "#0d6e00",
+          "tertiary-container": "#575e71",
+          "on-background": "#0b1c30",
+          "surface-container-lowest": "#ffffff",
+          "surface-container-high": "#dce9ff",
+          "on-secondary-fixed-variant": "#085300",
+          "on-tertiary-fixed": "#141b2b",
+          "primary-fixed": "#9bf982",
+          "tertiary-fixed": "#dce2f9",
+          "surface-variant": "#d3e4fe",
+          "on-surface": "#0b1c30",
+          "inverse-primary": "#80dc69"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        "spacing": {
+          "space-md": "1rem",
+          "space-lg": "1.25rem",
+          "space-xs": "0.25rem",
+          "space-xl": "2rem",
+          "gutter": "1.25rem",
+          "space-sm": "0.5rem",
+          "margin": "1.5rem"
+        },
+        "fontFamily": {
+          "numeric-stat": ["Inter"],
+          "body-sm": ["Inter"],
+          "headline-sm": ["Inter"],
+          "title-md": ["Inter"],
+          "display-lg": ["Inter"],
+          "headline-md": ["Inter"],
+          "body-lg": ["Inter"],
+          "label-sm": ["Inter"],
+          "label-lg": ["Inter"],
+          "label-md": ["Inter"],
+          "headline-lg": ["Inter"],
+          "body-md": ["Inter"]
+        },
+        "fontSize": {
+          "numeric-stat": ["28px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+          "headline-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600"}],
+          "title-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+          "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+          "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+          "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600"}],
+          "label-lg": ["13px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+          "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+          "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+          "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+        }
+      }
+    }
+  }</script></head><body class="bg-surface font-body-md text-body-md text-on-surface"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between hidden md:flex"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-lg flex items-center justify-between"><div class="flex items-center gap-3 px-1 py-2">
+  <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdd_U4O9c1ZEYb-dk5tJW7JoTcwAy412hNT7t7CBcKnQhWB6G5viZFnU3feYv-UYqJF_6NQVpcXRzRMPu_kCb5RUEw_CSBdZR2a3CyjEfr6lHHh0_Uorle16GbkghfjXTcdnmpoNLQODbWj0Avmsf1tnVSDLIeDCMEbjDzb2Y71bLOJSygLz3ATi-ves7jDxIxELmLFjhZHZfaB5KDc8uyUQUPthLP2WmNWnqiKW9dQKbNmeVqaiHEbn8904ybjZlA" alt="PickMe Logo" class="h-10 w-auto object-contain max-w-[140px]">
+  <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-[#0D6E00] text-white uppercase tracking-wider">Admin</span>
+</div></div><div class="px-space-md py-space-xs"><div class="px-space-md py-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">Operations</div><nav class="flex flex-col gap-space-xs mt-space-xs" data-active-classes="bg-primary-container text-on-primary font-title-md"><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="dashboard" href="#"><span class="material-symbols-outlined text-[20px]">grid_view</span><span class="font-title-md text-title-md">Dashboard</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="drivers" href="#"><span class="material-symbols-outlined text-[20px]">local_taxi</span><span class="font-title-md text-title-md">Drivers</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="users" href="#"><span class="material-symbols-outlined text-[20px]">group</span><span class="font-title-md text-title-md">Users</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="rides" href="#"><span class="material-symbols-outlined text-[20px]">commute</span><span class="font-title-md text-title-md">Rides</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="scheduled" href="#"><span class="material-symbols-outlined text-[20px]">event_upcoming</span><span class="font-title-md text-title-md">Scheduled</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="fares" href="#"><span class="material-symbols-outlined text-[20px]">payments</span><span class="font-title-md text-title-md">Fares</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg bg-surface-container-low text-primary font-semibold transition-colors" data-path="analytics" href="#"><span class="material-symbols-outlined text-[20px] text-primary">monitoring</span><span class="font-title-md text-title-md text-primary font-semibold">Analytics</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="complaints" href="#"><span class="material-symbols-outlined text-[20px]">report_problem</span><span class="font-title-md text-title-md">Complaints</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="reports" href="#"><span class="material-symbols-outlined text-[20px]">description</span><span class="font-title-md text-title-md">Reports</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="notifications" href="#"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="font-title-md text-title-md">Notifications</span></a></nav></div><div class="px-space-md py-space-xs mt-space-sm"><div class="px-space-md py-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">Configuration</div><nav class="flex flex-col gap-space-xs mt-space-xs" data-active-classes="bg-primary-container text-on-primary font-title-md"><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="platform-settings" href="#"><span class="material-symbols-outlined text-[20px]">tune</span><span class="font-title-md text-title-md">Platform Settings</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="audit-logs" href="#"><span class="material-symbols-outlined text-[20px]">history</span><span class="font-title-md text-title-md">Audit Logs</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="admin-profile" href="#"><span class="material-symbols-outlined text-[20px]">badge</span><span class="font-title-md text-title-md">Admin Profile</span></a></nav></div></div><div class="p-space-md bg-surface-container-low"><div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-lowest"><div class="flex items-center gap-space-sm overflow-hidden"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col min-w-0"><span class="font-title-md text-title-md text-on-surface truncate">Vikramaditya Rao</span><span class="font-body-sm text-body-sm text-on-surface-variant truncate">Operations Admin</span></div></div><button aria-label="Logout" class="p-space-xs rounded text-on-surface-variant hover:text-error hover:bg-error-container transition-colors shrink-0" type="button"><span class="material-symbols-outlined text-[20px]">logout</span></button></div></div></aside><div class="md:pl-64"><header class="fixed top-0 left-0 md:left-64 right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-md md:px-space-xl gap-space-md"><div class="flex items-center gap-space-md"><button aria-label="Open Menu" class="md:hidden p-space-xs text-on-surface hover:bg-surface-container-high rounded transition-colors" type="button"><span class="material-symbols-outlined text-[24px]">menu</span></button><nav class="hidden sm:flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm"><span class="">Console</span><span class="material-symbols-outlined text-[14px]">chevron_right</span><span class="text-on-surface font-title-md text-title-md">Operations Command</span></nav></div><div class="flex items-center gap-space-md flex-1 max-w-md mx-space-sm"><div class="relative w-full"><span class="material-symbols-outlined absolute left-space-md top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span><input class="w-full h-10 pl-10 pr-space-md rounded-lg bg-surface-container-lowest text-on-surface placeholder:text-on-surface-variant font-body-sm text-body-sm outline-none focus:ring-2 focus:ring-secondary transition-all" placeholder="Search drivers, rides, users..." type="text"></div></div><div class="flex items-center gap-space-md shrink-0"><div class="hidden lg:flex items-center gap-space-xs px-space-sm py-space-xs rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm"><span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span><span class="">Operations Active</span></div><button aria-label="Notifications" class="relative p-space-xs rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-error"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-16 w-full min-h-screen bg-surface px-space-md md:px-space-xl py-space-lg"><div class="flex flex-col w-full pb-space-xl">
+<!-- Analytics Header -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-space-md mb-space-lg">
+<div class="flex flex-col">
+<h1 class="font-display-lg text-display-lg text-on-surface tracking-tight">Analytics</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">Understand PickMe activity and performance.</p>
+</div>
+<!-- Date Filter Selector -->
+<div class="inline-flex items-center p-1 bg-surface-container rounded-lg shadow-sm self-start sm:self-auto">
+<button class="px-space-md py-1.5 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors" type="button">
+        Today
+      </button>
+<button class="px-space-md py-1.5 rounded bg-surface-container-lowest text-primary font-label-md text-label-md shadow-sm transition-all" type="button">
+        7 Days
+      </button>
+<button class="px-space-md py-1.5 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors" type="button">
+        30 Days
+      </button>
+<button class="flex items-center gap-1.5 px-space-md py-1.5 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+<span class="">Custom</span>
+</button>
+</div>
+</div>
+<!-- 1. RIDE ACTIVITY (Primary Large Chart) -->
+<section class="w-full bg-surface-container-lowest rounded-xl p-space-lg shadow-sm mb-space-lg">
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-space-sm mb-space-md">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Ride Volume</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Daily completed and total ride trends over the last 7 days.</p>
+</div>
+<div class="flex items-center gap-space-md font-label-sm text-label-sm">
+<div class="flex items-center gap-1.5 text-on-surface">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+<span class="">Completed</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="w-2.5 h-2.5 rounded-full bg-surface-variant"></span>
+<span class="">Total Requests</span>
+</div>
+</div>
+</div>
+<!-- Area Chart Canvas Graphic -->
+<div class="relative w-full h-64 sm:h-72 mt-space-sm">
+<svg class="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 700 240">
+<defs>
+<linearGradient id="volumeGreenGrad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#0D6E00" stop-opacity="0.22"></stop>
+<stop offset="100%" stop-color="#0D6E00" stop-opacity="0.0"></stop>
+</linearGradient>
+<linearGradient id="totalGreyGrad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#d3e4fe" stop-opacity="0.4"></stop>
+<stop offset="100%" stop-color="#d3e4fe" stop-opacity="0.0"></stop>
+</linearGradient>
+</defs>
+<!-- Horizontal Reference Gridlines -->
+<line stroke="#eff4ff" stroke-width="1" x1="0" x2="700" y1="30" y2="30"></line>
+<line stroke="#eff4ff" stroke-width="1" x1="0" x2="700" y1="80" y2="80"></line>
+<line stroke="#eff4ff" stroke-width="1" x1="0" x2="700" y1="130" y2="130"></line>
+<line stroke="#eff4ff" stroke-width="1" x1="0" x2="700" y1="180" y2="180"></line>
+<!-- Total Requests Area & Line -->
+<path d="M 0 120 Q 116 100, 233 75 T 466 50 T 700 40 L 700 210 L 0 210 Z" fill="url(#totalGreyGrad)"></path>
+<path d="M 0 120 Q 116 100, 233 75 T 466 50 T 700 40" fill="none" stroke="#bfcab7" stroke-dasharray="4 4" stroke-width="1.5"></path>
+<!-- Completed Rides Area & Line (PickMe Forest Green #0D6E00) -->
+<path d="M 0 135 Q 116 115, 233 90 T 466 65 T 700 52 L 700 210 L 0 210 Z" fill="url(#volumeGreenGrad)"></path>
+<path d="M 0 135 Q 116 115, 233 90 T 466 65 T 700 52" fill="none" stroke="#0D6E00" stroke-width="2.5"></path>
+<!-- Data Points on Saturday / Sunday Peak -->
+<circle cx="583" cy="58" fill="#0D6E00" r="4"></circle>
+<circle cx="700" cy="52" fill="#0D6E00" r="4.5"></circle>
+</svg>
+<!-- Day X-Axis Indicators -->
+<div class="flex justify-between items-center text-on-surface-variant font-body-sm text-body-sm pt-2">
+<span class="">Mon</span>
+<span class="">Tue</span>
+<span class="">Wed</span>
+<span class="">Thu</span>
+<span class="">Fri</span>
+<span class="font-title-md text-title-md text-on-surface">Sat (20.4k)</span>
+<span class="font-title-md text-title-md text-secondary">Sun (21.9k)</span>
+</div>
+</div>
+</section>
+<!-- 2. RIDE PERFORMANCE (Strict 3-Column Metric Row) -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-space-md mb-space-lg">
+<!-- Completed Rides -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-label-lg text-label-lg text-on-surface-variant">Completed Rides</span>
+<span class="p-1.5 rounded-lg bg-surface-container text-secondary">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+</span>
+</div>
+<div>
+<div class="font-numeric-stat text-numeric-stat text-on-surface">124,850</div>
+<div class="flex items-center gap-1.5 mt-1 font-label-md text-label-md text-secondary">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+<span class="">+6.2% vs previous period</span>
+</div>
+</div>
+</div>
+<!-- Cancelled Rides -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-label-lg text-label-lg text-on-surface-variant">Cancelled Rides</span>
+<span class="p-1.5 rounded-lg bg-surface-container text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">cancel</span>
+</span>
+</div>
+<div>
+<div class="font-numeric-stat text-numeric-stat text-on-surface">4,120</div>
+<div class="flex items-center gap-1.5 mt-1 font-label-md text-label-md text-on-surface-variant">
+<span class="">3.2% cancellation rate</span>
+<span class="text-secondary flex items-center font-title-md">(-0.4%)</span>
+</div>
+</div>
+</div>
+<!-- Ride Completion Rate -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-label-lg text-label-lg text-on-surface-variant">Ride Completion Rate</span>
+<span class="p-1.5 rounded-lg bg-surface-container text-secondary">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+</span>
+</div>
+<div>
+<div class="font-numeric-stat text-numeric-stat text-on-surface">96.8%</div>
+<div class="flex items-center gap-1.5 mt-1 font-label-md text-label-md text-secondary">
+<span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+<span class="">+0.4%</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 3. OCCUPANCY & WAIT TIME (Clean Two-Column Row) -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-space-md mb-space-lg">
+<!-- Average Occupancy -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg text-on-surface-variant">Average Occupancy</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-secondary font-label-sm text-label-sm">Occupancy First</span>
+</div>
+<div class="font-numeric-stat text-numeric-stat text-on-surface mt-space-sm">2.74 <span class="text-title-md font-body-md text-on-surface-variant font-normal">Passengers / Ride</span></div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Shared seat filling distribution across active corridors.</p>
+</div>
+<div class="mt-space-lg">
+<!-- Segmented Occupancy Bar -->
+<div class="w-full h-3 rounded-full bg-surface-container flex overflow-hidden gap-0.5">
+<div class="h-full bg-primary" style="width: 32%;" title="Solo (1 pax) 32%"></div>
+<div class="h-full bg-secondary" style="width: 28%;" title="2 pax 28%"></div>
+<div class="h-full bg-secondary-fixed-dim" style="width: 24%;" title="3 pax 24%"></div>
+<div class="h-full bg-primary-fixed" style="width: 16%;" title="4 pax 16%"></div>
+</div>
+<!-- Occupancy Scale Legend -->
+<div class="grid grid-cols-4 gap-2 mt-space-md pt-space-xs text-left font-body-sm text-body-sm">
+<div>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="">1 pax</span>
+</div>
+<span class="font-title-md text-title-md text-on-surface">32%</span>
+</div>
+<div>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="">2 pax</span>
+</div>
+<span class="font-title-md text-title-md text-on-surface">28%</span>
+</div>
+<div>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-secondary-fixed-dim"></span>
+<span class="">3 pax</span>
+</div>
+<span class="font-title-md text-title-md text-on-surface">24%</span>
+</div>
+<div>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-primary-fixed"></span>
+<span class="">4 pax</span>
+</div>
+<span class="font-title-md text-title-md text-on-surface">16%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Average Wait Time -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg text-on-surface-variant">Average Wait Time</span>
+<span class="flex items-center gap-1 text-secondary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">arrow_downward</span> -0.7m improvement
+          </span>
+</div>
+<div class="font-numeric-stat text-numeric-stat text-on-surface mt-space-sm">3.8 <span class="text-title-md font-body-md text-on-surface-variant font-normal">mins</span></div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Dispatch arrival duration dropping continuously over the last 7 days.</p>
+</div>
+<!-- Daily Wait Time Trend Sparkline -->
+<div class="mt-space-md pt-2">
+<div class="h-24 w-full">
+<svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 320 80">
+<defs>
+<linearGradient id="waitGrad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#0D6E00" stop-opacity="0.15"></stop>
+<stop offset="100%" stop-color="#0D6E00" stop-opacity="0.0"></stop>
+</linearGradient>
+</defs>
+<path d="M 0 15 L 53 22 L 106 30 L 160 38 L 213 48 L 266 58 L 320 68 L 320 80 L 0 80 Z" fill="url(#waitGrad)"></path>
+<path d="M 0 15 L 53 22 L 106 30 L 160 38 L 213 48 L 266 58 L 320 68" fill="none" stroke="#0D6E00" stroke-linecap="round" stroke-width="2.5"></path>
+<circle cx="0" cy="15" fill="#0D6E00" r="3.5"></circle>
+<circle cx="320" cy="68" fill="#0D6E00" r="4"></circle>
+</svg>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant font-body-sm text-body-sm pt-1">
+<span class="">Day 1: 4.5m</span>
+<span class="">Day 4: 4.1m</span>
+<span class="font-title-md text-title-md text-secondary">Today: 3.8m</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. VEHICLE USAGE & RIDE MODE (Clean Two-Column Row) -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-space-md mb-space-lg">
+<!-- Vehicle Usage Breakdown (5 Official PickMe Vehicles) -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between">
+<div class="mb-space-md">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Vehicle Usage</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Fleet categorization across 5 official operational tiers.</p>
+</div>
+<div class="flex flex-col gap-space-sm">
+<!-- Auto (44%) -->
+<div>
+<div class="flex justify-between items-center font-label-md text-label-md mb-1">
+<span class="text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary">electric_rickshaw</span>
+              Auto
+            </span>
+<span class="font-title-md text-title-md text-on-surface">44%</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 44%;"></div>
+</div>
+</div>
+<!-- Sedan (24%) -->
+<div>
+<div class="flex justify-between items-center font-label-md text-label-md mb-1">
+<span class="text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary">directions_car</span>
+              Sedan
+            </span>
+<span class="font-title-md text-title-md text-on-surface">24%</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-secondary-fixed-dim rounded-full" style="width: 24%;"></div>
+</div>
+</div>
+<!-- Car (16%) -->
+<div>
+<div class="flex justify-between items-center font-label-md text-label-md mb-1">
+<span class="text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary">local_taxi</span>
+              Car (Hatchback)
+            </span>
+<span class="font-title-md text-title-md text-on-surface">16%</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-primary-fixed rounded-full" style="width: 16%;"></div>
+</div>
+</div>
+<!-- Bike (10%) -->
+<div>
+<div class="flex justify-between items-center font-label-md text-label-md mb-1">
+<span class="text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary">two_wheeler</span>
+              Bike
+            </span>
+<span class="font-title-md text-title-md text-on-surface">10%</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-surface-variant rounded-full" style="width: 10%;"></div>
+</div>
+</div>
+<!-- SUV (6%) -->
+<div>
+<div class="flex justify-between items-center font-label-md text-label-md mb-1">
+<span class="text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary">airport_shuttle</span>
+              SUV
+            </span>
+<span class="font-title-md text-title-md text-on-surface">6%</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-tertiary-fixed-dim rounded-full" style="width: 6%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Ride Mode Comparison (Shared vs Personal) -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Ride Mode</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Comparison between Shared Pooling and Solo Direct Bookings.</p>
+</div>
+<div class="my-space-md">
+<!-- Split Visual Bar -->
+<div class="w-full h-4 rounded-full bg-surface-container flex overflow-hidden">
+<div class="h-full bg-secondary" style="width: 68%;"></div>
+<div class="h-full bg-surface-container-highest" style="width: 32%;"></div>
+</div>
+<!-- Mode Metrics Grid -->
+<div class="grid grid-cols-2 gap-space-md mt-space-lg">
+<div class="p-space-md rounded-lg bg-surface-container-low">
+<div class="flex items-center gap-1.5 mb-1">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+<span class="font-label-lg text-label-lg text-on-surface">Shared Pooling</span>
+</div>
+<div class="font-numeric-stat text-numeric-stat text-secondary mt-1">68%</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">84,898 rides</div>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low">
+<div class="flex items-center gap-1.5 mb-1">
+<span class="w-2.5 h-2.5 rounded-full bg-outline-variant"></span>
+<span class="font-label-lg text-label-lg text-on-surface">Personal / Solo</span>
+</div>
+<div class="font-numeric-stat text-numeric-stat text-on-surface mt-1">32%</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">39,952 rides</div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 p-2.5 rounded-lg bg-surface-container-low text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px] text-secondary">eco</span>
+<span class="">High shared density reduced deadhead fleet travel by 23.4% this week.</span>
+</div>
+</div>
+</section>
+<!-- 5. PEAK BOOKING HOURS -->
+<section class="w-full bg-surface-container-lowest rounded-xl p-space-lg shadow-sm mb-space-lg">
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-space-sm mb-space-lg">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Peak Booking Hours</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Hourly demand density from 06:00 to 23:00 across all operational clusters.</p>
+</div>
+<div class="flex items-center gap-space-md font-label-sm text-label-sm">
+<span class="flex items-center gap-1.5 text-on-surface">
+<span class="w-2.5 h-2.5 rounded bg-secondary"></span> Peak Window (8:30-10:30 &amp; 17:30-20:30)
+        </span>
+<span class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="w-2.5 h-2.5 rounded bg-surface-container"></span> Regular Hours
+        </span>
+</div>
+</div>
+<!-- Hourly Bar Chart Visual -->
+<div class="grid grid-cols-18 gap-1.5 h-44 items-end pb-2">
+<!-- 06:00 -->
+<div class="flex flex-col items-center h-full justify-end group">
+<div class="w-full bg-surface-container rounded-t hover:bg-secondary-fixed transition-all" style="height: 22%;"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-2 text-[10px]">06</span>
+</div>
+<!-- 07:00 -->
+<div class="flex flex-col items-center h-full justify-end group">
+<div class="w-full bg-surface-container rounded-t hover:bg-secondary-fixed transition-all" style="height: 38%;"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-2 text-[10px]">07</span>
+</div>
+<!-- 08:00 (Morning Peak Starts) -->
+<div class="flex flex-col items-center h-full justify-end group">
+<div class="w-full bg-secondary rounded-t shadow-sm" style="height: 78%;"></div>
+<span class="font-label-sm text-label-sm text-secondary font-bold mt-2 text-[10px]">08</span>
+</div>
+<!-- 09:00 (Peak Apex) -->
+<div class="flex flex-col items-center h-full justify-end group">
+<div class="w-full bg-secondary rounded-t shadow-sm" style="height: 94%;"></div>
+<span class="font-label-sm text-label-sm text-secondary font-bold mt-2 text-[10px]">09</span>
+</div>
+<!-- 10:00 (Peak Apex) -->
+<div class="flex flex-col items-center h-full justify-end group">
+<div class="w-full bg-secondary rounded-t shadow-sm" style="height: 82%;"></div>
+<span class="font-label-sm text-label-sm text-secondary font-bold mt-2 text-[10px]">10</span>
+</div>
+<!-- 11:00 -->
+<div class="flex flex-col items-center h-full justify-end group">
+<div class="w-full bg-surface-container rounded-t hover:bg-secondary-fixed transition-all" style="height: 48%;"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-2 text-[10px]">11</span>
+</div>
+<!-- 12:00 -->
+<div class="flex flex-col items-center h-full justify-end group">
+<div class="w-full bg-surface-container rounded-t hover:bg-secondary-fixed transition-all" style="height: 44%;"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-2 text-[10px]">12</span>
+</div>
+<!-- 13:00 -->
+<div class="flex flex-col items-center h-full justify-end group">
+<div class="w-full bg-surface-container rounded-t hover:bg-secondary-fixed transition-all" style="height: 40%;"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-2 text-[10px]">13</span>
+</div>
+<!-- 14:00 -->
+<div class="flex flex-col items-center h-full justify-end group">
+<div class="w-full bg-surface-container rounded-t hover:bg-secondary-fixed transition-all" style="height: 38%;"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-2 text-[10px]">14</span>
+</div>
+<!-- 15:00 -->
+<div class="flex flex-col items-center h-full justify-end group">
+<div class="w-full bg-surface-container rounded-t hover:bg-secondary-fixed transition-all" style="height: 42%;"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-2 text-[10px]">15</span>
+</div>
+<!-- 16:00 -->
+<div class="flex flex-col items-center h-full justify-end group">
+<div class="w-full bg-surface-container rounded-t hover:bg-secondary-fixed transition-all" style="height: 54%;"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-2 text-[10px]">16</span>
+</div>
+<!-- 17:00 (Evening Peak Starts) -->
+<div class="flex flex-col items-center h-full justify-end group">
+<div class="w-full bg-secondary rounded-t shadow-sm" style="height: 76%;"></div>
+<span class="font-label-sm text-label-sm text-secondary font-bold mt-2 text-[10px]">17</span>
+</div>
+<!-- 18:00 (Evening Peak) -->
+<div class="flex flex-col items-center h-full justify-end group">
+<div class="w-full bg-secondary rounded-t shadow-sm" style="height: 98%;"></div>
+<span class="font-label-sm text-label-sm text-secondary font-bold mt-2 text-[10px]">18</span>
+</div>
+<!-- 19:00 (Evening Peak) -->
+<div class="flex flex-col items-center h-full justify-end group">
+<div class="w-full bg-secondary rounded-t shadow-sm" style="height: 92%;"></div>
+<span class="font-label-sm text-label-sm text-secondary font-bold mt-2 text-[10px]">19</span>
+</div>
+<!-- 20:00 (Evening Peak) -->
+<div class="flex flex-col items-center h-full justify-end group">
+<div class="w-full bg-secondary rounded-t shadow-sm" style="height: 84%;"></div>
+<span class="font-label-sm text-label-sm text-secondary font-bold mt-2 text-[10px]">20</span>
+</div>
+<!-- 21:00 -->
+<div class="flex flex-col items-center h-full justify-end group">
+<div class="w-full bg-surface-container rounded-t hover:bg-secondary-fixed transition-all" style="height: 60%;"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-2 text-[10px]">21</span>
+</div>
+<!-- 22:00 -->
+<div class="flex flex-col items-center h-full justify-end group">
+<div class="w-full bg-surface-container rounded-t hover:bg-secondary-fixed transition-all" style="height: 46%;"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-2 text-[10px]">22</span>
+</div>
+<!-- 23:00 -->
+<div class="flex flex-col items-center h-full justify-end group">
+<div class="w-full bg-surface-container rounded-t hover:bg-secondary-fixed transition-all" style="height: 28%;"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-2 text-[10px]">23</span>
+</div>
+</div>
+</section>
+<!-- 6. DRIVER METRICS & PASSENGER METRICS (Clean Two-Column Row) -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-space-md">
+<!-- Driver Metrics -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm">
+<div class="flex items-center justify-between pb-space-md mb-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="p-2 rounded-lg bg-surface-container text-secondary">
+<span class="material-symbols-outlined text-[20px]">local_taxi</span>
+</span>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Driver Metrics</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Active workforce utilization.</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-space-md">
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant">Online Drivers</span>
+<div class="font-numeric-stat text-numeric-stat text-on-surface mt-space-xs">3,482</div>
+<span class="font-label-sm text-label-sm text-secondary mt-1 flex items-center gap-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Ready
+          </span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant">Active Drivers</span>
+<div class="font-numeric-stat text-numeric-stat text-on-surface mt-space-xs">2,890</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">In Ride</span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant">Avg Online Hours</span>
+<div class="font-numeric-stat text-numeric-stat text-on-surface mt-space-xs">7.4 <span class="text-label-md text-on-surface-variant font-normal">hrs</span></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">per driver / day</span>
+</div>
+</div>
+</div>
+<!-- Passenger Metrics -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm">
+<div class="flex items-center justify-between pb-space-md mb-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="p-2 rounded-lg bg-surface-container text-secondary">
+<span class="material-symbols-outlined text-[20px]">group</span>
+</span>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Passenger Metrics</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Rider base volume and loyalty.</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-space-md">
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant">Total Users</span>
+<div class="font-numeric-stat text-numeric-stat text-on-surface mt-space-xs">1.42M</div>
+<span class="font-label-sm text-label-sm text-secondary mt-1">+12.4% MoM</span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant">New Users</span>
+<div class="font-numeric-stat text-numeric-stat text-on-surface mt-space-xs">8,420</div>
+<span class="font-label-sm text-label-sm text-secondary mt-1">+8.1% vs last week</span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant">Repeat Riders</span>
+<div class="font-numeric-stat text-numeric-stat text-on-surface mt-space-xs">76.4%</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">Cohort retention</span>
+</div>
+</div>
+</div>
+</section>
+</div></main></div>
+
+
+
+
+
+</body></html>

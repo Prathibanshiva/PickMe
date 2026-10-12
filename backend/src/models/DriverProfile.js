@@ -35,6 +35,26 @@ const driverProfileSchema = new mongoose.Schema(
       default: null,
     },
 
+    verifiedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+
+    rejectionCode: {
+      type: String,
+      enum: [
+        "dl_unreadable",
+        "aadhaar_mismatch",
+        "plate_obscured",
+        "expired_docs",
+        "liveness_fail",
+        "other",
+        "",
+      ],
+      default: "",
+    },
+
     // -----------------------------
     // Driver Personal Information
     // -----------------------------

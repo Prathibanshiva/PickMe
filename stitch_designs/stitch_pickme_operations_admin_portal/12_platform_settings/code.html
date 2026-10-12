@@ -1,0 +1,570 @@
+<!DOCTYPE html><html lang="en" style=""><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-error-container": "#93000a",
+          "surface-container-highest": "#d3e4fe",
+          "surface-bright": "#f8f9ff",
+          "outline-variant": "#bfcab7",
+          "on-surface-variant": "#404a3b",
+          "primary-container": "#0d6e00",
+          "surface-dim": "#cbdbf5",
+          "surface": "#f8f9ff",
+          "on-primary": "#ffffff",
+          "on-primary-fixed": "#012200",
+          "surface-container": "#e5eeff",
+          "error": "#ba1a1a",
+          "surface-tint": "#0d6e00",
+          "tertiary-fixed-dim": "#bfc6dc",
+          "on-secondary": "#ffffff",
+          "on-secondary-container": "#0e7300",
+          "on-error": "#ffffff",
+          "on-tertiary-container": "#d1d8ee",
+          "tertiary": "#404658",
+          "primary": "#085300",
+          "secondary-fixed": "#78ff5c",
+          "error-container": "#ffdad6",
+          "on-tertiary": "#ffffff",
+          "on-secondary-fixed": "#012200",
+          "inverse-on-surface": "#eaf1ff",
+          "secondary-fixed-dim": "#48e32e",
+          "on-primary-container": "#91ee79",
+          "on-primary-fixed-variant": "#085300",
+          "secondary-container": "#64fe48",
+          "background": "#f8f9ff",
+          "inverse-surface": "#213145",
+          "primary-fixed-dim": "#80dc69",
+          "on-tertiary-fixed-variant": "#404758",
+          "outline": "#707a69",
+          "surface-container-low": "#eff4ff",
+          "secondary": "#0d6e00",
+          "tertiary-container": "#575e71",
+          "on-background": "#0b1c30",
+          "surface-container-lowest": "#ffffff",
+          "surface-container-high": "#dce9ff",
+          "on-secondary-fixed-variant": "#085300",
+          "on-tertiary-fixed": "#141b2b",
+          "primary-fixed": "#9bf982",
+          "tertiary-fixed": "#dce2f9",
+          "surface-variant": "#d3e4fe",
+          "on-surface": "#0b1c30",
+          "inverse-primary": "#80dc69"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        "spacing": {
+          "space-md": "1rem",
+          "space-lg": "1.25rem",
+          "space-xs": "0.25rem",
+          "space-xl": "2rem",
+          "gutter": "1.25rem",
+          "space-sm": "0.5rem",
+          "margin": "1.5rem"
+        },
+        "fontFamily": {
+          "numeric-stat": ["Inter"],
+          "body-sm": ["Inter"],
+          "headline-sm": ["Inter"],
+          "title-md": ["Inter"],
+          "display-lg": ["Inter"],
+          "headline-md": ["Inter"],
+          "body-lg": ["Inter"],
+          "label-sm": ["Inter"],
+          "label-lg": ["Inter"],
+          "label-md": ["Inter"],
+          "headline-lg": ["Inter"],
+          "body-md": ["Inter"]
+        },
+        "fontSize": {
+          "numeric-stat": ["28px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+          "headline-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600"}],
+          "title-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+          "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+          "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+          "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600"}],
+          "label-lg": ["13px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+          "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+          "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+          "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+        }
+      }
+    }
+  }</script></head><body class="bg-surface font-body-md text-body-md text-on-surface"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between hidden md:flex"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-lg flex items-center justify-between"><div class="flex items-center gap-3 px-1 py-2">
+  <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdd_U4O9c1ZEYb-dk5tJW7JoTcwAy412hNT7t7CBcKnQhWB6G5viZFnU3feYv-UYqJF_6NQVpcXRzRMPu_kCb5RUEw_CSBdZR2a3CyjEfr6lHHh0_Uorle16GbkghfjXTcdnmpoNLQODbWj0Avmsf1tnVSDLIeDCMEbjDzb2Y71bLOJSygLz3ATi-ves7jDxIxELmLFjhZHZfaB5KDc8uyUQUPthLP2WmNWnqiKW9dQKbNmeVqaiHEbn8904ybjZlA" alt="PickMe Logo" class="h-10 w-auto object-contain max-w-[140px]">
+  <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-[#0D6E00] text-white uppercase tracking-wider">Admin</span>
+</div></div><div class="px-space-md py-space-xs"><div class="px-space-md py-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">Operations</div><nav class="flex flex-col gap-space-xs mt-space-xs" data-active-classes="bg-primary-container text-on-primary font-title-md"><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="dashboard" href="#"><span class="material-symbols-outlined text-[20px]">grid_view</span><span class="font-title-md text-title-md">Dashboard</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="drivers" href="#"><span class="material-symbols-outlined text-[20px]">local_taxi</span><span class="font-title-md text-title-md">Drivers</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="users" href="#"><span class="material-symbols-outlined text-[20px]">group</span><span class="font-title-md text-title-md">Users</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="rides" href="#"><span class="material-symbols-outlined text-[20px]">commute</span><span class="font-title-md text-title-md">Rides</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="scheduled" href="#"><span class="material-symbols-outlined text-[20px]">event_upcoming</span><span class="font-title-md text-title-md">Scheduled</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="fares" href="#"><span class="material-symbols-outlined text-[20px]">payments</span><span class="font-title-md text-title-md">Fares</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="analytics" href="#"><span class="material-symbols-outlined text-[20px]">monitoring</span><span class="font-title-md text-title-md">Analytics</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="complaints" href="#"><span class="material-symbols-outlined text-[20px]">report_problem</span><span class="font-title-md text-title-md">Complaints</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="reports" href="#"><span class="material-symbols-outlined text-[20px]">description</span><span class="font-title-md text-title-md">Reports</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="notifications" href="#"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="font-title-md text-title-md">Notifications</span></a></nav></div><div class="px-space-md py-space-xs mt-space-sm"><div class="px-space-md py-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">Configuration</div><nav class="flex flex-col gap-space-xs mt-space-xs" data-active-classes="bg-primary-container text-on-primary font-title-md"><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg bg-surface-container-low text-primary font-semibold transition-colors shadow-sm" data-path="platform-settings" href="#"><span class="material-symbols-outlined text-[20px] text-primary">tune</span><span class="font-title-md text-title-md text-primary">Platform Settings</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="audit-logs" href="#"><span class="material-symbols-outlined text-[20px]">history</span><span class="font-title-md text-title-md">Audit Logs</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="admin-profile" href="#"><span class="material-symbols-outlined text-[20px]">badge</span><span class="font-title-md text-title-md">Admin Profile</span></a></nav></div></div><div class="p-space-md bg-surface-container-low"><div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-lowest"><div class="flex items-center gap-space-sm overflow-hidden"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col min-w-0"><span class="font-title-md text-title-md text-on-surface truncate">Vikramaditya Rao</span><span class="font-body-sm text-body-sm text-on-surface-variant truncate">Operations Admin</span></div></div><button aria-label="Logout" class="p-space-xs rounded text-on-surface-variant hover:text-error hover:bg-error-container transition-colors shrink-0" type="button"><span class="material-symbols-outlined text-[20px]">logout</span></button></div></div></aside><div class="md:pl-64"><header class="fixed top-0 left-0 md:left-64 right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-md md:px-space-xl gap-space-md"><div class="flex items-center gap-space-md"><button aria-label="Open Menu" class="md:hidden p-space-xs text-on-surface hover:bg-surface-container-high rounded transition-colors" type="button"><span class="material-symbols-outlined text-[24px]">menu</span></button><nav class="hidden sm:flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm"><span class="">Console</span><span class="material-symbols-outlined text-[14px]">chevron_right</span><span class="text-on-surface font-title-md text-title-md">Operations Command</span></nav></div><div class="flex items-center gap-space-md flex-1 max-w-md mx-space-sm"><div class="relative w-full"><span class="material-symbols-outlined absolute left-space-md top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span><input class="w-full h-10 pl-10 pr-space-md rounded-lg bg-surface-container-lowest text-on-surface placeholder:text-on-surface-variant font-body-sm text-body-sm outline-none focus:ring-2 focus:ring-secondary transition-all" placeholder="Search drivers, rides, users..." type="text"></div></div><div class="flex items-center gap-space-md shrink-0"><div class="hidden lg:flex items-center gap-space-xs px-space-sm py-space-xs rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm"><span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span><span class="">Operations Active</span></div><button aria-label="Notifications" class="relative p-space-xs rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-error"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-16 w-full min-h-screen bg-surface px-space-md md:px-space-xl py-space-lg"><div class="flex flex-col w-full">
+<div class="relative w-full pb-space-xl">
+<!-- Page Header -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm mb-space-xl">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs text-secondary font-label-sm text-label-sm uppercase tracking-wider mb-1">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+          Core Operations Config
+        </div>
+<h1 class="font-display-lg text-display-lg text-on-surface tracking-tight">Platform Settings</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Manage core PickMe operating parameters.</p>
+</div>
+<div class="flex items-center gap-space-sm">
+<span class="px-space-md py-space-xs rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-secondary">verified_user</span>
+          Production Cluster: IN-SOUTH-1
+        </span>
+</div>
+</div>
+<!-- Main Vertical Column -->
+<div class="flex flex-col gap-space-xl max-w-5xl">
+<!-- SECTION 1: MATCHING -->
+<section class="flex flex-col">
+<div class="flex items-center justify-between pb-space-xs mb-space-sm">
+<div class="flex items-center gap-space-sm">
+<span class="w-1.5 h-4 bg-primary rounded-full"></span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Matching</h2>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Algorithmic Dispatch</span>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div class="flex flex-col max-w-xl">
+<div class="flex items-center gap-space-sm mb-1">
+<span class="font-headline-sm text-headline-sm text-on-surface">Matching Radius</span>
+<span class="px-space-sm py-0.5 rounded-full bg-surface-container-high text-primary font-numeric-stat text-label-lg font-semibold tracking-tight" id="radius-badge">2 km</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Maximum distance used when searching for nearby drivers.</p>
+<div class="flex items-center gap-space-xs mt-space-sm text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[15px]">schedule</span>
+<span class="">Last updated: Yesterday, 18:30 IST</span>
+<span class="mx-1">•</span>
+<span class="material-symbols-outlined text-[15px]">person</span>
+<span class="">Updated by: <strong class="font-semibold text-on-surface">Vikramaditya Rao</strong></span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<div class="hidden items-center gap-space-xs bg-surface-container-low p-1.5 rounded-lg shadow-inner" id="radius-edit-controls">
+<button class="w-8 h-8 rounded bg-surface-container-lowest text-on-surface hover:bg-surface-container-high flex items-center justify-center transition-colors" onclick="decrementRadius()" type="button">
+<span class="material-symbols-outlined text-[18px]">remove</span>
+</button>
+<div class="px-space-sm font-headline-sm text-headline-sm text-on-surface min-w-[3.5rem] text-center" id="radius-input-val">2.0 km</div>
+<button class="w-8 h-8 rounded bg-surface-container-lowest text-on-surface hover:bg-surface-container-high flex items-center justify-center transition-colors" onclick="incrementRadius()" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+<button class="px-space-sm py-1.5 rounded bg-primary text-on-primary font-label-md text-label-md hover:bg-on-primary-fixed-variant transition-colors ml-1" onclick="saveRadius()" type="button">
+                  Save
+                </button>
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface transition-colors" onclick="toggleRadiusEdit(false)" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<button class="px-space-md py-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-title-md text-title-md transition-colors flex items-center gap-space-xs shadow-sm" id="radius-edit-btn" onclick="toggleRadiusEdit(true)" type="button">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+                Edit
+              </button>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: DRIVER RESPONSE -->
+<section class="flex flex-col">
+<div class="flex items-center justify-between pb-space-xs mb-space-sm">
+<div class="flex items-center gap-space-sm">
+<span class="w-1.5 h-4 bg-primary rounded-full"></span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Driver Response</h2>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Telemetry &amp; Acceptance</span>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div class="flex flex-col max-w-xl">
+<div class="flex items-center gap-space-sm mb-1">
+<span class="font-headline-sm text-headline-sm text-on-surface">Driver Accept Timer</span>
+<span class="px-space-sm py-0.5 rounded-full bg-surface-container-high text-primary font-numeric-stat text-label-lg font-semibold tracking-tight" id="timer-badge">15 seconds</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Time a driver has to respond to a ride request.</p>
+<div class="flex items-center gap-space-xs mt-space-sm text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[15px]">schedule</span>
+<span class="">Last updated: 22 Oct 2025</span>
+<span class="mx-1">•</span>
+<span class="material-symbols-outlined text-[15px]">person</span>
+<span class="">Updated by: <strong class="font-semibold text-on-surface">Vikramaditya Rao</strong></span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<div class="hidden items-center gap-space-xs bg-surface-container-low p-1.5 rounded-lg shadow-inner" id="timer-edit-controls">
+<button class="w-8 h-8 rounded bg-surface-container-lowest text-on-surface hover:bg-surface-container-high flex items-center justify-center transition-colors" onclick="decrementTimer()" type="button">
+<span class="material-symbols-outlined text-[18px]">remove</span>
+</button>
+<div class="px-space-sm font-headline-sm text-headline-sm text-on-surface min-w-[4rem] text-center" id="timer-input-val">15 s</div>
+<button class="w-8 h-8 rounded bg-surface-container-lowest text-on-surface hover:bg-surface-container-high flex items-center justify-center transition-colors" onclick="incrementTimer()" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+<button class="px-space-sm py-1.5 rounded bg-primary text-on-primary font-label-md text-label-md hover:bg-on-primary-fixed-variant transition-colors ml-1" onclick="saveTimer()" type="button">
+                  Save
+                </button>
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface transition-colors" onclick="toggleTimerEdit(false)" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<button class="px-space-md py-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-title-md text-title-md transition-colors flex items-center gap-space-xs shadow-sm" id="timer-edit-btn" onclick="toggleTimerEdit(true)" type="button">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+                Edit
+              </button>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: SERVICE AREAS -->
+<section class="flex flex-col">
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-space-sm pb-space-xs mb-space-sm">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-sm">
+<span class="w-1.5 h-4 bg-primary rounded-full"></span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Service Areas</h2>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">Manage active operational hubs and surge eligibility.</p>
+</div>
+<button class="px-space-lg py-space-sm rounded-lg bg-secondary text-on-secondary hover:bg-primary font-title-md text-title-md transition-all flex items-center gap-space-xs shadow-md shrink-0" onclick="openZoneModal('add')" type="button">
+<span class="material-symbols-outlined text-[20px]">add</span>
+            Add Zone
+          </button>
+</div>
+<!-- Service Areas Table -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-space-sm px-space-lg" scope="col">Zone</th>
+<th class="py-space-sm px-space-md" scope="col">City</th>
+<th class="py-space-sm px-space-md" scope="col">Status</th>
+<th class="py-space-sm px-space-md text-center" scope="col">Surge Eligible</th>
+<th class="py-space-sm px-space-lg text-right" scope="col">Action</th>
+</tr>
+</thead>
+<tbody class="divide-none font-body-md text-body-md text-on-surface">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="py-space-md px-space-lg font-title-md text-title-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px]">location_on</span>
+                    Bengaluru South
+                  </td>
+<td class="py-space-md px-space-md text-on-surface-variant">Bengaluru</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+                      Active
+                    </span>
+</td>
+<td class="py-space-md px-space-md text-center">
+<span class="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">check</span>
+                      Yes
+                    </span>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="px-space-md py-1 rounded bg-surface-container-low text-on-surface hover:bg-surface-container font-title-md text-title-md transition-colors" onclick="openZoneModal('edit', 'Bengaluru South', 'Bengaluru', true, true)" type="button">
+                      Edit
+                    </button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group bg-surface-container-lowest">
+<td class="py-space-md px-space-lg font-title-md text-title-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px]">location_on</span>
+                    Bengaluru East
+                  </td>
+<td class="py-space-md px-space-md text-on-surface-variant">Bengaluru</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                      Active
+                    </span>
+</td>
+<td class="py-space-md px-space-md text-center">
+<span class="inline-flex items-center px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+                      No
+                    </span>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="px-space-md py-1 rounded bg-surface-container-low text-on-surface hover:bg-surface-container font-title-md text-title-md transition-colors" onclick="openZoneModal('edit', 'Bengaluru East', 'Bengaluru', true, false)" type="button">
+                      Edit
+                    </button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="py-space-md px-space-lg font-title-md text-title-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px]">location_on</span>
+                    Bengaluru North
+                  </td>
+<td class="py-space-md px-space-md text-on-surface-variant">Bengaluru</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                      Active
+                    </span>
+</td>
+<td class="py-space-md px-space-md text-center">
+<span class="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">check</span>
+                      Yes
+                    </span>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="px-space-md py-1 rounded bg-surface-container-low text-on-surface hover:bg-surface-container font-title-md text-title-md transition-colors" onclick="openZoneModal('edit', 'Bengaluru North', 'Bengaluru', true, true)" type="button">
+                      Edit
+                    </button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="py-space-md px-space-lg font-title-md text-title-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px]">location_on</span>
+                    Bengaluru West
+                  </td>
+<td class="py-space-md px-space-md text-on-surface-variant">Bengaluru</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                      Active
+                    </span>
+</td>
+<td class="py-space-md px-space-md text-center">
+<span class="inline-flex items-center px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+                      No
+                    </span>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="px-space-md py-1 rounded bg-surface-container-low text-on-surface hover:bg-surface-container font-title-md text-title-md transition-colors" onclick="openZoneModal('edit', 'Bengaluru West', 'Bengaluru', true, false)" type="button">
+                      Edit
+                    </button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="py-space-md px-space-lg font-title-md text-title-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px]">location_on</span>
+                    Mumbai South
+                  </td>
+<td class="py-space-md px-space-md text-on-surface-variant">Mumbai</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                      Active
+                    </span>
+</td>
+<td class="py-space-md px-space-md text-center">
+<span class="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">check</span>
+                      Yes
+                    </span>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="px-space-md py-1 rounded bg-surface-container-low text-on-surface hover:bg-surface-container font-title-md text-title-md transition-colors" onclick="openZoneModal('edit', 'Mumbai South', 'Mumbai', true, true)" type="button">
+                      Edit
+                    </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+<!-- MODAL / DRAWER INTERFACE: ADD / EDIT ZONE -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-space-md bg-inverse-surface/40 backdrop-blur-sm transition-opacity duration-200 opacity-0 pointer-events-none" id="zone-modal">
+<div class="bg-surface-container-lowest w-full max-w-lg rounded-xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-200" id="zone-modal-box">
+<!-- Modal Header -->
+<div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-primary-container text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">map</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface" id="modal-title">Edit Service Zone</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Update corridor boundaries and dispatch rules</p>
+</div>
+</div>
+<button class="w-8 h-8 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface flex items-center justify-center transition-colors" onclick="closeZoneModal()" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Modal Form Body -->
+<div class="p-space-lg flex flex-col gap-space-md">
+<!-- Zone Name -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface" for="zone-name">Zone Name</label>
+<input class="w-full h-10 px-space-md rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-body-md shadow-sm outline-none focus:ring-2 focus:ring-secondary transition-all" id="zone-name" placeholder="e.g. Bengaluru South" type="text" value="Bengaluru South">
+</div>
+<!-- City Dropdown -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface" for="zone-city">City</label>
+<div class="relative">
+<select class="w-full h-10 px-space-md pr-10 rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-body-md shadow-sm outline-none focus:ring-2 focus:ring-secondary appearance-none transition-all" id="zone-city">
+<option value="Bengaluru">Bengaluru</option>
+<option value="Mumbai">Mumbai</option>
+<option value="Delhi-NCR">Delhi-NCR</option>
+<option value="Hyderabad">Hyderabad</option>
+</select>
+<span class="material-symbols-outlined absolute right-space-md top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[20px]">expand_more</span>
+</div>
+</div>
+<!-- Service Status Control -->
+<div class="flex items-center justify-between p-space-md rounded-lg bg-surface-container-low">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface">Service Status</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Allow drivers and riders to establish matches</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" id="zone-status-toggle" type="checkbox">
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<!-- Surge Eligible Control -->
+<div class="flex items-center justify-between p-space-md rounded-lg bg-surface-container-low">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface">Surge Eligible</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Activate dynamic corridor multipliers during peak hours</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" id="zone-surge-toggle" type="checkbox">
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-end gap-space-sm">
+<button class="px-space-lg py-space-sm rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-title-md text-title-md transition-colors" onclick="closeZoneModal()" type="button">
+            Cancel
+          </button>
+<button class="px-space-lg py-space-sm rounded-lg bg-primary text-on-primary hover:bg-on-primary-fixed-variant font-title-md text-title-md transition-colors shadow-md" onclick="closeZoneModal()" type="button">
+            Save Zone
+          </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Radius State & Handlers
+  let currentRadius = 2.0;
+
+  function toggleRadiusEdit(show) {
+    const editControls = document.getElementById('radius-edit-controls');
+    const editBtn = document.getElementById('radius-edit-btn');
+    if (show) {
+      editControls.classList.remove('hidden');
+      editControls.classList.add('flex');
+      editBtn.classList.add('hidden');
+    } else {
+      editControls.classList.remove('flex');
+      editControls.classList.add('hidden');
+      editBtn.classList.remove('hidden');
+    }
+  }
+
+  function incrementRadius() {
+    currentRadius = Math.min(15, +(currentRadius + 0.5).toFixed(1));
+    document.getElementById('radius-input-val').textContent = currentRadius.toFixed(1) + ' km';
+  }
+
+  function decrementRadius() {
+    currentRadius = Math.max(0.5, +(currentRadius - 0.5).toFixed(1));
+    document.getElementById('radius-input-val').textContent = currentRadius.toFixed(1) + ' km';
+  }
+
+  function saveRadius() {
+    document.getElementById('radius-badge').textContent = currentRadius + ' km';
+    toggleRadiusEdit(false);
+  }
+
+  // Timer State & Handlers
+  let currentTimer = 15;
+
+  function toggleTimerEdit(show) {
+    const editControls = document.getElementById('timer-edit-controls');
+    const editBtn = document.getElementById('timer-edit-btn');
+    if (show) {
+      editControls.classList.remove('hidden');
+      editControls.classList.add('flex');
+      editBtn.classList.add('hidden');
+    } else {
+      editControls.classList.remove('flex');
+      editControls.classList.add('hidden');
+      editBtn.classList.remove('hidden');
+    }
+  }
+
+  function incrementTimer() {
+    currentTimer = Math.min(60, currentTimer + 1);
+    document.getElementById('timer-input-val').textContent = currentTimer + ' s';
+  }
+
+  function decrementTimer() {
+    currentTimer = Math.max(5, currentTimer - 1);
+    document.getElementById('timer-input-val').textContent = currentTimer + ' s';
+  }
+
+  function saveTimer() {
+    document.getElementById('timer-badge').textContent = currentTimer + ' seconds';
+    toggleTimerEdit(false);
+  }
+
+  // Modal Handlers
+  function openZoneModal(mode, name = '', city = 'Bengaluru', active = true, surge = true) {
+    const modal = document.getElementById('zone-modal');
+    const box = document.getElementById('zone-modal-box');
+    const title = document.getElementById('modal-title');
+    const nameInput = document.getElementById('zone-name');
+    const cityInput = document.getElementById('zone-city');
+    const statusToggle = document.getElementById('zone-status-toggle');
+    const surgeToggle = document.getElementById('zone-surge-toggle');
+
+    if (mode === 'add') {
+      title.textContent = 'Add Zone';
+      nameInput.value = '';
+      cityInput.value = 'Bengaluru';
+      statusToggle.checked = true;
+      surgeToggle.checked = true;
+    } else {
+      title.textContent = 'Edit Service Zone';
+      nameInput.value = name;
+      cityInput.value = city;
+      statusToggle.checked = active;
+      surgeToggle.checked = surge;
+    }
+
+    modal.classList.remove('pointer-events-none');
+    modal.classList.remove('opacity-0');
+    modal.classList.add('opacity-100');
+    box.classList.remove('scale-95');
+    box.classList.add('scale-100');
+  }
+
+  function closeZoneModal() {
+    const modal = document.getElementById('zone-modal');
+    const box = document.getElementById('zone-modal-box');
+
+    modal.classList.add('opacity-0');
+    modal.classList.remove('opacity-100');
+    box.classList.add('scale-95');
+    box.classList.remove('scale-100');
+    setTimeout(() => {
+      modal.classList.add('pointer-events-none');
+    }, 200);
+  }
+</script></main></div>
+
+
+
+
+
+</body></html>

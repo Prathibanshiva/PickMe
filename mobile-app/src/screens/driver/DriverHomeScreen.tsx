@@ -1,801 +1,578 @@
+// mobile-app/src/screens/driver/DriverHomeScreen.tsx
+
 import React, { useEffect, useState } from "react";
-import { router } from "expo-router";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
-  Pressable,
-  SafeAreaView,
-  ScrollView,
+  Alert,
+  Animated,
+  Easing,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useAuth } from "@/store/auth.store";
-import {
-  createOrGetDriverProfile,
-  DriverProfile,
-} from "@/services/driver.service";
-
-import {
-  Colors,
-  Spacing,
-  Typography,
-} from "@/theme";
+import DriverMapPreview from "@/components/driver/DriverMapPreview";
+import rideLifecycleService from "@/services/ride-lifecycle.service";
+import { DriverAvailabilityStatus } from "@/types/driver.types";
+import { Colors, Radius } from "@/theme";
 
 export default function DriverHomeScreen() {
-  const { user, role } = useAuth();
   const insets = useSafeAreaInsets();
 
-  const [driverProfile, setDriverProfile] =
-    useState<DriverProfile | null>(null);
+  const [availability, setAvailability] = useState<DriverAvailabilityStatus>(
+    rideLifecycleService.getAvailabilityStatus()
+  );
+  const earnings = rideLifecycleService.getEarningsSummary();
+
+  const isOnline = availability === "ONLINE";
+
+  // Pulse animation for Online status radar beacon
+  const pulseAnim = React.useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    const loadDriverProfile = async () => {
-      try {
-        const profile =
-          await createOrGetDriverProfile();
+    const unsubscribe = rideLifecycleService.subscribeAvailability((status) => {
+      setAvailability(status);
+    });
 
-        console.log(
-          "Driver profile request successful"
-        );
+    const pulseLoop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 1500,
+          easing: Easing.out(Easing.ease),
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 0,
+          duration: 1500,
+          easing: Easing.in(Easing.ease),
+          useNativeDriver: true,
+        }),
+      ])
+    );
 
-        console.log(
-          "Driver profile:",
-          profile
-        );
+    if (isOnline) {
+      pulseLoop.start();
+    } else {
+      pulseAnim.setValue(0);
+      pulseLoop.stop();
+    }
 
-        setDriverProfile(profile);
-      } catch (error) {
-        console.error(
-          "Driver profile request failed:",
-          error
-        );
-      }
+    return () => {
+      unsubscribe();
+      pulseLoop.stop();
+    };
+  }, [isOnline]);
+
+  // ── Subscribe to shared lifecycle: auto-navigate to incoming request ────────
+  // When the passenger creates a ride (REQUEST_OFFERED), this ONLINE driver
+  // automatically sees the incoming request screen.
+  useEffect(() => {
+    let navigated = false;
+
+    const navigateToIncoming = () => {
+      if (navigated) return;
+      navigated = true;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      router.push("/driver/incoming-request" as any);
     };
 
-    loadDriverProfile();
+    const unsubscribeRide = rideLifecycleService.subscribe((state) => {
+      if (
+        state.lifecycleStatus === "REQUEST_OFFERED" &&
+        rideLifecycleService.getAvailabilityStatus() === "ONLINE"
+      ) {
+        navigateToIncoming();
+      }
+    });
+
+    // Eagerly check — passenger may have booked before driver opened this screen
+    const currentState = rideLifecycleService.getActiveState();
+    if (
+      currentState.lifecycleStatus === "REQUEST_OFFERED" &&
+      rideLifecycleService.getAvailabilityStatus() === "ONLINE"
+    ) {
+      navigateToIncoming();
+    }
+
+    return () => {
+      unsubscribeRide();
+    };
   }, []);
 
-const handleCompleteVerification = () => {
-  console.log(
-    "Complete Driver Verification pressed"
-  );
+  const handleToggleOnline = () => {
+    const nextStatus: DriverAvailabilityStatus = isOnline ? "OFFLINE" : "ONLINE";
+    rideLifecycleService.setAvailabilityStatus(nextStatus);
+    setAvailability(nextStatus);
+  };
 
-  router.push(
-    "/driver/verification/identity-verification"
-  );
-};
+  const handleSimulateIncomingRequest = () => {
+    if (!isOnline) {
+      Alert.alert(
+        "Driver Offline",
+        "You must go ONLINE first to receive ride requests.",
+        [
+          { text: "Go Online", onPress: handleToggleOnline },
+          { text: "Cancel", style: "cancel" },
+        ]
+      );
+      return;
+    }
 
-const handleViewVerificationDetails = () => {
-  console.log(
-    "View Verification Details pressed"
-  );
+    rideLifecycleService.triggerIncomingRequest();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    router.push("/driver/incoming-request" as any);
+  };
 
-  router.push(
-    "/driver/verification-details"
-  );
-};
-
-  const displayName =
-    user?.name?.trim() || "Driver";
-
-  /*
-   * A newly-created driver profile starts with
-   * "pending" on the backend, so we must also check
-   * whether all onboarding documents have actually
-   * been uploaded.
-   */
-  const hasCompletedDocuments =
-    !!driverProfile?.profilePhoto &&
-    !!driverProfile?.aadhaarDocument &&
-    !!driverProfile?.drivingLicenceDocument &&
-    !!driverProfile?.vehicleType &&
-    !!driverProfile?.vehicleNumber &&
-    !!driverProfile?.vehiclePhoto;
-
-  const verificationStatus =
-    driverProfile?.verificationStatus;
-
-  const isIncomplete =
-    !driverProfile ||
-    !hasCompletedDocuments;
-
-  const isPending =
-    !isIncomplete &&
-    verificationStatus === "pending";
-
-  const isApproved =
-    !isIncomplete &&
-    verificationStatus === "approved";
-
-  const isRejected =
-    !isIncomplete &&
-    verificationStatus === "rejected";
-
-  const verificationTitle = isApproved
-    ? "Verification Approved"
-    : isPending
-      ? "Verification Pending"
-      : isRejected
-        ? "Verification Rejected"
-        : "Verification Incomplete";
-
-  const verificationDescription = isApproved
-    ? "Your driver profile has been verified. You can now start earning."
-    : isPending
-      ? "Your documents have been submitted. Our admin team will review your verification."
-      : isRejected
-        ? driverProfile?.rejectionReason
-          ? `Your verification was rejected. Reason: ${driverProfile.rejectionReason}`
-          : "Your verification was rejected. Please update your details and submit again."
-        : "Your profile is incomplete. Complete verification to start earning.";
-
-  const verificationIcon = isApproved
-    ? "checkmark-circle-outline"
-    : isPending
-      ? "time-outline"
-      : isRejected
-        ? "close-circle-outline"
-        : "warning-outline";
-
-  const verificationIconColor = isApproved
-    ? "#0D6E00"
-    : isPending
-      ? "#8A5A00"
-      : isRejected
-        ? "#93000A"
-        : "#93000A";
-
-  const verificationIconBackground = isApproved
-    ? "#D9F7D2"
-    : isPending
-      ? "#FFF1C7"
-      : isRejected
-        ? "#FFDAD6"
-        : "#FFDAD6";
-
-  const verificationButtonText = isRejected
-    ? "Update Verification Details"
-    : isIncomplete
-      ? "Complete Driver Verification"
-      : "View Verification Details";
+  const handleSwitchToPassenger = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    router.replace("/passenger/destination-search" as any);
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Top App Bar */}
+    <View style={styles.root}>
+      {/* ── Top Floating Header Bar ───────────────────────────────────────── */}
+      <View style={[styles.topHeader, { paddingTop: Math.max(insets.top + 4, 14) }]}>
+        <View style={styles.driverProfileCol}>
+          <View style={styles.avatarWrap}>
+            <View style={styles.avatarCircle}>
+              <MaterialIcons name="person" size={26} color="#FFFFFF" />
+            </View>
+            <View style={styles.ratingBadge}>
+              <MaterialIcons name="star" size={10} color="#F59E0B" />
+              <Text style={styles.ratingBadgeText}>4.9</Text>
+            </View>
+          </View>
+          <View>
+            <Text style={styles.driverName}>Rajesh Kumar</Text>
+            <Text style={styles.vehicleDetails}>Sedan · KA 01 MX 7823</Text>
+          </View>
+        </View>
+
+        <View style={styles.headerRightActions}>
+          <TouchableOpacity
+            style={styles.switchModeButton}
+            onPress={handleSwitchToPassenger}
+            activeOpacity={0.8}
+            accessibilityLabel="Switch to Passenger Mode"
+          >
+            <Ionicons name="swap-horizontal" size={16} color="#0D6E00" />
+            <Text style={styles.switchModeText}>Passenger</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* ── Fullscreen Interactive Map ────────────────────────────────────── */}
+      <View style={styles.mapContainer}>
+        <DriverMapPreview
+          mode="idle"
+          height="100%"
+          showRecenterButton={true}
+        />
+
+        {/* Central Online Status Beacon Pill */}
+        {isOnline ? (
+          <View style={styles.onlineBeaconContainer} pointerEvents="none">
+            <View style={styles.onlineBeaconPill}>
+              <Animated.View
+                style={[
+                  styles.onlineBeaconDot,
+                  {
+                    opacity: pulseAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0.6, 1],
+                    }),
+                    transform: [
+                      {
+                        scale: pulseAnim.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [0.9, 1.3],
+                        }),
+                      },
+                    ],
+                  },
+                ]}
+              />
+              <Text style={styles.onlineBeaconText}>Searching for rides nearby…</Text>
+            </View>
+          </View>
+        ) : (
+          <View style={styles.onlineBeaconContainer} pointerEvents="none">
+            <View style={styles.offlineBeaconPill}>
+              <View style={styles.offlineBeaconDot} />
+              <Text style={styles.offlineBeaconText}>You are currently offline</Text>
+            </View>
+          </View>
+        )}
+      </View>
+
+      {/* ── Bottom Floating Controls & Earnings Drawer ────────────────────── */}
       <View
         style={[
-          styles.topBar,
-          {
-            paddingTop: insets.top,
-            height: 64 + insets.top,
-          },
+          styles.bottomSheet,
+          { paddingBottom: Math.max(insets.bottom + 12, 24) },
         ]}
       >
-        <View style={styles.profileSection}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarText}>
-              {displayName.charAt(0).toUpperCase()}
-            </Text>
-          </View>
-
-          <Text style={styles.appTitle}>
-            PickMe Driver
-          </Text>
-        </View>
-
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Settings"
-          style={styles.settingsButton}
-          onPress={() =>
-            console.log("Settings pressed")
-          }
+        {/* Online / Offline Giant Switch Button */}
+        <TouchableOpacity
+          style={[
+            styles.onlineToggleButton,
+            isOnline ? styles.onlineButtonActive : styles.offlineButtonActive,
+          ]}
+          onPress={handleToggleOnline}
+          activeOpacity={0.85}
+          accessibilityLabel={isOnline ? "Go Offline" : "Go Online"}
         >
-          <Ionicons
-            name="settings-outline"
-            size={21}
-            color={Colors.primary}
-          />
-        </Pressable>
-      </View>
-
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={
-          styles.scrollContent
-        }
-      >
-        {/* Greeting */}
-        <View style={styles.greetingSection}>
-          <Text style={styles.greeting}>
-            Hello, {displayName}!
-          </Text>
-
-          <Text style={styles.roleText}>
-            Current Role:{" "}
-            {role
-              ? role.charAt(0).toUpperCase() +
-                role.slice(1)
-              : "Driver"}
-          </Text>
-        </View>
-
-        {/* Verification Card */}
-        <View style={styles.verificationCard}>
-          {/* Decorative background circle */}
-          <View
-            style={[
-              styles.decorativeCircle,
-              isPending &&
-                styles.decorativeCirclePending,
-              isApproved &&
-                styles.decorativeCircleApproved,
-            ]}
-          />
-
-          {/* Verification Icon */}
-          <View
-            style={[
-              styles.warningIcon,
-              {
-                backgroundColor:
-                  verificationIconBackground,
-              },
-            ]}
-          >
-            <Ionicons
-              name={verificationIcon}
-              size={31}
-              color={verificationIconColor}
+          <View style={styles.toggleIconWrap}>
+            <MaterialIcons
+              name={isOnline ? "power-settings-new" : "power-off"}
+              size={24}
+              color={isOnline ? "#064B00" : "#FFFFFF"}
             />
           </View>
-
-          {/* Verification Text */}
-          <View style={styles.verificationText}>
+          <View style={styles.toggleTextWrap}>
             <Text
-              style={styles.verificationTitle}
-            >
-              {verificationTitle}
-            </Text>
-
-            <Text
-              style={styles.verificationDescription}
-            >
-              {verificationDescription}
-            </Text>
-          </View>
-
-          {/* CTA */}
-          {!isApproved && (
-            <Pressable
-              style={({ pressed }) => [
-                styles.verificationButton,
-                pressed &&
-                  styles.verificationButtonPressed,
+              style={[
+                styles.toggleMainText,
+                isOnline ? styles.toggleMainTextOnline : styles.toggleMainTextOffline,
               ]}
-              onPress={
-  isIncomplete
-    ? handleCompleteVerification
-    : isRejected
-      ? handleCompleteVerification
-      : handleViewVerificationDetails
-}
             >
-              <Text
-                style={
-                  styles.verificationButtonText
-                }
-              >
-                {verificationButtonText}
-              </Text>
-
-              <Ionicons
-                name="arrow-forward"
-                size={18}
-                color="#000000"
-              />
-            </Pressable>
-          )}
-
-          {isApproved && (
-            <View
-              style={styles.approvedStatus}
-            >
-              <Ionicons
-                name="checkmark-circle"
-                size={18}
-                color="#0D6E00"
-              />
-
-              <Text
-                style={styles.approvedStatusText}
-              >
-                Driver verification complete
-              </Text>
-            </View>
-          )}
-        </View>
-
-        {/* Summary Cards */}
-        <View style={styles.summaryRow}>
-          {/* Today's Earnings */}
-          <View style={styles.summaryCard}>
-            <Ionicons
-              name="wallet-outline"
-              size={22}
-              color={Colors.text.secondary}
-            />
-
-            <Text style={styles.summaryLabel}>
-              Today's Earnings
+              {isOnline ? "YOU ARE ONLINE" : "YOU ARE OFFLINE"}
             </Text>
-
-            <Text style={styles.summaryValue}>
-              ₹0.00
+            <Text
+              style={[
+                styles.toggleSubText,
+                isOnline ? styles.toggleSubTextOnline : styles.toggleSubTextOffline,
+              ]}
+            >
+              {isOnline ? "Tap to pause & go offline" : "Tap to go online & receive rides"}
             </Text>
           </View>
+        </TouchableOpacity>
 
-          {/* Online Time */}
-          <View style={styles.summaryCard}>
-            <Ionicons
-              name="timer-outline"
-              size={22}
-              color={Colors.text.secondary}
-            />
-
-            <Text style={styles.summaryLabel}>
-              Online Time
-            </Text>
-
-            <Text style={styles.summaryValue}>
-              0h 0m
-            </Text>
+        {/* Today's Earnings Summary Strip */}
+        <View style={styles.earningsCard}>
+          <View style={styles.earningsCol}>
+            <Text style={styles.earningsLabel}>TODAY'S EARNINGS</Text>
+            <Text style={styles.earningsAmount}>₹{earnings.todayEarnings}</Text>
+          </View>
+          <View style={styles.dividerV} />
+          <View style={styles.earningsCol}>
+            <Text style={styles.earningsLabel}>TRIPS</Text>
+            <Text style={styles.earningsStatValue}>{earnings.todayTrips}</Text>
+          </View>
+          <View style={styles.dividerV} />
+          <View style={styles.earningsCol}>
+            <Text style={styles.earningsLabel}>ONLINE</Text>
+            <Text style={styles.earningsStatValue}>{earnings.onlineHours}</Text>
+          </View>
+          <View style={styles.dividerV} />
+          <View style={styles.earningsCol}>
+            <Text style={styles.earningsLabel}>ACCEPT</Text>
+            <Text style={styles.earningsStatValue}>{earnings.acceptanceRate}</Text>
           </View>
         </View>
 
-        {/* Temporary bottom spacing */}
-        <View style={styles.bottomSpacing} />
-      </ScrollView>
-
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNavigation}>
-        <BottomNavItem
-          icon="home"
-          label="Home"
-          active
-          onPress={() =>
-            console.log("Home pressed")
-          }
-        />
-
-        <BottomNavItem
-          icon="cash-outline"
-          label="Earnings"
-          onPress={() =>
-            console.log("Earnings pressed")
-          }
-        />
-
-        <BottomNavItem
-          icon="calendar-outline"
-          label="Schedule"
-          onPress={() =>
-            console.log("Schedule pressed")
-          }
-        />
-
-        <BottomNavItem
-          icon="person-outline"
-          label="Profile"
-          onPress={() =>
-            console.log("Profile pressed")
-          }
-        />
+        {/* Demo Simulation Action */}
+        <TouchableOpacity
+          style={styles.simulateRequestButton}
+          onPress={handleSimulateIncomingRequest}
+          activeOpacity={0.85}
+          accessibilityLabel="Simulate incoming passenger ride request"
+        >
+          <MaterialIcons name="notifications-active" size={18} color="#0D6E00" />
+          <Text style={styles.simulateRequestButtonText}>
+            Simulate Ride Request (Demo)
+          </Text>
+        </TouchableOpacity>
       </View>
-    </SafeAreaView>
-  );
-}
-
-interface BottomNavItemProps {
-  icon: keyof typeof Ionicons.glyphMap;
-  label: string;
-  active?: boolean;
-  onPress: () => void;
-}
-
-function BottomNavItem({
-  icon,
-  label,
-  active = false,
-  onPress,
-}: BottomNavItemProps) {
-  return (
-    <Pressable
-      style={styles.bottomNavItem}
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      onPress={onPress}
-    >
-      <Ionicons
-        name={icon}
-        size={23}
-        color={
-          active
-            ? "#1FC600"
-            : "#6B7280"
-        }
-      />
-
-      <Text
-        style={[
-          styles.bottomNavLabel,
-          active &&
-            styles.bottomNavLabelActive,
-        ]}
-      >
-        {label}
-      </Text>
-    </Pressable>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  root: {
     flex: 1,
-    backgroundColor: "#F9F9FF",
+    backgroundColor: "#F8FAFC",
   },
-
-  /*
-   * TOP APP BAR
-   */
-
-  topBar: {
-    height: 64,
-    paddingHorizontal: Spacing.lg,
-    backgroundColor: "#F9F9FF",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-
-    elevation: 2,
-  },
-
-  profileSection: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-
-  avatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: "#E9EDFF",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  avatarText: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: Colors.primary,
-  },
-
-  appTitle: {
-    marginLeft: Spacing.md,
-    fontSize: 16,
-    fontWeight: "700",
-    color: Colors.primary,
-  },
-
-  settingsButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  /*
-   * MAIN CONTENT
-   */
-
-  scrollContent: {
-    paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.lg,
-    paddingBottom: 100,
-  },
-
-  greetingSection: {
-    marginTop: Spacing.sm,
-    marginBottom: Spacing.xl,
-  },
-
-  greeting: {
-    fontSize: 24,
-    lineHeight: 32,
-    fontWeight: "700",
-    color: "#141B2B",
-  },
-
-  roleText: {
-    marginTop: Spacing.xs,
-    ...Typography.bodyMedium,
-    color: "#3D4B37",
-  },
-
-  /*
-   * VERIFICATION CARD
-   */
-
-  verificationCard: {
-    position: "relative",
-    overflow: "hidden",
-
-    backgroundColor: "#FFFFFF",
-
-    borderWidth: 1,
-    borderColor: "#BCCBB2",
-
-    borderRadius: 24,
-
-    padding: Spacing.lg,
-
-    alignItems: "center",
-
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
-
-    elevation: 2,
-  },
-
-  decorativeCircle: {
+  topHeader: {
     position: "absolute",
-    width: 128,
-    height: 128,
-    borderRadius: 64,
-
-    right: -64,
-    top: -64,
-
-    backgroundColor: "#FFEBE8",
-    opacity: 0.6,
-  },
-
-  decorativeCirclePending: {
-    backgroundColor: "#FFF1C7",
-  },
-
-  decorativeCircleApproved: {
-    backgroundColor: "#D9F7D2",
-  },
-
-  warningIcon: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-
-    alignItems: "center",
-    justifyContent: "center",
-
-    marginBottom: Spacing.sm,
-  },
-
-  verificationText: {
-    alignItems: "center",
-    paddingHorizontal: Spacing.sm,
-  },
-
-  verificationTitle: {
-    fontSize: 20,
-    lineHeight: 28,
-    fontWeight: "600",
-    color: "#141B2B",
-    textAlign: "center",
-  },
-
-  verificationDescription: {
-    marginTop: Spacing.xs,
-
-    fontSize: 14,
-    lineHeight: 20,
-    fontWeight: "400",
-
-    color: "#3D4B37",
-
-    textAlign: "center",
-  },
-
-  verificationButton: {
-    width: "100%",
-
-    minHeight: 52,
-
-    marginTop: Spacing.lg,
-
-    paddingHorizontal: Spacing.md,
-
-    borderRadius: 16,
-
-    backgroundColor: "#1FC600",
-
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-
-    shadowColor: "#1FC600",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 7,
-
-    elevation: 3,
-  },
-
-  verificationButtonPressed: {
-    transform: [
-      {
-        scale: 0.98,
-      },
-    ],
-  },
-
-  verificationButtonText: {
-    fontSize: 12,
-    lineHeight: 16,
-    fontWeight: "700",
-    color: "#000000",
-
-    marginRight: Spacing.sm,
-  },
-
-  approvedStatus: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-
-    marginTop: Spacing.lg,
-
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-
-    borderRadius: 12,
-
-    backgroundColor: "#EAF8E6",
-  },
-
-  approvedStatusText: {
-    marginLeft: 8,
-    fontSize: 12,
-    lineHeight: 16,
-    fontWeight: "600",
-    color: "#0D6E00",
-  },
-
-  /*
-   * SUMMARY CARDS
-   */
-
-  summaryRow: {
-    flexDirection: "row",
-    gap: Spacing.md,
-
-    marginTop: Spacing.xl,
-  },
-
-  summaryCard: {
-    flex: 1,
-
-    minHeight: 120,
-
-    backgroundColor: "#FFFFFF",
-
-    borderWidth: 1,
-    borderColor: "#DCE2F7",
-
-    borderRadius: 16,
-
-    padding: Spacing.md,
-
-    justifyContent: "space-between",
-  },
-
-  summaryLabel: {
-    marginTop: Spacing.sm,
-
-    fontSize: 14,
-    lineHeight: 20,
-    fontWeight: "400",
-
-    color: "#3D4B37",
-  },
-
-  summaryValue: {
-    marginTop: Spacing.xs,
-
-    fontSize: 20,
-    lineHeight: 28,
-    fontWeight: "600",
-
-    color: "#141B2B",
-
-    opacity: 0.5,
-  },
-
-  bottomSpacing: {
-    height: 20,
-  },
-
-  /*
-   * BOTTOM NAVIGATION
-   */
-
-  bottomNavigation: {
-    position: "absolute",
-
+    top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
-
-    height: 68,
-
-    backgroundColor: "#FFFFFF",
-
-    borderTopWidth: 1,
-    borderTopColor: "#F0F1F5",
-
+    zIndex: 30,
     flexDirection: "row",
     alignItems: "center",
-
-    paddingBottom: 4,
-
-    elevation: 8,
-
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: -2,
-    },
-    shadowOpacity: 0.04,
-    shadowRadius: 4,
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingBottom: 10,
+    backgroundColor: "rgba(255, 255, 255, 0.95)",
+    borderBottomWidth: 1,
+    borderColor: "rgba(226, 232, 240, 0.8)",
+    shadowColor: "#0F172A",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 4,
   },
-
-  bottomNavItem: {
+  driverProfileCol: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  avatarWrap: {
+    position: "relative",
+  },
+  avatarCircle: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: "#0D6E00",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "#FFFFFF",
+  },
+  ratingBadge: {
+    position: "absolute",
+    bottom: -3,
+    right: -4,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 1,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    borderRadius: Radius.pill,
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+  },
+  ratingBadgeText: {
+    fontSize: 9,
+    fontWeight: "800",
+    color: "#0F172A",
+  },
+  driverName: {
+    fontSize: 15,
+    fontWeight: "800",
+    color: "#0F172A",
+  },
+  vehicleDetails: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#64748B",
+    marginTop: 1,
+  },
+  headerRightActions: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  switchModeButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    backgroundColor: "#ECFDF5",
+    borderWidth: 1,
+    borderColor: "#A7F3D0",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: Radius.pill,
+  },
+  switchModeText: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#0D6E00",
+  },
+  mapContainer: {
     flex: 1,
-
-    height: "100%",
-
+    width: "100%",
+  },
+  onlineBeaconContainer: {
+    position: "absolute",
+    top: 96,
+    left: 0,
+    right: 0,
+    alignItems: "center",
+    zIndex: 20,
+  },
+  onlineBeaconPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: "rgba(15, 23, 42, 0.94)",
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: Radius.pill,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 5,
+  },
+  onlineBeaconDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#1FC600",
+  },
+  onlineBeaconText: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#FFFFFF",
+  },
+  offlineBeaconPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: "rgba(255, 255, 255, 0.95)",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: Radius.pill,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  offlineBeaconDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#94A3B8",
+  },
+  offlineBeaconText: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#64748B",
+  },
+  bottomSheet: {
+    backgroundColor: "#FFFFFF",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    gap: 12,
+    borderTopWidth: 1,
+    borderColor: "rgba(226, 232, 240, 0.8)",
+    shadowColor: "#0F172A",
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 10,
+  },
+  onlineToggleButton: {
+    width: "100%",
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 18,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  onlineButtonActive: {
+    backgroundColor: "#1FC600",
+    shadowColor: "#1FC600",
+    shadowOpacity: 0.35,
+  },
+  offlineButtonActive: {
+    backgroundColor: "#1E293B",
+    shadowColor: "#0F172A",
+    shadowOpacity: 0.25,
+  },
+  toggleIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "rgba(255, 255, 255, 0.25)",
     alignItems: "center",
     justifyContent: "center",
   },
-
-  bottomNavLabel: {
-    marginTop: 3,
-
-    fontSize: 10,
-    lineHeight: 14,
-    fontWeight: "700",
-
-    color: "#6B7280",
+  toggleTextWrap: {
+    flex: 1,
   },
-
-  bottomNavLabelActive: {
-    color: "#1FC600",
+  toggleMainText: {
+    fontSize: 15,
+    fontWeight: "900",
+    letterSpacing: 0.5,
+  },
+  toggleMainTextOnline: {
+    color: "#064B00",
+  },
+  toggleMainTextOffline: {
+    color: "#FFFFFF",
+  },
+  toggleSubText: {
+    fontSize: 11,
+    fontWeight: "600",
+    marginTop: 2,
+  },
+  toggleSubTextOnline: {
+    color: "#064B00",
+  },
+  toggleSubTextOffline: {
+    color: "#94A3B8",
+  },
+  earningsCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#F8FAFC",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+  },
+  earningsCol: {
+    flex: 1,
+    alignItems: "center",
+  },
+  dividerV: {
+    width: 1,
+    height: 28,
+    backgroundColor: "#E2E8F0",
+  },
+  earningsLabel: {
+    fontSize: 9,
+    fontWeight: "800",
+    color: "#64748B",
+    letterSpacing: 0.4,
+  },
+  earningsAmount: {
+    fontSize: 16,
+    fontWeight: "900",
+    color: "#0D6E00",
+    marginTop: 2,
+  },
+  earningsStatValue: {
+    fontSize: 14,
+    fontWeight: "800",
+    color: "#0F172A",
+    marginTop: 2,
+  },
+  simulateRequestButton: {
+    width: "100%",
+    backgroundColor: "#ECFDF5",
+    borderWidth: 1,
+    borderColor: "#A7F3D0",
+    borderRadius: Radius.pill,
+    paddingVertical: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+  },
+  simulateRequestButtonText: {
+    fontSize: 13,
+    fontWeight: "800",
+    color: "#0D6E00",
   },
 });

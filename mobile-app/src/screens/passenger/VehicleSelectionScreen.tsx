@@ -29,6 +29,7 @@ import {
   VehicleType,
 } from "@/constants/vehicles";
 import { Colors, Radius } from "@/theme";
+import rideLifecycleService from "@/services/ride-lifecycle.service";
 
 export default function VehicleSelectionScreen() {
   const insets = useSafeAreaInsets();
@@ -127,6 +128,54 @@ export default function VehicleSelectionScreen() {
     } else {
       router.replace("/passenger/destination-search");
     }
+  };
+
+  // Proceed from booking confirmation modal to Finding Your Ride
+  const handleProceedToFindingRide = () => {
+    setConfirmationModalVisible(false);
+
+    // ── Create the shared ride in the lifecycle service ───────────────────
+    // Both passenger and driver screens will now subscribe to this same offer.
+    const distKm = parseFloat(params.distanceKm || "5.4");
+    const durationMin = Math.round((distKm / 20) * 60); // rough estimate at 20 km/h avg
+    rideLifecycleService.createRide({
+      pickupTitle,
+      pickupSubtitle,
+      pickupLat,
+      pickupLng,
+      destinationTitle,
+      destinationSubtitle,
+      destLat,
+      destLng,
+      distanceKm: distKm,
+      durationMin,
+      vehicleType:
+        selectedVehicleKey.charAt(0).toUpperCase() + selectedVehicleKey.slice(1),
+      rideMode: selectedMode === "personal" ? "Personal" : "Shared",
+      estimatedFare: currentFare,
+      requestedSeats,
+      paymentMethod,
+    });
+
+    router.push({
+      pathname: "/passenger/finding-ride",
+      params: {
+        pickupTitle,
+        pickupSubtitle,
+        pickupLat: String(pickupLat),
+        pickupLng: String(pickupLng),
+        destinationTitle,
+        destinationSubtitle,
+        destLat: String(destLat),
+        destLng: String(destLng),
+        distanceKm: params.distanceKm || "7.2",
+        vehicleType: selectedVehicleKey,
+        rideMode: selectedMode,
+        requestedSeats: String(requestedSeats),
+        fare: String(currentFare),
+        paymentMethod,
+      },
+    } as any);
   };
 
   return (
@@ -381,11 +430,20 @@ export default function VehicleSelectionScreen() {
               </View>
 
               <TouchableOpacity
+                style={styles.modalProceedButton}
+                activeOpacity={0.85}
+                onPress={handleProceedToFindingRide}
+              >
+                <Text style={styles.modalProceedText}>Confirm & Find Ride</Text>
+                <Ionicons name="arrow-forward" size={16} color="#064B00" />
+              </TouchableOpacity>
+
+              <TouchableOpacity
                 style={styles.modalCloseButton}
                 activeOpacity={0.85}
                 onPress={() => setConfirmationModalVisible(false)}
               >
-                <Text style={styles.modalCloseText}>Done / Return to Selection</Text>
+                <Text style={styles.modalCloseText}>Adjust Selection</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -715,9 +773,30 @@ const styles = StyleSheet.create({
     lineHeight: 15,
     flex: 1,
   },
+  modalProceedButton: {
+    width: "100%",
+    backgroundColor: Colors.primary,
+    paddingVertical: 14,
+    borderRadius: Radius.pill,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    marginBottom: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  modalProceedText: {
+    fontSize: 15,
+    fontWeight: "800",
+    color: "#064B00",
+  },
   modalCloseButton: {
     width: "100%",
-    backgroundColor: Colors.text.primary,
+    backgroundColor: "#F3F4F6",
     paddingVertical: 12,
     borderRadius: Radius.pill,
     alignItems: "center",
@@ -725,6 +804,6 @@ const styles = StyleSheet.create({
   modalCloseText: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#FFFFFF",
+    color: Colors.text.primary,
   },
 });

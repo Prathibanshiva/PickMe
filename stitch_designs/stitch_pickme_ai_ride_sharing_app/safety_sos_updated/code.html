@@ -1,0 +1,347 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Safety &amp; SOS - PickMe</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-tertiary": "#ffffff",
+          "primary-fixed-dim": "#48e32e",
+          "background": "#f9f9ff",
+          "inverse-primary": "#48e32e",
+          "secondary-fixed": "#77ff60",
+          "on-secondary": "#ffffff",
+          "on-primary-fixed": "#012200",
+          "on-tertiary-fixed-variant": "#454748",
+          "error": "#ba1a1a",
+          "on-surface": "#141b2b",
+          "secondary": "#046e00",
+          "primary-container": "#1fc600",
+          "primary-fixed": "#78ff5c",
+          "secondary-container": "#0ef900",
+          "surface": "#f9f9ff",
+          "surface-container-highest": "#dce2f7",
+          "surface-bright": "#f9f9ff",
+          "primary": "#0d6e00",
+          "inverse-on-surface": "#edf0ff",
+          "on-background": "#141b2b",
+          "on-primary-fixed-variant": "#085300",
+          "error-container": "#ffdad6",
+          "on-surface-variant": "#3d4b37",
+          "secondary-fixed-dim": "#0de600",
+          "on-secondary-fixed": "#012200",
+          "on-primary": "#ffffff",
+          "tertiary": "#5c5f60",
+          "surface-container": "#e9edff",
+          "outline-variant": "#bccbb2",
+          "tertiary-container": "#a9abac",
+          "surface-dim": "#d3daef",
+          "surface-variant": "#dce2f7",
+          "tertiary-fixed": "#e1e3e4",
+          "on-tertiary-container": "#3d4041",
+          "tertiary-fixed-dim": "#c5c7c8",
+          "on-error": "#ffffff",
+          "on-error-container": "#93000a",
+          "on-primary-container": "#064b00",
+          "surface-container-high": "#e1e8fd",
+          "on-secondary-container": "#046d00",
+          "surface-tint": "#0d6e00",
+          "on-secondary-fixed-variant": "#035300",
+          "on-tertiary-fixed": "#191c1d",
+          "surface-container-low": "#f1f3ff",
+          "outline": "#6d7b65",
+          "inverse-surface": "#293040",
+          "surface-container-lowest": "#ffffff"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "2xl": "1rem",
+          "3xl": "1.5rem",
+          "full": "9999px"
+        },
+        "spacing": {
+          "unit": "4px",
+          "container-padding": "16px",
+          "gutter": "12px",
+          "section-gap": "20px",
+          "stack-gap": "14px"
+        },
+        "fontFamily": {
+          "sans": ["Inter", "sans-serif"],
+          "display-lg": ["Inter"],
+          "body-lg": ["Inter"],
+          "label-bold": ["Inter"],
+          "fare-display": ["Inter"],
+          "headline-lg-mobile": ["Inter"],
+          "headline-lg": ["Inter"],
+          "title-md": ["Inter"],
+          "body-sm": ["Inter"]
+        },
+        "fontSize": {
+          "display-lg": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+          "body-lg": ["15px", { "lineHeight": "22px", "fontWeight": "400" }],
+          "label-bold": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+          "fare-display": ["24px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "800" }],
+          "headline-lg-mobile": ["22px", { "lineHeight": "28px", "fontWeight": "700" }],
+          "title-md": ["18px", { "lineHeight": "24px", "fontWeight": "700" }],
+          "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }]
+        }
+      }
+    }
+  }
+</script>
+<style>
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .material-symbols-outlined.filled {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .scale-98:active { transform: scale(0.98); }
+  
+  /* Toggle Switch */
+  .toggle-checkbox:checked {
+    right: 0;
+    border-color: #1FC600;
+  }
+  .toggle-checkbox:checked + .toggle-label {
+    background-color: #1FC600;
+  }
+  
+  /* SOS Slider Track animation pulse */
+  @keyframes sos-glow {
+    0%, 100% { box-shadow: 0 4px 20px rgba(186, 26, 26, 0.28); }
+    50% { box-shadow: 0 4px 30px rgba(186, 26, 26, 0.45); }
+  }
+  .sos-pulse {
+    animation: sos-glow 2.5s infinite ease-in-out;
+  }
+</style>
+<style>
+  body {
+    min-height: max(884px, 100dvh);
+  }
+</style>
+</head>
+<body class="bg-[#f9f9ff] text-on-background antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col font-sans">
+<div class="max-w-[430px] mx-auto w-full min-h-screen bg-[#f9f9ff] flex flex-col relative shadow-2xl">
+<!-- TopAppBar -->
+<header class="bg-surface/95 backdrop-blur-md sticky top-0 z-40 px-4 py-3 border-b border-surface-variant/40 flex justify-between items-center w-full">
+<div class="flex items-center gap-2.5">
+<button aria-label="Go back" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface hover:bg-surface-container-high transition-colors scale-98 active:scale-95">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<div>
+<div class="flex items-center gap-1.5">
+<h1 class="text-[20px] font-extrabold tracking-tight text-on-surface leading-tight">Safety &amp; SOS</h1>
+<span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-[#1fc600]/15 text-[#0d6e00]">
+              24/7
+            </span>
+</div>
+<p class="text-[11px] font-medium text-on-surface-variant">Kinetic In-Ride Shield</p>
+</div>
+</div>
+<div class="flex items-center gap-1">
+<button class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-[#0d6e00] hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined filled text-[20px]" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</button>
+<button class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[20px]">info</span>
+</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 px-4 py-4 flex flex-col gap-5 pb-32">
+<!-- Active Live Trip Safety Banner -->
+<section class="bg-gradient-to-br from-[#ffffff] to-[#f1f4ff] rounded-2xl p-4 shadow-sm border border-[#dce2f7] relative overflow-hidden">
+<!-- Live status bar -->
+<div class="flex items-center justify-between gap-2 pb-3 mb-3 border-b border-surface-variant/50">
+<div class="flex items-center gap-2">
+<span class="relative flex h-2.5 w-2.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1fc600] opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#1fc600]"></span>
+</span>
+<span class="text-[12px] font-bold uppercase tracking-wider text-[#0d6e00]">Live Trip Monitoring Active</span>
+</div>
+<span class="px-2 py-0.5 rounded-md bg-[#1fc600]/10 text-[#0d6e00] font-bold text-[11px] flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">shield</span> Shield ON
+          </span>
+</div>
+<!-- Route Details -->
+<div class="flex items-center gap-2.5 mb-3.5 bg-surface-container-lowest/80 p-2.5 rounded-xl border border-surface-variant/40">
+<div class="flex flex-col items-center justify-center pt-0.5">
+<span class="w-2.5 h-2.5 rounded-full bg-[#1fc600]"></span>
+<span class="w-0.5 h-4 bg-outline-variant/60 my-0.5"></span>
+<span class="w-2.5 h-2.5 rounded-[2px] bg-[#ba1a1a]"></span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-[13px] font-semibold text-on-surface truncate">4th Block, Koramangala</div>
+<div class="text-[13px] font-semibold text-on-surface truncate mt-0.5">100ft Road, Indiranagar</div>
+</div>
+<span class="text-[11px] font-medium text-on-surface-variant bg-surface-container px-2 py-1 rounded-md">Ride #PK-882</span>
+</div>
+<!-- Share Live Trip Automatically Toggle -->
+<div class="flex items-start justify-between gap-3 pt-1">
+<div class="flex-1">
+<div class="flex items-center gap-1.5">
+<h2 class="font-bold text-[14px] text-on-background">Share Live Trip Automatically</h2>
+</div>
+<p class="text-[12px] text-on-surface-variant leading-tight mt-1">Your trusted contacts will receive real-time GPS tracking link via SMS.</p>
+</div>
+<div class="relative inline-block w-11 h-6 align-middle select-none flex-shrink-0 mt-0.5">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-2 appearance-none cursor-pointer border-[#1fc600] right-0 z-10 transition-all duration-200 top-0" id="live-trip-toggle" name="toggle" type="checkbox">
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-[#1fc600] cursor-pointer transition-colors duration-200" for="live-trip-toggle"></label>
+</div>
+</div>
+</section>
+<!-- Emergency / Trusted Contacts List -->
+<section class="flex flex-col gap-2.5">
+<div class="flex justify-between items-center px-0.5">
+<div>
+<div class="flex items-center gap-2">
+<h2 class="font-title-md text-[17px] text-on-background">Emergency Contacts</h2>
+<span class="px-2 py-0.5 bg-surface-container-high text-[#0d6e00] font-bold text-[11px] rounded-full">Trusted (2/5)</span>
+</div>
+<p class="text-[12px] text-on-surface-variant mt-0.5">Auto-notified with your live GPS in any emergency</p>
+</div>
+</div>
+<div class="flex flex-col gap-2.5">
+<!-- Contact 1 -->
+<div class="bg-surface-container-lowest rounded-2xl p-3.5 flex items-center justify-between border border-surface-variant shadow-xs">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-full bg-[#1fc600]/15 flex items-center justify-center text-[#0d6e00] font-bold">
+<span class="material-symbols-outlined filled text-[22px]" style="font-variation-settings: 'FILL' 1;">person</span>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<p class="font-bold text-[15px] text-on-background">Mom (Sarah Jenkins)</p>
+<span class="px-1.5 py-0.5 text-[9px] font-bold uppercase rounded bg-[#1fc600]/15 text-[#085300]">Receives Live SMS</span>
+</div>
+<div class="flex items-center gap-1.5 text-[12px] text-on-surface-variant mt-0.5">
+<span class="font-medium text-on-surface">Family</span>
+<span class="">•</span>
+<span class="">+91 98765 43210</span>
+</div>
+</div>
+</div>
+<a aria-label="Call Mom" class="w-10 h-10 rounded-full bg-[#1fc600] text-white flex items-center justify-center scale-98 active:scale-95 transition-all shadow-sm hover:brightness-105" href="tel:+919876543210">
+<span class="material-symbols-outlined filled text-[20px]" style="font-variation-settings: 'FILL' 1;">call</span>
+</a>
+</div>
+<!-- Contact 2 -->
+<div class="bg-surface-container-lowest rounded-2xl p-3.5 flex items-center justify-between border border-surface-variant shadow-xs">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-full bg-surface-container-high flex items-center justify-center text-[#0d6e00]">
+<span class="material-symbols-outlined filled text-[22px]" style="font-variation-settings: 'FILL' 1;">person</span>
+</div>
+<div>
+<p class="font-bold text-[15px] text-on-background">David Jenkins</p>
+<div class="flex items-center gap-1.5 text-[12px] text-on-surface-variant mt-0.5">
+<span class="font-medium text-on-surface">Brother</span>
+<span class="">•</span>
+<span class="">+91 98123 45678</span>
+</div>
+</div>
+</div>
+<a aria-label="Call David" class="w-10 h-10 rounded-full bg-[#1fc600] text-white flex items-center justify-center scale-98 active:scale-95 transition-all shadow-sm hover:brightness-105" href="tel:+919812345678">
+<span class="material-symbols-outlined filled text-[20px]" style="font-variation-settings: 'FILL' 1;">call</span>
+</a>
+</div>
+<!-- Add Contact Button -->
+<button class="w-full py-3 px-4 rounded-xl border-2 border-dashed border-[#1fc600] bg-[#1fc600]/5 text-[#0d6e00] font-bold text-[14px] flex items-center justify-center gap-2 hover:bg-[#1fc600]/10 transition-colors scale-98 active:scale-95">
+<span class="material-symbols-outlined text-[20px]">person_add</span>
+            Add Trusted Contact
+          </button>
+</div>
+</section>
+<!-- Safety Toolkit / In-Ride Protection Options -->
+<section class="flex flex-col gap-2.5">
+<div class="flex items-center justify-between px-0.5">
+<h2 class="font-title-md text-[17px] text-on-background">Safety Toolkit</h2>
+<span class="text-[12px] font-semibold text-[#0d6e00]">In-Ride Protection</span>
+</div>
+<div class="flex flex-col gap-2.5">
+<!-- PIN Verification -->
+<div class="bg-surface-container-lowest rounded-2xl p-3.5 border border-surface-variant flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-surface-container-high text-[#0d6e00] flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">pin</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-bold text-[14px] text-on-surface">PIN Verification</h3>
+<span class="px-1.5 py-0.2 bg-[#1fc600]/15 text-[#085300] font-bold text-[10px] rounded">Active</span>
+</div>
+<p class="text-[12px] text-on-surface-variant">4-digit code required before driver starts trip</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">check_circle</span>
+</div>
+<!-- Ride Audio Recording -->
+<div class="bg-surface-container-lowest rounded-2xl p-3.5 border border-surface-variant flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-surface-container-high text-[#0d6e00] flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">mic</span>
+</div>
+<div>
+<h3 class="font-bold text-[14px] text-on-surface">Ride Audio Recording</h3>
+<p class="text-[12px] text-on-surface-variant">Encrypted in-app safety recording for protection</p>
+</div>
+</div>
+<button class="px-2.5 py-1 rounded-lg bg-surface-container font-semibold text-[11px] text-on-surface hover:bg-surface-container-high">
+              Setup
+            </button>
+</div>
+<!-- Night Safety Check-in -->
+<div class="bg-surface-container-lowest rounded-2xl p-3.5 border border-surface-variant flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-surface-container-high text-[#0d6e00] flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">bedtime</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-bold text-[14px] text-on-surface">Night Safety Check-in</h3>
+<span class="px-1.5 py-0.2 bg-[#1fc600]/15 text-[#085300] font-bold text-[10px] rounded">On</span>
+</div>
+<p class="text-[12px] text-on-surface-variant">Auto pop-up if vehicle takes unusual stop or detour</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Prominent Emergency SOS Action -->
+<section class="mt-2 pt-2 flex flex-col gap-2">
+<div class="relative bg-gradient-to-r from-[#ba1a1a] to-[#93000a] rounded-2xl p-1.5 shadow-xl sos-pulse text-white flex items-center justify-between overflow-hidden">
+<!-- Slide handle button -->
+<button class="w-14 h-14 rounded-xl bg-white text-[#ba1a1a] flex items-center justify-center shadow-lg transform transition-transform active:translate-x-2">
+<span class="material-symbols-outlined filled text-[30px]" style="font-variation-settings: 'FILL' 1;">emergency</span>
+</button>
+<!-- Center Text -->
+<div class="flex-1 text-center font-extrabold tracking-wider text-[16px] flex items-center justify-center gap-2 pr-4">
+<span class="">SLIDE TO SOS</span>
+<span class="material-symbols-outlined text-[20px] animate-pulse">double_arrow</span>
+</div>
+</div>
+<div class="flex items-start gap-2 px-1 pt-1">
+<span class="material-symbols-outlined text-[16px] text-error flex-shrink-0 mt-0.5">policy</span>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">
+            Instantly dials local police (112) &amp; alerts PickMe 24/7 Safety Command Center with live GPS coordinates.
+          </p>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 max-w-[430px] mx-auto bg-white/95 backdrop-blur-md border-t border-slate-100 px-6 py-2 z-50 flex justify-between items-center shadow-lg"><button class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition-colors"><span class="material-symbols-outlined text-[24px]">directions_car</span><span class="text-[11px] font-medium">Ride</span></button><button class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition-colors"><span class="material-symbols-outlined text-[24px]">calendar_today</span><span class="text-[11px] font-medium">Schedule</span></button><button class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition-colors"><span class="material-symbols-outlined text-[24px]">receipt_long</span><span class="text-[11px] font-medium">Activity</span></button><button class="flex flex-col items-center gap-1 text-[#1fc600] bg-green-50 rounded-xl px-3 py-1 transition-all"><span class="material-symbols-outlined filled text-[24px]" style="font-variation-settings: 'FILL' 1;">person</span><span class="text-[11px] font-bold">Profile</span></button></nav>
+</div>
+
+
+</body></html>

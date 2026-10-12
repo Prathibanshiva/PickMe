@@ -102,9 +102,18 @@ export default function PassengerHomeScreen() {
           </View>
 
           <View style={styles.headerRight}>
-            <View style={styles.rolePill}>
-              <Text style={styles.rolePillText}>Passenger</Text>
-            </View>
+            <TouchableOpacity
+              style={styles.rolePill}
+              activeOpacity={0.8}
+              onPress={() => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                router.push("/driver" as any);
+              }}
+              accessibilityLabel="Switch to Driver Mode"
+            >
+              <Ionicons name="car-outline" size={13} color="#0D6E00" />
+              <Text style={styles.rolePillText}>Driver Mode</Text>
+            </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.profileButton}

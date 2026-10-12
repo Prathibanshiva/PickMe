@@ -95,6 +95,23 @@ const verifyOTP = async (req, res) => {
     // Check if user already exists
     let user = await User.findOne({ phoneNumber });
 
+    // Enforce account status for existing users
+    if (user) {
+      if (user.isBlocked) {
+        return res.status(403).json({
+          success: false,
+          message: "Your account has been blocked. Please contact customer support.",
+        });
+      }
+
+      if (user.isSuspended) {
+        return res.status(403).json({
+          success: false,
+          message: "Your account has been suspended. Please contact customer support.",
+        });
+      }
+    }
+
     // Create new user if not found
     if (!user) {
       user = await User.create({
