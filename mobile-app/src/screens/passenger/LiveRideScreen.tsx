@@ -279,8 +279,14 @@ export default function LiveRideScreen() {
       navigateToCompleted();
     }
 
+    // Periodic sync with backend to detect trip completion
+    const pollInterval = setInterval(() => {
+      rideLifecycleService.syncActiveRide();
+    }, 3000);
+
     return () => {
       unsubscribe();
+      clearInterval(pollInterval);
     };
   }, []);
 

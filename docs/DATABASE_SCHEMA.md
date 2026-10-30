@@ -8,18 +8,18 @@
 
 ## 1. Schema Overview & Collections
 
-The backend persistence layer currently defines **three active Mongoose models** in [backend/src/models/](file:///c:/Projects/PickMe/backend/src/models/):
+The backend persistence layer currently defines **four active Mongoose models** in [backend/src/models/](file:///c:/Projects/PickMe/backend/src/models/):
 
 | Model Name | Collection Name | Purpose | Primary References |
 |---|---|---|---|
 | [`User`](file:///c:/Projects/PickMe/backend/src/models/User.js) | `users` | Core identity, authentication credentials, role flag, account access status | Root identity entity |
 | [`DriverProfile`](file:///c:/Projects/PickMe/backend/src/models/DriverProfile.js) | `driverprofiles` | Driver KYC onboarding, documents, verification status, vehicle attributes | Ref `User` (as `userId` and `verifiedBy`) |
 | [`OTP`](file:///c:/Projects/PickMe/backend/src/models/OTP.js) | `otps` | Ephemeral one-time passwords for passwordless phone login with automated TTL | Indexed by `phoneNumber` |
+| [`Ride`](file:///c:/Projects/PickMe/backend/src/models/Ride.js) | `rides` | Persistent ride lifecycle, corridor pooling, driver assignment, OTP verification, geospatial tracking | Ref `User` (`passengerId` and `driverId`) |
 
-> [!IMPORTANT]
-> **Ride and Trip Persistence Reality:**
-> There are currently **NO** database models for `Ride`, `Trip`, `Booking`, or `ScheduledRide` in the backend.
-> All passenger ride booking, driver offer dispatch, trip progression, and fare settlement currently execute exclusively inside mobile client memory via the [ride-lifecycle.service.ts](file:///c:/Projects/PickMe/mobile-app/src/services/ride-lifecycle.service.ts) singleton. Persistent server-side ride schemas are scheduled for Phase C.
+> [!NOTE]
+> **Phase C Ride Persistence Active:**
+> The `Ride` collection is fully persisted in MongoDB. Rides progress through a server-authoritative state machine (`requested -> accepted -> arrived -> in_progress -> completed` or `cancelled`). Pre-booking for future scheduled rides (`ScheduledRide`) remains scheduled for subsequent Phase C tasks.
 
 ---
 
@@ -121,13 +121,57 @@ Handles temporary verification tokens for passwordless phone authentication.
 
 ---
 
-## 5. Entity Relationship Diagram (Mongoose)
+## 5. Model: `Ride` (`rides` Collection)
+
+Defined in [backend/src/models/Ride.js](file:///c:/Projects/PickMe/backend/src/models/Ride.js).
+Persists core ride lifecycle states, route geometry, seat reservations, pricing, and driver assignments.
+
+### Field Definitions
+
+| Field Name | Type | Required | Default | Enums / Constraints | Description |
+|---|---|---|---|---|---|
+| `_id` | `ObjectId` | Auto | Generated | Unique primary key | MongoDB internal document identifier. |
+| `rideId` | `String` | Auto | Generated | Unique, Indexed | Human-readable identifier (e.g. `PKM-48291`). |
+| `passengerId` | `ObjectId` | **Yes** | None | Ref: `"User"`, Indexed | Passenger who requested the ride. |
+| `driverId` | `ObjectId` | No | `null` | Ref: `"User"`, Indexed | Assigned driver fulfilling the ride. `null` until accepted. |
+| `vehicleType` | `String` | **Yes** | None | `["bike", "auto", "car", "sedan", "suv"]` | Canonical vehicle category. |
+| `rideMode` | `String` | **Yes** | `"shared"` | `["shared", "personal"]` | Pooling mode. Shared allocates seats; Personal reserves whole vehicle. |
+| `requestedSeats` | `Number` | **Yes** | `1` | Min 1, Max 6 | Seats requested. Must be 1 to `(capacity - 1)` for Shared; full capacity for Personal. |
+| `pickup` | `Object` | **Yes** | None | Address + GeoJSON Point `[lng, lat]` | Passenger origin coordinates with 2dsphere index. |
+| `destination` | `Object` | **Yes** | None | Address + GeoJSON Point `[lng, lat]` | Passenger dropoff coordinates with 2dsphere index. |
+| `distanceKm` | `Number` | No | `0` | Min 0 | Trip distance estimate in kilometers. |
+| `durationMin` | `Number` | No | `0` | Min 0 | Estimated trip duration in minutes. |
+| `estimatedFare` | `Number` | **Yes** | None | Min 0 | Upfront estimated ride fare in INR. |
+| `finalFare` | `Number` | No | `null` | Min 0 | Actual settled fare upon trip completion. |
+| `driverEarnings` | `Number` | Auto | `0` | Min 0 | Net payout to driver partner (85% net standard). |
+| `paymentMethod` | `String` | No | `"cash"` | `["cash", "card", "upi", "wallet"]` | Customer payment preference. |
+| `paymentStatus` | `String` | No | `"pending"` | `["pending", "completed", "failed"]` | Settlement status. Transitioned to `"completed"` on finish. |
+| `status` | `String` | No | `"requested"` | `["requested", "accepted", "arrived", "in_progress", "completed", "cancelled"]` | Server-authoritative state machine status. |
+| `verificationOtp` | `String` | **Yes** | Generated | 4-digit numeric string | In-person verification PIN. Masked from driver responses until pickup. |
+| `timeline` | `Object` | Auto | Generated | Subdocument timestamps | Records `requestedAt`, `assignedAt`, `arrivedAt`, `startedAt`, `completedAt`, `cancelledAt`. |
+| `cancellation` | `Object` | Auto | Default nulls | Subdocument | Records `cancelledBy` (`passenger`, `driver`, `admin`, `system`) and `reason`. |
+| `createdAt` | `Date` | Auto | Generated | Managed by Mongoose | Record creation timestamp. |
+| `updatedAt` | `Date` | Auto | Generated | Managed by Mongoose | Record update timestamp. |
+
+### Indexes & Performance Constraints
+1. **`rideId_1` (Unique):** Fast O(1) query by public customer-facing ride identifier.
+2. **`pickup.location_2dsphere`:** Geospatial 2dsphere index enabling geospatial bounding searches around pickup.
+3. **`destination.location_2dsphere`:** Geospatial 2dsphere index for corridor dropoff trajectory comparison.
+4. **`passengerId_1_status_1`:** Compound index for active passenger trip polling and preventing duplicate active bookings.
+5. **`driverId_1_status_1`:** Compound index for driver active ride queries and Personal Ride exclusivity guards.
+6. **`status_1_createdAt_-1`:** Compound index for operations admin telemetry and dispatch queue inspection.
+
+---
+
+## 6. Entity Relationship Diagram (Mongoose)
 
 ```mermaid
 erDiagram
     User ||--o| DriverProfile : "owns (1:1 via userId)"
     User ||--o{ DriverProfile : "audits (1:N via verifiedBy)"
     OTP ||--o| User : "authenticates via phoneNumber"
+    User ||--o{ Ride : "books as passenger (1:N via passengerId)"
+    User ||--o{ Ride : "fulfills as driver (1:N via driverId)"
 
     User {
         ObjectId _id PK
@@ -161,6 +205,27 @@ erDiagram
         Date updatedAt
     }
 
+    Ride {
+        ObjectId _id PK
+        String rideId UK "PKM-XXXXX"
+        ObjectId passengerId FK "Ref: User"
+        ObjectId driverId FK "Ref: User (null until accepted)"
+        String vehicleType "bike|auto|car|sedan|suv"
+        String rideMode "shared|personal"
+        Number requestedSeats "1 to capacity - 1"
+        Object pickup "GeoJSON Point (2dsphere)"
+        Object destination "GeoJSON Point (2dsphere)"
+        Number estimatedFare
+        Number finalFare
+        Number driverEarnings
+        String status "requested|accepted|arrived|in_progress|completed|cancelled"
+        String verificationOtp "4-digit PIN"
+        Object timeline
+        Object cancellation
+        Date createdAt
+        Date updatedAt
+    }
+
     OTP {
         ObjectId _id PK
         String phoneNumber
@@ -174,7 +239,7 @@ erDiagram
 
 ---
 
-## 6. Persisted vs In-Memory State Analysis
+## 7. Persisted vs In-Memory State Analysis
 
 | Feature Domain | Database Model | Persistent Storage | Current Reality / Implementation |
 |---|---|---|---|
@@ -183,22 +248,22 @@ erDiagram
 | Driver Approval/Rejection | `DriverProfile` | MongoDB `driverprofiles` | Fully persisted with admin ID and rejection reasons. |
 | Account Banning/Suspension | `User` | MongoDB `users` | Fully persisted. Enforced on every authenticated API call. |
 | Phone OTP Verification | `OTP` | MongoDB `otps` | Fully persisted with automatic TTL expiry. |
-| **Ride Booking Record** | **None** | **None** | **Client Memory Only:** Managed in [ride-lifecycle.service.ts](file:///c:/Projects/PickMe/mobile-app/src/services/ride-lifecycle.service.ts) singleton. |
-| **Scheduled Ride Queue** | **None** | **None** | **Client Memory Only:** Pre-booking persistence is scheduled for Phase C. |
-| **Driver Location Stream** | **None** | **None** | **Client Memory Only:** Mock coordinate stream in mobile service (`driverLocation`). |
-| **Ride PIN / OTP** | **None** | **None** | **Client Memory Only:** Static verification PIN (`"7294"`) in mock session. |
-| **Trip Fare Settlement** | **None** | **None** | **Client Memory Only:** Aggregated in memory on driver device (`todayEarnings`). |
+| **Ride Booking Record** | **`Ride`** | **MongoDB `rides`** | **Fully Persisted:** Backed by MongoDB `rides` collection with server-authoritative state machine (`requested -> accepted -> arrived -> in_progress -> completed`). |
+| **Ride PIN / OTP** | **`Ride`** | **MongoDB `rides`** | **Fully Persisted:** 4-digit verification code generated at booking; verified server-side on trip start. |
+| **Trip Fare Settlement** | **`Ride`** | **MongoDB `rides`** | **Fully Persisted:** `estimatedFare`, `finalFare`, and `driverEarnings` persisted upon lifecycle transitions. |
+| **Scheduled Ride Queue** | **None** | **None** | **Client Memory Only:** Scheduled pre-booking persistence scheduled for subsequent Phase C tasks. |
+| **Driver Location Stream** | **None** | **None** | **Client Memory Only:** Real-time driver GPS streaming scheduled for Phase C WebSocket milestone. |
 
 ---
 
-## 7. Known Differences Between Design Blueprint & Current Schema
+## 8. Known Differences Between Design Blueprint & Current Schema
 
 1. **Document Storage:**
    - *Blueprint:* Mentions Cloudinary integration for Aadhaar, driving licence, vehicle photos, and profile pictures.
    - *Current Schema:* Document fields are standard `String` URIs. In local development, these store placeholder strings (`placeholder_aadhaar_doc`, etc.) as Cloudinary upload middleware is not yet wired to endpoints.
 2. **Geospatial Indexing:**
    - *Blueprint (ADR-007):* Planned MongoDB `2dsphere` index for driver location tracking and geospatial queries.
-   - *Current Schema:* No geospatial coordinates are stored on `User` or `DriverProfile`. Driver locations currently exist only in mobile memory.
+   - *Current Schema:* Implemented on `Ride.pickup.location` and `Ride.destination.location`. Driver live telemetry collection pending WebSocket stream.
 3. **Ride Models:**
    - *Blueprint:* Envisions dynamic ride matching and persistent trip states.
-   - *Current Schema:* No `Ride` or `Trip` schema exists yet. Backend admin endpoints `/api/admin/rides` and `/api/admin/scheduled-rides` explicitly return empty persisted sets (`persisted: false`, `phase: "Phase C Scheduled"`).
+   - *Current Schema:* Persistent `Ride` model active with server-authoritative state machine. Admin `/api/admin/rides` returns real aggregated MongoDB metrics (`liveRides`, `upcomingRides`, `completedRides`, `cancelledRides`, `totalRides`).

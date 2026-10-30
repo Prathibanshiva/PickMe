@@ -193,12 +193,51 @@ Returns the authenticated caller's profile data. Used by mobile apps on launch t
 
 Mounted from [backend/src/routes/driver.routes.js](file:///c:/Projects/PickMe/backend/src/routes/driver.routes.js).
 
-### 5.1 Create or Retrieve Driver Profile
+### 5.1 Get Driver Profile Status (Read-Only)
+Inspects the caller's driver profile and verification status without side effects. Never auto-creates a profile record. Used by mobile onboarding status gates and driver verification checks.
+
+- **Endpoint:** `GET /api/driver/profile`
+- **Authentication:** Bearer JWT required (`authenticate`)
+- **Controller:** [getDriverProfile](file:///c:/Projects/PickMe/backend/src/controllers/driver/driver.controller.js#L15)
+
+#### Success Response (`200 OK`)
+```json
+{
+  "success": true,
+  "message": "Driver profile retrieved successfully",
+  "driverProfile": {
+    "id": "66d62b508b0123456789abce",
+    "userId": "66d62a3f8b0123456789abcd",
+    "verificationStatus": "approved",
+    "rejectionReason": "",
+    "rejectionCode": "",
+    "verifiedBy": "66d620008b01234567890001",
+    "profilePhoto": "https://res.cloudinary.com/.../profile.jpg",
+    "aadhaarDocument": "https://res.cloudinary.com/.../aadhaar.jpg",
+    "drivingLicenceDocument": "https://res.cloudinary.com/.../licence.jpg",
+    "vehicleType": "sedan",
+    "vehicleNumber": "KA01AB1234",
+    "vehiclePhoto": "https://res.cloudinary.com/.../vehicle.jpg",
+    "verifiedAt": "2026-09-02T12:00:00.000Z",
+    "createdAt": "2026-09-02T10:00:00.000Z",
+    "updatedAt": "2026-09-02T12:00:00.000Z"
+  }
+}
+```
+
+#### Error Responses
+- `401 Unauthorized`: Token missing, expired, or invalid (`{"success": false, "message": "Authentication required"}`).
+- `404 Not Found`: No driver profile exists for the caller (`{"success": false, "onboardingRequired": true, "message": "Driver profile not found. Please complete driver onboarding."}`).
+- `500 Internal Server Error`: `{"success": false, "message": "Unable to retrieve driver profile"}`
+
+---
+
+### 5.2 Create or Retrieve Driver Profile
 Retrieves the caller's existing `DriverProfile` or initializes a new pending record if one does not exist.
 
 - **Endpoint:** `POST /api/driver/profile`
 - **Authentication:** Bearer JWT required (`authenticate`)
-- **Controller:** [createOrGetDriverProfile](file:///c:/Projects/PickMe/backend/src/controllers/driver/driver.controller.js#L9)
+- **Controller:** [createOrGetDriverProfile](file:///c:/Projects/PickMe/backend/src/controllers/driver/driver.controller.js#L132)
 
 #### Success Response (`200 OK`)
 ```json
@@ -227,7 +266,7 @@ Retrieves the caller's existing `DriverProfile` or initializes a new pending rec
 
 ---
 
-### 5.2 Submit Driver Profile & KYC Onboarding
+### 5.3 Submit Driver Profile & KYC Onboarding
 Submits complete driver identity and vehicle registration details. Updates the associated `User` record's name and transitions the driver profile to `pending` review.
 
 - **Endpoint:** `PUT /api/driver/profile`
@@ -738,24 +777,52 @@ The backend provides administrative inspection endpoints for rides and scheduled
 - **Endpoint:** `GET /api/admin/rides`
 - **Authentication:** Bearer JWT required (`authenticate` + `requireAdmin`)
 - **Controller:** [getRides](file:///c:/Projects/PickMe/backend/src/controllers/admin/ride.controller.js#L7)
-- **Implementation Status:** Verified stub. Returns empty persisted result with explicit service status.
+- **Implementation Status:** Active & Persisted. Queries MongoDB `rides` collection with status filtering (`live`, `upcoming`, `completed`, `cancelled`), text search, pagination, and real aggregated telemetry metrics.
+- **Query Parameters:**
+  - `status`: Filter by status (`all`, `live`, `upcoming`, `completed`, `cancelled`).
+  - `search`: Case-insensitive search on `rideId`, pickup/dropoff address, or passenger name/phone.
+  - `page`: 1-indexed page number (default: `1`).
+  - `limit`: Bounded results per page (default: `10`, max: `100`).
 - **Response (`200 OK`):**
 ```json
 {
   "success": true,
-  "rides": [],
+  "rides": [
+    {
+      "id": "670c1a2b3c4d5e6f7a8b9c0d",
+      "rideId": "PKM-48291",
+      "passenger": {
+        "id": "66d62a3f8b0123456789abcd",
+        "name": "Ananya Sharma",
+        "phoneNumber": "9876543210"
+      },
+      "driver": {
+        "id": "66d62a3f8b0123456789abce",
+        "name": "Rajesh Kumar",
+        "vehicleModel": "Sedan"
+      },
+      "pickup": "4th Block, Koramangala",
+      "dropoff": "100ft Road, Indiranagar",
+      "vehicleType": "Sedan",
+      "mode": "shared",
+      "fare": 280,
+      "status": "live",
+      "createdAt": "2026-10-13T10:30:00.000Z",
+      "completedAt": null
+    }
+  ],
   "metrics": {
-    "liveRides": 0,
-    "upcomingRides": 0,
-    "completedRides": 0,
-    "cancelledRides": 0,
-    "totalRides": 0
+    "liveRides": 3,
+    "upcomingRides": 1,
+    "completedRides": 14,
+    "cancelledRides": 2,
+    "totalRides": 20
   },
-  "pagination": { "total": 0, "page": 1, "limit": 10, "pages": 0 },
+  "pagination": { "total": 20, "page": 1, "limit": 10, "pages": 2 },
   "serviceStatus": {
-    "persisted": false,
-    "phase": "Phase C Scheduled",
-    "message": "Persistent ride storage and trip history are scheduled for Phase C (Ride Dispatch & Lifecycle). Mobile ride lifecycle currently executes via client-side state."
+    "persisted": true,
+    "phase": "Phase C Active",
+    "message": "Persistent MongoDB ride lifecycle foundation active."
   }
 }
 ```
@@ -763,11 +830,13 @@ The backend provides administrative inspection endpoints for rides and scheduled
 ### 10.2 Get Ride By ID
 - **Endpoint:** `GET /api/admin/rides/:id`
 - **Authentication:** Bearer JWT required (`authenticate` + `requireAdmin`)
+- **Controller:** [getRideById](file:///c:/Projects/PickMe/backend/src/controllers/admin/ride.controller.js#L140)
+- **Response (`200 OK`):** Returns full populated `Ride` document with passenger and driver partner profiles.
 - **Response (`404 Not Found`):**
 ```json
 {
   "success": false,
-  "message": "Ride #<id> not found. Persistent ride records are scheduled for activation in Phase C."
+  "message": "Ride #<id> not found in persistent records."
 }
 ```
 
@@ -810,7 +879,147 @@ The backend provides administrative inspection endpoints for rides and scheduled
 
 ---
 
-## 11. Mobile Client vs Backend Boundaries
+## 11. Ride Lifecycle Endpoints (`/api/rides`)
+
+Mounted from [backend/src/routes/ride.routes.js](file:///c:/Projects/PickMe/backend/src/routes/ride.routes.js).
+Provides the persistent, server-authoritative ride lifecycle for passengers, drivers, and operations administrators.
+
+### 11.1 Create Ride Booking Request
+Passenger initiates a persistent ride request. Enforces canonical vehicle capacities (Bike 1, Auto 3, Car 4, Sedan 4, SUV 6) and shared seat rules (Bike prohibited for shared; requested seats 1 to `capacity - 1`). Generates a 4-digit verification OTP and returns it in the response to the booking passenger.
+
+- **Endpoint:** `POST /api/rides`
+- **Authentication:** Bearer JWT required (`authenticate`)
+- **Controller:** [createRide](file:///c:/Projects/PickMe/backend/src/controllers/ride/ride.controller.js#L68)
+- **Request Body:**
+```json
+{
+  "pickup": {
+    "address": "4th Block, Koramangala, Bengaluru",
+    "title": "4th Block, Koramangala",
+    "coordinates": [77.6245, 12.9352]
+  },
+  "destination": {
+    "address": "100ft Road, Indiranagar, Bengaluru",
+    "title": "100ft Road, Indiranagar",
+    "coordinates": [77.6408, 12.9784]
+  },
+  "vehicleType": "sedan",
+  "rideMode": "shared",
+  "requestedSeats": 2,
+  "estimatedFare": 280,
+  "distanceKm": 5.4,
+  "durationMin": 18,
+  "paymentMethod": "cash"
+}
+```
+- **Success Response (`201 Created`):**
+```json
+{
+  "success": true,
+  "message": "Ride request created successfully",
+  "ride": {
+    "id": "670c1a2b3c4d5e6f7a8b9c0d",
+    "rideId": "PKM-48291",
+    "passengerId": "66d62a3f8b0123456789abcd",
+    "driverId": null,
+    "vehicleType": "sedan",
+    "rideMode": "shared",
+    "requestedSeats": 2,
+    "pickup": { ... },
+    "destination": { ... },
+    "estimatedFare": 280,
+    "finalFare": null,
+    "driverEarnings": 238,
+    "paymentMethod": "cash",
+    "paymentStatus": "pending",
+    "status": "requested",
+    "verificationOtp": "7294",
+    "timeline": { "requestedAt": "2026-10-13T10:30:00.000Z" }
+  }
+}
+```
+- **Error Responses:**
+  - `400 Bad Request`: Validation failure (e.g. Bike in shared mode, requested seats exceeding capacity - 1).
+  - `409 Conflict`: Passenger already has an active ride in progress (`requested`, `accepted`, `arrived`, `in_progress`).
+
+### 11.2 Get Active Ride
+Retrieves the caller's active trip. If caller is a passenger, returns active ride where `passengerId = user._id`. If caller is a driver, returns active assigned ride where `driverId = user._id`.
+
+- **Endpoint:** `GET /api/rides/active` (Alias: `GET /api/rides/my-active`)
+- **Authentication:** Bearer JWT required (`authenticate`)
+- **Success Response (`200 OK`):** Returns formatted active `ride` (or `{"success": true, "ride": null}` if idle). Verification OTP is included for the passenger and masked for the driver.
+
+### 11.3 Get Available Ride Requests (Driver Dispatch Feed)
+Allows verified driver partners to inspect pending unassigned ride requests (`status: "requested"`). Drivers on an active Personal Ride are blocked from viewing or accepting candidate offers until trip terminal state.
+
+- **Endpoint:** `GET /api/rides/available`
+- **Authentication:** Bearer JWT required (`authenticate`, must have `driver` role or approved `DriverProfile`)
+- **Query Parameters:** `vehicleType` (optional), `limit` (default: 10, max: 25).
+- **Success Response (`200 OK`):** Returns array of available unassigned ride offers. Verification OTP is strictly omitted from this feed.
+
+### 11.4 Get Ride Details By ID
+- **Endpoint:** `GET /api/rides/:id`
+- **Authentication:** Bearer JWT required (`authenticate`)
+- **Authorization:** Only the booking passenger, assigned driver, active candidate drivers (for unassigned offers), or administrators can view ride details. Other callers receive HTTP `403 Forbidden`. Verification OTP is exposed only to the passenger and administrator.
+
+### 11.5 List Ride History
+- **Endpoint:** `GET /api/rides`
+- **Authentication:** Bearer JWT required (`authenticate`)
+- **Query Parameters:** `status` (optional filter), `page` (default: 1), `limit` (default: 10, max: 50).
+- **Success Response (`200 OK`):** Returns paginated ride history for caller with pagination metadata.
+
+### 11.6 Accept Ride (Driver Assignment)
+Driver accepts a pending ride offer. Uses atomic `findOneAndUpdate` with status guard `{ status: "requested", driverId: null }` to prevent race conditions and conflicting assignments. Enforces Personal Ride driver exclusivity.
+
+- **Endpoint:** `POST /api/rides/:id/accept`
+- **Authentication:** Bearer JWT required (`authenticate`, driver role or approved profile)
+- **Success Response (`200 OK`):** `{"success": true, "message": "Ride accepted successfully", "ride": { ... "status": "accepted" }}`
+- **Error Responses:**
+  - `403 Forbidden`: Caller is not an approved driver partner.
+  - `409 Conflict`: Ride was already accepted by another driver, or driver is currently fulfilling an active Personal Ride.
+  - `400 Bad Request`: Ride is cancelled or not in a requestable state.
+
+### 11.7 Driver Arrived at Pickup
+Assigned driver marks arrival at pickup. Atomically transitions status from `accepted` to `arrived` and stamps `timeline.arrivedAt`.
+
+- **Endpoint:** `POST /api/rides/:id/arrive`
+- **Authentication:** Bearer JWT required (`authenticate`)
+- **Authorization:** Caller must be the assigned driver (`ride.driverId = user._id`). Unassigned drivers receive HTTP `403 Forbidden`.
+
+### 11.8 Verify OTP and Start Trip
+Driver enters the 4-digit PIN provided in person by the passenger. Server validates the code against `ride.verificationOtp` atomically in the database query filter (`{ _id: id, driverId, status: "arrived", verificationOtp: otp }`). If correct, atomically transitions status from `arrived` to `in_progress` and stamps `timeline.startedAt`. Protected by rate limiter `verifyOtpLimiter` (maximum 5 attempts per 15-minute window per driver/ride).
+
+- **Endpoint:** `POST /api/rides/:id/verify-otp`
+- **Authentication:** Bearer JWT required (`authenticate`)
+- **Rate Limiting:** `5 attempts / 15 minutes` via `express-rate-limit`
+- **Request Body:** `{"otp": "1234"}`
+- **Error Responses:**
+  - `400 Bad Request`: Invalid OTP code (`{"success": false, "message": "Invalid verification OTP"}`). Never discloses the expected OTP.
+  - `403 Forbidden`: Caller is not the assigned driver.
+  - `400 Bad Request`: Ride is not in `arrived` state.
+  - `429 Too Many Requests`: Rate limit exceeded (`{"success": false, "message": "Too many failed OTP verification attempts. Please wait 15 minutes before trying again."}`).
+
+### 11.9 Complete Trip
+Driver reaches dropoff destination and completes the ride. Atomically transitions status to `completed`, stamps `timeline.completedAt`, records authoritative `finalFare`, computes driver payout earnings (`Math.round(finalFare * 0.85)`), and updates `paymentStatus` to `"completed"`.
+
+- **Endpoint:** `POST /api/rides/:id/complete`
+- **Authentication:** Bearer JWT required (`authenticate`, assigned driver only)
+- **Success Response (`200 OK`):** `{"success": true, "message": "Ride completed successfully", "ride": { ... "status": "completed" }}`
+
+### 11.10 Cancel Ride
+Passenger, assigned driver, or administrator cancels an active ride. Atomically transitions status to `cancelled`, stamps `timeline.cancelledAt`, and records `cancellation.cancelledBy` and `cancellation.reason`. Completed or already-cancelled rides cannot be modified. If another operation mutates ride status concurrently, returns HTTP 409 Conflict.
+
+- **Endpoint:** `PUT /api/rides/:id/cancel` (Alias: `POST /api/rides/:id/cancel`)
+- **Authentication:** Bearer JWT required (`authenticate`)
+- **Request Body:** `{"reason": "Passenger cancelled due to change of plans"}`
+- **Error Responses:**
+  - `400 Bad Request`: Ride is already completed or cancelled.
+  - `403 Forbidden`: Caller is neither the passenger, the assigned driver, nor an administrator.
+  - `409 Conflict`: The ride status changed before cancellation could be applied (`{"success": false, "message": "The ride status changed before the cancellation could be applied. Please refresh and try again."}`).
+
+---
+
+## 12. Mobile Client vs Backend Boundaries
 
 | Domain | Implemented In | Storage Layer | Network Reality |
 |---|---|---|---|
@@ -819,10 +1028,129 @@ The backend provides administrative inspection endpoints for rides and scheduled
 | Admin Auth & Verification | Admin Web & Backend | MongoDB (`User`) + SessionStorage | Real HTTP API (`/api/admin/auth/login`, `/me`) |
 | Admin Driver Management | Admin Web & Backend | MongoDB (`DriverProfile`, `User`) | Real HTTP API (`/api/admin/drivers/*`) |
 | Admin Passenger Management | Admin Web & Backend | MongoDB (`User`) | Real HTTP API (`/api/admin/passengers/*`) |
-| Interactive Map View | Mobile App | MapLibre + OpenStreetMap Tiles | Local MapLibre Native Vector/Raster Canvas |
-| Reverse Geocoding | Mobile App | Native OS (`expo-location`) | Device-level geocoder (Zero paid Google billing) |
-| **Ride Request Creation** | **Mobile App Only** | **In-Memory Singleton** (`rideLifecycleService`) | **Client memory only (Phase C scheduled)** |
-| **Driver Request Acceptance** | **Mobile App Only** | **In-Memory Singleton** (`rideLifecycleService`) | **Client memory only (Phase C scheduled)** |
-| **OTP Ride Verification** | **Mobile App Only** | **In-Memory Singleton** (hardcoded code `7294`) | **Client memory only (Phase C scheduled)** |
-| **Live Trip Progression** | **Mobile App Only** | **In-Memory Singleton** (`rideLifecycleService`) | **Client memory only (Phase C scheduled)** |
-| **Fare Settlement & Receipts** | **Mobile App Only** | **In-Memory Summary** | **Client memory only (Phase C scheduled)** |
+| Interactive Map View | Mobile App | Google Maps SDK via `react-native-maps` | Native Google Maps SDK Canvas |
+| Places Autocomplete & Search | Mobile App & Backend | Backend Proxy (`/api/maps/autocomplete`) | Google Places API (New) via Server Key |
+| Place Coordinate Resolution | Mobile App & Backend | Backend Proxy (`/api/maps/place-details`) | Google Place Details (New) via Server Key |
+| Reverse Geocoding | Mobile App & Backend | Backend Proxy (`/api/maps/reverse-geocode`) + `expo-location` fallback | Google Geocoding API / Native OS Fallback |
+| **Ride Request Creation** | **Mobile App & Backend** | **MongoDB (`rides`)** | **Real HTTP API (`POST /api/rides`)** |
+| **Driver Request Acceptance** | **Mobile App & Backend** | **MongoDB (`rides`)** | **Real HTTP API (`POST /api/rides/:id/accept`)** |
+| **OTP Ride Verification** | **Mobile App & Backend** | **MongoDB (`rides`)** | **Real HTTP API (`POST /api/rides/:id/verify-otp`)** |
+| **Live Trip Progression** | **Mobile App & Backend** | **MongoDB (`rides`)** | **Real HTTP API (`arrive`, `verify-otp`, `complete`)** |
+| **Fare Settlement & Receipts** | **Mobile App & Backend** | **MongoDB (`rides`)** | **Real HTTP API (`completed` finalFare persisted)** |
+| **Admin Ride Telemetry** | **Admin Web & Backend** | **MongoDB (`rides`)** | **Real HTTP API (`GET /api/admin/rides`)** |
+| **Scheduled Ride Queue** | **Stub** | **None** | **Scheduled for Phase C subsequent tasks** |
+| **Live GPS Streaming** | **Mobile App Simulation** | **Client Memory** | **Real-time WebSockets scheduled for Phase C Task 3** |
+
+---
+
+## 13. Google Maps Platform Proxy API (`/api/maps/*`)
+
+Server-side proxy for Google Maps Platform APIs. The server key (`GOOGLE_MAPS_SERVER_API_KEY`) is stored securely in backend environment variables and is never bundled with or sent to mobile clients. If the key is missing from environment configuration, all endpoints return HTTP `503 Service Unavailable` with `MAPS_NOT_CONFIGURED`.
+
+All endpoints require an authenticated user session (`authenticate` middleware) to prevent unauthenticated quota exhaustion.
+
+---
+
+### 13.1 Places Autocomplete
+Search for addresses, establishments, and localities with optional geographic biasing and session billing grouping.
+
+- **Endpoint:** `GET /api/maps/autocomplete`
+- **Authentication:** Bearer JWT required (`authenticate`)
+- **Controller:** [autocompletePlaces](file:///c:/Projects/PickMe/backend/src/controllers/maps/maps.controller.js#L43)
+- **Upstream Service:** Google Places API (New) — `POST https://places.googleapis.com/v1/places:autocomplete`
+
+#### Query Parameters:
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `input` | String | **Yes** | Text query to autocomplete (minimum 1 character) |
+| `sessiontoken` | String | No | UUID string for grouping autocomplete requests into a single billing session |
+| `lat` | Number | No | Latitude for circular geographic biasing |
+| `lng` | Number | No | Longitude for circular geographic biasing |
+| `radius` | Number | No | Bias radius in metres (default: `35000`) |
+
+#### Success Response (`200 OK`):
+```json
+{
+  "success": true,
+  "predictions": [
+    {
+      "placeId": "ChIJbU60qdsWrjsR4qqxfDHCpnY",
+      "title": "Koramangala",
+      "subtitle": "Bengaluru, Karnataka, India",
+      "description": "Koramangala, Bengaluru, Karnataka, India"
+    }
+  ]
+}
+```
+
+#### Error Responses:
+- `400 Bad Request`: `{"success": false, "code": "INVALID_INPUT", "message": "Query parameter 'input' is required and must not be blank."}`
+- `502 Bad Gateway`: Upstream Google Places API returned an error.
+- `503 Service Unavailable`: `{"success": false, "code": "MAPS_NOT_CONFIGURED", "message": "Google Maps is not configured on this server. Set the GOOGLE_MAPS_SERVER_API_KEY environment variable and restart the backend."}`
+
+---
+
+### 13.2 Place Details
+Resolves a Google `placeId` into structured coordinates (`latitude`, `longitude`) and verified display name / formatted address. Commits the autocomplete billing session.
+
+- **Endpoint:** `GET /api/maps/place-details`
+- **Authentication:** Bearer JWT required (`authenticate`)
+- **Controller:** [getPlaceDetails](file:///c:/Projects/PickMe/backend/src/controllers/maps/maps.controller.js#L143)
+- **Upstream Service:** Google Places API (New) — `GET https://places.googleapis.com/v1/places/:id`
+
+#### Query Parameters:
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `place_id` | String | **Yes** | Google Place ID obtained from `/autocomplete` |
+| `sessiontoken` | String | No | UUID session token to commit the autocomplete billing session |
+
+#### Success Response (`200 OK`):
+```json
+{
+  "success": true,
+  "details": {
+    "placeId": "ChIJbU60qdsWrjsR4qqxfDHCpnY",
+    "name": "Koramangala",
+    "formattedAddress": "Koramangala, Bengaluru, Karnataka, India",
+    "latitude": 12.9352,
+    "longitude": 77.6245
+  }
+}
+```
+
+#### Error Responses:
+- `400 Bad Request`: Missing `place_id`.
+- `422 Unprocessable Entity`: Google returned the place record without geometry.
+- `502 Bad Gateway`: Upstream Google Places Details error.
+- `503 Service Unavailable`: Server key not configured.
+
+---
+
+### 13.3 Reverse Geocoding
+Converts raw GPS latitude and longitude coordinates into a human-readable title and subtitle without fabricating locations.
+
+- **Endpoint:** `GET /api/maps/reverse-geocode`
+- **Authentication:** Bearer JWT required (`authenticate`)
+- **Controller:** [reverseGeocode](file:///c:/Projects/PickMe/backend/src/controllers/maps/maps.controller.js#L232)
+- **Upstream Service:** Google Geocoding API — `GET https://maps.googleapis.com/maps/api/geocode/json`
+
+#### Query Parameters:
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `lat` | Number | **Yes** | Latitude as a decimal number |
+| `lng` | Number | **Yes** | Longitude as a decimal number |
+
+#### Success Response (`200 OK`):
+```json
+{
+  "success": true,
+  "address": {
+    "title": "100 Feet Road",
+    "subtitle": "Indiranagar, Bengaluru, Karnataka",
+    "formattedAddress": "100 Feet Rd, HAL 2nd Stage, Indiranagar, Bengaluru, Karnataka 560038",
+    "latitude": 12.9784,
+    "longitude": 77.6408
+  }
+}
+```
+*Note: If Google returns `ZERO_RESULTS`, the endpoint returns a coordinate string title rather than a fabricated address.*

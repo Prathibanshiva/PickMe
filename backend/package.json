@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
+    "test": "node --test test/ride-lifecycle.test.js",
     "admin:set-password": "node scripts/set-admin-password.js"
   },
   "keywords": [],

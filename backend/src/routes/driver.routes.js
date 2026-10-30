@@ -1,6 +1,7 @@
 const express = require("express");
 
 const {
+  getDriverProfile,
   createOrGetDriverProfile,
   submitDriverProfile,
 } = require("../controllers/driver/driver.controller");
@@ -11,6 +12,12 @@ const {
 
 const router = express.Router();
 
+// Retrieve driver profile (read-only, does not auto-create)
+router.get(
+  "/profile",
+  authenticate,
+  getDriverProfile
+);
 
 // Create or retrieve driver profile
 router.post(

@@ -1,6 +1,6 @@
 import React from "react";
-import DriverHomeScreen from "@/screens/driver/DriverHomeScreen";
+import DriverStatusGate from "@/screens/driver/DriverStatusGate";
 
 export default function DriverHomeRoute() {
-  return <DriverHomeScreen />;
+  return <DriverStatusGate />;
 }

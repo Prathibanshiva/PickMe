@@ -34,6 +34,17 @@ interface DriverOnboardingContextValue {
   setVehiclePhoto: (value: string) => void;
 
   resetOnboarding: () => void;
+  populateFromProfile: (
+    profile: {
+      profilePhoto?: string | null;
+      aadhaarDocument?: string | null;
+      drivingLicenceDocument?: string | null;
+      vehicleType?: string | null;
+      vehicleNumber?: string | null;
+      vehiclePhoto?: string | null;
+    },
+    driverName?: string
+  ) => void;
 }
 
 const initialData: DriverOnboardingData = {
@@ -106,6 +117,29 @@ export function DriverOnboardingProvider({
         })),
 
       resetOnboarding: () => setData(initialData),
+      populateFromProfile: (
+        profile: {
+          profilePhoto?: string | null;
+          aadhaarDocument?: string | null;
+          drivingLicenceDocument?: string | null;
+          vehicleType?: string | null;
+          vehicleNumber?: string | null;
+          vehiclePhoto?: string | null;
+        },
+        driverName?: string
+      ) => {
+        setData((current) => ({
+          driverName: driverName || current.driverName,
+          profilePhoto: profile.profilePhoto || current.profilePhoto,
+          aadhaarDocument: profile.aadhaarDocument || current.aadhaarDocument,
+          drivingLicenceDocument:
+            profile.drivingLicenceDocument || current.drivingLicenceDocument,
+          vehicleType:
+            (profile.vehicleType as VehicleType) || current.vehicleType,
+          vehicleNumber: profile.vehicleNumber || current.vehicleNumber,
+          vehiclePhoto: profile.vehiclePhoto || current.vehiclePhoto,
+        }));
+      },
     }),
     [data]
   );

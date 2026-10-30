@@ -13,6 +13,7 @@ import {
 } from "@/services/auth.service";
 
 import { getCurrentUser } from "@/services/user.service";
+import { setLocationServiceAuthToken } from "@/services/location.service";
 
 import {
   AuthSession,
@@ -75,6 +76,7 @@ export function AuthProvider({
             role: storedSession.role,
           };
 
+          setLocationServiceAuthToken(validatedSession.token);
           setSession(validatedSession);
         } catch (error) {
           console.error(
@@ -88,6 +90,7 @@ export function AuthProvider({
            * user to authentication.
            */
           await clearAuthSession();
+          setLocationServiceAuthToken(null);
           setSession(null);
         }
       } catch (error) {
@@ -96,6 +99,7 @@ export function AuthProvider({
           error
         );
 
+        setLocationServiceAuthToken(null);
         setSession(null);
       } finally {
         setIsLoading(false);
@@ -104,6 +108,7 @@ export function AuthProvider({
 
   const logout = useCallback(async () => {
     await clearAuthSession();
+    setLocationServiceAuthToken(null);
     setSession(null);
   }, []);
 
