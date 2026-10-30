@@ -147,8 +147,14 @@ export default function FindingRideScreen() {
       );
     }, 60000);
 
+    // Periodic bounded polling (every 3s) to detect driver acceptance on backend
+    const pollInterval = setInterval(() => {
+      rideLifecycleService.syncActiveRide();
+    }, 3000);
+
     return () => {
       unsubscribe();
+      clearInterval(pollInterval);
       clearTimeout(fallbackTimer);
     };
   }, []);

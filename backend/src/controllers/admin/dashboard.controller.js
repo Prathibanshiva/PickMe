@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const User = require("../../models/User");
 const DriverProfile = require("../../models/DriverProfile");
+const Ride = require("../../models/Ride");
 
 /**
  * GET /api/admin/dashboard/overview
@@ -20,6 +21,9 @@ const getDashboardOverview = async (req, res) => {
       rejectedDrivers,
       vehicleDistributionAgg,
       recentDriverProfiles,
+      liveRides,
+      completedTodayRides,
+      totalRidesCount,
     ] = await Promise.all([
       // Passenger counts
       User.countDocuments({ defaultRole: "passenger" }),
@@ -49,6 +53,14 @@ const getDashboardOverview = async (req, res) => {
         .limit(5)
         .populate("userId", "name defaultRole")
         .lean(),
+
+      // Real persistent ride metrics
+      Ride.countDocuments({ status: { $in: ["accepted", "arrived", "in_progress"] } }),
+      Ride.countDocuments({
+        status: "completed",
+        updatedAt: { $gte: new Date(new Date().setHours(0, 0, 0, 0)) },
+      }),
+      Ride.countDocuments({}),
     ]);
 
     // Format vehicle distribution
@@ -100,13 +112,12 @@ const getDashboardOverview = async (req, res) => {
       },
       recentActivity,
       rides: {
-        persisted: false,
-        phase: "Phase C Scheduled",
-        liveRides: 0,
-        completedToday: 0,
-        totalRides: 0,
-        message:
-          "Persistent ride storage and trip history are scheduled for Phase C (Ride Dispatch & Lifecycle). Mobile ride lifecycle currently executes via client-side state.",
+        persisted: true,
+        phase: "Phase C Active",
+        liveRides,
+        completedToday: completedTodayRides,
+        totalRides: totalRidesCount,
+        message: "Persistent ride storage and trip history active in MongoDB.",
       },
       scheduledRides: {
         persisted: false,

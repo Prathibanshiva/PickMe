@@ -65,8 +65,8 @@ export default function DriverLiveTripScreen() {
         {
           text: "Yes, Complete Trip",
           style: "default",
-          onPress: () => {
-            rideLifecycleService.completeTrip();
+          onPress: async () => {
+            await rideLifecycleService.completeTrip();
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             router.replace("/driver/trip-completed" as any);
           },

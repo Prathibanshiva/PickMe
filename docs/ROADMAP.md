@@ -24,22 +24,23 @@
 | **Auth** | Mobile Session Persistence & Routing | **Completed & Verified** | Core | Backend Auth API |
 | **Driver** | 6-Screen KYC Onboarding Wizard | **Completed & Verified** | Core | Mobile Navigation |
 | **Driver** | Profile Submission & KYC Persistence | **Completed & Verified** | Core | MongoDB `DriverProfile` |
+| **Driver** | Status Gate & Onboarding Resumption | **Completed & Verified** | Core | DriverProfile, Auth API |
 | **Admin** | Dedicated Login & Whitelist RBAC | **Completed & Verified** | High | User Model, Bcrypt |
 | **Admin** | Driver Verification & Rejection Codes | **Completed & Verified** | High | Admin API, DriverProfile |
 | **Admin** | Passenger Block / Suspend / Restore | **Completed & Verified** | High | Admin API, User Model |
-| **Mapping** | MapLibre + OpenStreetMap Migration | **Completed & Verified** | Core | MapLibre Native, Expo Location |
+| **Mapping** | Google Maps & Places Integration | **Completed & Verified** | Core | react-native-maps, Places Proxy |
 | **Admin** | Operations Overview Metrics | **Needs Verification** | Medium | MongoDB Aggregation |
 | **Storage** | Cloudinary Document Uploads | **Needs Verification** | Medium | Cloudinary SDK, Multer |
 | **Lifecycle** | Mobile Mock Ride Lifecycle (In-Memory) | **In Progress** | Medium | Mobile Screens |
-| **Backend** | Persistent Server-Side Ride Models (`Ride`, etc.) | **Not Started** | **CRITICAL** | MongoDB Connection |
-| **Lifecycle** | Server-Side Ride Booking & Dispatch API | **Not Started** | **CRITICAL** | Persistent Ride Models |
+| **Backend** | Persistent Server-Side Ride Models (`Ride`) | **Completed & Verified** | Core | MongoDB Connection |
+| **Lifecycle** | Server-Side Ride Booking & Dispatch REST API | **Completed & Verified** | Core | Persistent Ride Models |
+| **Lifecycle** | Trip Progression (Arrived, OTP Verify, Complete) | **Completed & Verified** | Core | Persistent Ride Models |
+| **Lifecycle** | Ride Cancellation & State Machine Guards | **Completed & Verified** | Core | Persistent Ride Models |
 | **Realtime** | WebSocket / Socket.io Bi-Directional Sync | **Not Started** | **CRITICAL** | Backend Server, JWT Auth |
 | **Matching** | Occupancy-First Shared Ride Matching Engine | **Not Started** | High | Persistent Rides, 2dsphere |
-| **Lifecycle** | Trip Progression (Arrived, OTP Verify, Complete) | **Not Started** | High | Realtime Sync, Ride API |
-| **Lifecycle** | Ride Cancellation & Failure Recovery | **Not Started** | High | Ride API, State Machine |
 | **Queue** | Scheduled Rides Persistence & Queue Dispatch | **Not Started** | Medium | Persistent Ride Models |
-| **Admin** | Live Ride Telemetry & Operations Dashboard | **Blocked** | Medium | Persistent Rides, WebSockets |
-| **QA / Ops** | End-to-End Test Suite & Deployment Pipeline | **Not Started** | Medium | Core Lifecycle Completion |
+| **Admin** | Live Ride Telemetry & Operations Dashboard | **Needs Verification** | Medium | Persistent Rides, Admin API |
+| **QA / Ops** | End-to-End Test Suite & Deployment Pipeline | **Needs Verification** | Medium | Core Lifecycle Completion |
 
 ---
 
@@ -83,10 +84,16 @@
 - **Acceptance Criteria:** Blocked and suspended users are rejected by `authenticate` middleware with HTTP 403; primary administrator account is safeguarded against modification; status updates log admin audit records.
 - **Status:** **Completed & Verified**.
 
-#### TASK-A7: OpenStreetMap & MapLibre Mobile Mapping Migration
-- **Objective:** Migrate mobile mapping away from commercial Google Maps SDKs to completely free, open-source MapLibre and OpenStreetMap tiles.
-- **Deliverables:** `@maplibre/maplibre-react-native` integration, OpenStreetMap raster tile style specification, native device reverse geocoding via `expo-location` (`reverseGeocodeAsync`).
-- **Acceptance Criteria:** Interactive map renders smooth raster tiles; pickup and destination points are geocoded using native device services; zero Google Maps API keys or commercial billing required.
+#### TASK-A7: Google Maps Migration & Reliable Passenger Pickup Selection
+- **Objective:** Replace MapLibre/OpenStreetMap with Google Maps (`react-native-maps`) and provide address autocomplete, manual pin selection, and reliable pickup coordinate persistence via secure server proxy.
+- **Deliverables:** `react-native-maps` (`PROVIDER_GOOGLE`) mobile migration, backend Google Maps proxy (`/api/maps/autocomplete`, `/api/maps/place-details`, `/api/maps/reverse-geocode`) in `backend/src/controllers/maps/maps.controller.js`, debounced Google Places Autocomplete with session token billing grouping, interactive center-pin pickup adjustment with animated pin bounce and settling reverse geocoding, explicit "Confirm Pickup Location" action, non-fabricating discriminated error handling in `location.service.ts` and `PassengerHomeScreen.tsx`.
+- **Acceptance Criteria:** Map renders smooth Google Maps tiles; GPS automatically populates pickup; permission denial/GPS timeout displays recoverable manual select/retry options without arbitrary coordinates; Places Autocomplete searches addresses; selecting a place resolves coordinates and moves map; manual center-pin selection allows dragging map beneath fixed pin and clicking "Confirm Pickup"; confirmed coordinates persist through vehicle selection and booking; server API key is never exposed to mobile bundle.
+- **Status:** **Completed & Verified**.
+
+#### TASK-A8: Driver Onboarding Gate & Verification Enforcement
+- **Objective:** Enforce end-to-end verification gating across mobile driver routes and backend APIs so unapproved drivers cannot access duty controls, view offers, or accept rides.
+- **Deliverables:** `DriverStatusGate.tsx` mobile component, `GET /api/driver/profile` read-only status endpoint, `requireApprovedDriver` backend authorization middleware, onboarding resumption with prefill in `DriverOnboardingContext`, unit test suite in `backend/test/driver-onboarding-gate.test.js`.
+- **Acceptance Criteria:** Unauthenticated callers receive 401; users without driver profiles are redirected to onboarding intro; incomplete applications resume at the appropriate step; pending submissions display review card with refresh and passenger fallback; rejected submissions display clear reason and resubmission; approved profiles access `DriverHomeScreen`; backend rejects unapproved actions with 403; passenger onboarding is unaffected.
 - **Status:** **Completed & Verified**.
 
 ---
@@ -120,30 +127,19 @@
 
 ### Category D: Not Started (High Priority — Phase 3)
 
-#### TASK-D1: Persistent Server-Side Ride Models (CRITICAL NEXT STEP)
-- **Objective:** Establish the foundational MongoDB models for rides, ride requests, and passenger bookings.
+#### TASK-D1: Persistent Server-Side Ride Models
+- **Objective:** Establish the foundational MongoDB models for rides, passenger bookings, and driver assignments.
 - **Dependencies:** Task-A1, Task-A3.
-- **Main Expected Deliverables:**
-  - `Ride` Mongoose model: `driverId`, `vehicleType`, `status` (`created`, `matching`, `accepted`, `arrived`, `in_progress`, `completed`, `cancelled`), `route` (waypoints, GeoJSON LineString), `availableSeats`, `activePassengers` array.
-  - `RideRequest` / `PassengerBooking` model: `passengerId`, `pickupLocation` (Point), `destinationLocation` (Point), `rideMode` (`shared` | `personal`), `requestedSeats`, `status`, `fare`, `verificationOtp`, `rideId` reference.
-  - Geospatial 2dsphere indexes on pickup, destination, and driver location coordinates.
-- **Acceptance Criteria:** Models compile without error; schema enforces canonical vehicle capacities and shared seat rules; 2dsphere indexes enable efficient geospatial bounding queries.
-- **Status:** **Not Started**.
+- **Deliverables:** `Ride` Mongoose model (`backend/src/models/Ride.js`) with canonical capacity validation, geospatial 2dsphere indexing on pickup and destination, compound query indexes, human-readable `rideId` generator (`PKM-XXXXX`), pricing attributes, lifecycle timestamps, and cancellation metadata.
+- **Acceptance Criteria:** Model compiles and passes schema constraints; enforces canonical vehicle rules (Bike 1, Auto 3, Car 4, Sedan 4, SUV 6); validates shared seat limits (1 to capacity - 1); 2dsphere indexes enable geospatial queries.
+- **Status:** **Completed & Verified**.
 
 #### TASK-D2: Backend Ride Booking & Dispatch REST API
-- **Objective:** Replace mobile in-memory ride creation with authenticated backend endpoints.
+- **Objective:** Replace mobile in-memory ride creation with authenticated, server-authoritative REST endpoints.
 - **Dependencies:** Task-D1.
-- **Main Expected Deliverables:**
-  - `POST /api/rides/requests` (Passenger creates ride request).
-  - `GET /api/rides/requests/:id` (Passenger polls or inspects request status).
-  - `PUT /api/rides/requests/:id/cancel` (Passenger cancels request).
-  - `GET /api/rides/active` (Driver fetches assigned active ride).
-  - `POST /api/rides/:id/accept` (Driver accepts dispatch offer).
-  - `POST /api/rides/:id/arrive` (Driver marks arrived at pickup).
-  - `POST /api/rides/:id/verify-otp` (Driver verifies passenger OTP to start trip).
-  - `POST /api/rides/:id/complete` (Driver completes trip).
-- **Acceptance Criteria:** Complete request-to-completion lifecycle executes via verified HTTP requests and updates MongoDB records.
-- **Status:** **Not Started**.
+- **Deliverables:** `POST /api/rides` (create request), `GET /api/rides/active` (active ride lookup), `GET /api/rides/available` (driver offer inspection), `GET /api/rides/:id` (detail inspection with role-based OTP masking), `GET /api/rides` (paginated history), `POST /api/rides/:id/accept` (atomic driver assignment), `POST /api/rides/:id/arrive` (arrived transition), `POST /api/rides/:id/verify-otp` (server-side PIN verification), `POST /api/rides/:id/complete` (trip settlement), `PUT /api/rides/:id/cancel` (lifecycle cancellation). Admin `/api/admin/rides` and dashboard overview updated with real MongoDB aggregations.
+- **Acceptance Criteria:** Complete request-to-completion lifecycle executes via verified HTTP requests and updates MongoDB records with atomic race condition guards.
+- **Status:** **Completed & Verified**.
 
 #### TASK-D3: Real-Time Synchronization via WebSockets / Socket.io
 - **Objective:** Enable instantaneous state synchronization between passenger, driver, and operations admin without client polling.
@@ -207,6 +203,6 @@
 
 ## 4. Implementation Priorities & Next Action
 
-The single highest-priority task for the platform is **TASK-D1: Persistent Server-Side Ride Models**, immediately followed by **TASK-D2: Backend Ride Booking & Dispatch REST API**.
+With **TASK-D1: Persistent Server-Side Ride Models** and **TASK-D2: Backend Ride Booking & Dispatch REST API** completed and verified with MongoDB-backed persistence and atomic state machines, the single highest-priority task for the platform is now **TASK-D3: Real-Time Synchronization via WebSockets / Socket.io**, immediately followed by **TASK-D4: Occupancy-First Shared Ride Matching Engine**.
 
-No additional admin UI polish or client-side animation should be prioritized until the backend persistence layer can store, progress, and retrieve active and completed trips in MongoDB.
+The persistent database foundation is active, and client-side lifecycle operations now connect to backend REST endpoints. Live bi-directional dispatch and telemetry streaming are the immediate next architectural requirements.

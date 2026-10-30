@@ -103,10 +103,11 @@ c:\Projects\PickMe\
 - **Framework & Core:** React Native `0.86.0`, React `19.2.3`, Expo SDK `~57.0.8`
 - **Navigation:** Expo Router `~57.0.8` (file-based routing via `mobile-app/src/app`)
 - **Mapping & Geolocation:**
-  - `@maplibre/maplibre-react-native` `^11.4.0` (Client-side vector/raster map canvas)
-  - OpenStreetMap Standard Raster Tiles (`https://tile.openstreetmap.org/{z}/{x}/{y}.png`)
-  - `expo-location` `~57.0.17` (Device GPS and native Android/iOS reverse geocoding)
-  - Zero Google Maps SDK or Places Web API dependencies
+  - `react-native-maps` `1.27.2` (`PROVIDER_GOOGLE` native client canvas for Android and iOS)
+  - Backend Google Maps Proxy (`/api/maps/autocomplete`, `/api/maps/place-details`, `/api/maps/reverse-geocode`)
+  - Google Places API (New) & Google Geocoding API via server-side key (`GOOGLE_MAPS_SERVER_API_KEY`)
+  - `expo-location` `~57.0.17` (Device GPS detection and native offline reverse geocoding fallback)
+  - Zero server API keys in mobile bundle; mobile uses app-restricted SDK keys
 - **Secure Storage:** `expo-secure-store` `~57.0.1` (persistent JWT and session caching)
 - **UI & Animations:** `react-native-reanimated` `4.5.0`, `react-native-gesture-handler` `~2.32.0`, `react-native-screens` `~4.26.0`, `@expo/vector-icons` `^15.0.2`
 - **Language:** TypeScript `~6.0.3`
@@ -203,10 +204,12 @@ Passenger capacities refer strictly to passenger seats:
   - `RideCompletedScreen`: Trip completion receipt, final fare breakdown, driver rating input.
 
 ### 2. Mapping & Geocoding Architecture
-- Map rendered via `@maplibre/maplibre-react-native` using standard OpenStreetMap raster tiles.
-- Reverse geocoding performed on-device via `expo-location` (`Location.reverseGeocodeAsync`).
+- Map rendered via `react-native-maps` (`PROVIDER_GOOGLE`) on both Android and iOS with custom styled markers and animated camera transitions.
+- Interactive Center-Pin Pickup Selection: Passengers can adjust pickup location by dragging the map beneath a bouncing center pin, with settling reverse-geocoding and an explicit "Confirm Pickup" action.
+- Places Search & Autocomplete: Proxied through backend (`/api/maps/autocomplete` and `/api/maps/place-details`) using Google Places API (New) with session token billing grouping and 300ms client debouncing.
+- Reverse geocoding performed through backend Google Geocoding proxy with device-native `expo-location` fallback.
 - Default center: Bengaluru urban coordinates (`12.9352° N, 77.6245° E`).
-- Zero reliance on paid Google Maps APIs.
+- Key segregation: Server key kept strictly in backend `.env` (`GOOGLE_MAPS_SERVER_API_KEY`); mobile client uses app-restricted SDK keys only. Returns HTTP 503 `MAPS_NOT_CONFIGURED` if key is not configured (no fake fallbacks).
 
 ---
 
@@ -255,16 +258,26 @@ All endpoints mounted at `/api` in [backend/src/app.js](file:///c:/Projects/Pick
 - `/api/admin/passengers/:id` (GET, Authenticated Admin Passenger Detail)
 - `/api/admin/passengers/:id/status` (PUT, Authenticated Admin Update Status)
 - `/api/admin/users*` (Aliases for passenger endpoints)
-- `/api/admin/rides` (GET, Phase C Stub - returns empty set with Phase C scheduled marker)
-- `/api/admin/rides/:id` (GET, 404 Phase C Stub)
+- `/api/admin/rides` (GET, Authenticated Admin - real MongoDB telemetry & metrics)
+- `/api/admin/rides/:id` (GET, Authenticated Admin - ride detail)
 - `/api/admin/scheduled-rides` (GET, Phase C Stub)
 - `/api/admin/scheduled-rides/:id` (GET, 404 Phase C Stub)
+- `/api/rides` (POST, Authenticated - Create ride request)
+- `/api/rides/active` (GET, Authenticated - Fetch caller active ride)
+- `/api/rides/available` (GET, Authenticated Driver - Fetch unassigned offers)
+- `/api/rides/:id` (GET, Authenticated - Inspect ride detail with role-based OTP masking)
+- `/api/rides` (GET, Authenticated - List user ride history)
+- `/api/rides/:id/accept` (POST, Authenticated Driver - Atomic driver acceptance)
+- `/api/rides/:id/arrive` (POST, Authenticated Driver - Mark arrived at pickup)
+- `/api/rides/:id/verify-otp` (POST, Authenticated Driver - PIN verification to start trip)
+- `/api/rides/:id/complete` (POST, Authenticated Driver - Trip settlement)
+- `/api/rides/:id/cancel` (PUT/POST, Authenticated - Cancel ride)
 
 ### 2. Database Models in MongoDB
 - `User`: Collection `users`
 - `DriverProfile`: Collection `driverprofiles`
 - `OTP`: Collection `otps`
-- **Crucial Fact:** No `Ride`, `Trip`, or `ScheduledRide` models exist yet in MongoDB.
+- `Ride`: Collection `rides` (Persistent ride lifecycle with 2dsphere indexing and atomic state machine)
 
 ---
 
@@ -291,17 +304,19 @@ From [docs/DECISIONS.md](file:///c:/Projects/PickMe/docs/DECISIONS.md) and commi
 5. **ADR-005 — Centralized Phone Normalization:** Prevent country code stripping bugs.
 6. **ADR-006 — Security First-Class:** Strict Zod/server validation, ownership checks, generic error messages.
 7. **ADR-007 — Geospatial 2dsphere:** Driver queries must use MongoDB 2dsphere indexes.
-8. **Mapping Stack Decision:** MapLibre + OpenStreetMap raster tiles + native device geocoding (`expo-location`). **Do not reintroduce Google Maps, Google Places, Mapbox, OSRM, Valhalla, or GraphHopper without explicit architectural approval.**
+8. **ADR-008 — Server-Authoritative Ride Lifecycle State Machine:** Strict transitions (`requested` -> `driver_assigned` -> `arrived` -> `in_progress` -> `completed` / `cancelled`), atomic driver assignment, role-based OTP masking.
+9. **ADR-009 — Cloudflare and Zoho Infrastructure Evaluation:** Documented open-source/free tier vs paid capabilities and hosting constraints without introducing external runtime dependencies.
+10. **Mapping Stack Decision:** MapLibre + OpenStreetMap raster tiles + native device geocoding (`expo-location`). **Do not reintroduce Google Maps, Google Places, Mapbox, OSRM, Valhalla, or GraphHopper without explicit architectural approval.**
 
 ---
 
 ## K. Current Git & Development State
 
-- **Current Branch:** `phase-2-passenger-booking` *(Note: Future AI agents must check `git branch --show-current` at task start; never assume a branch name remains current).*
+- **Current Branch:** `phase-c-ride-lifecycle` *(Note: Check `git branch --show-current` at task start; never assume a branch name remains current).*
 - **Working Tree State:** Contains **uncommitted modifications** and **untracked files** across:
-  - `admin-dashboard/` (complete React 19 admin suite)
-  - `backend/` (admin routes, controllers, middleware, models, set-admin-password script)
-  - `mobile-app/` (mock ride lifecycle service and screens)
+  - `admin-dashboard/` (complete React 19 admin suite with real ride telemetry queries)
+  - `backend/` (`Ride` model, ride routes/controllers, Zod validators, admin ride queries, set-admin-password script, test suite)
+  - `mobile-app/` (`RideLifecycleService` integrated with persistent backend REST endpoints)
   - `stitch_designs/` (HTML design references)
 - **Recent Git Commits:**
   - `7fe824d` (2026-09-24): fix(passenger): expand destination dataset, fix stale Google Map comment, improve empty-state UX
@@ -328,23 +343,23 @@ From [docs/DECISIONS.md](file:///c:/Projects/PickMe/docs/DECISIONS.md) and commi
 | Native Reverse Geocoding | Implemented & Verified | `mobile-app/src/services/location.service.ts` |
 | Vehicle Selection & Capacity Rules | Implemented & Verified | `shared/constants/vehicles.js` |
 | Admin Dashboard Web App | Implemented & Verified | `admin-dashboard/src/` |
-| Operations Overview Metrics | Implemented (Needs Load Test) | `backend/src/controllers/admin/dashboard.controller.js` |
-| Mobile Mock Ride Lifecycle Simulation | In Progress | `mobile-app/src/services/ride-lifecycle.service.ts` |
-| Persistent Server-Side Ride State | **Not Started** | Scheduled for Phase 3 / Phase C |
+| Admin Ride Management & Metrics | Implemented & Verified | `backend/src/controllers/admin/ride.controller.js`, `dashboard.controller.js` |
+| Persistent Server-Side Ride State & Lifecycle | Implemented & Verified | `backend/src/models/Ride.js`, `backend/src/controllers/ride/ride.controller.js`, `backend/src/routes/ride.routes.js`, `backend/test/ride-lifecycle.test.js` |
+| Mobile Ride Lifecycle Integration | Implemented & Verified | `mobile-app/src/services/ride-lifecycle.service.ts` (REST persistence fallback/sync) |
+| Driver Status Gate & Verification Enforcement | Implemented & Verified | `mobile-app/src/screens/driver/DriverStatusGate.tsx`, `backend/src/controllers/driver/driver.controller.js`, `backend/test/driver-onboarding-gate.test.js` |
 
 ---
 
 ## M. Known Limitations & Technical Gaps
 
-1. **Ride State Persistence Gap:**
-   - Rides currently exist only in mobile memory (`RideLifecycleService` singleton).
-   - Closing or reloading the mobile app erases active trips.
-   - The backend has no `Ride` or `Trip` collections.
-2. **Real-Time Communication Gap:**
+1. **Real-Time Communication Gap:**
    - No WebSocket or Socket.io server is implemented yet.
-   - Mobile passenger and driver communicate during local testing only because they share the same in-memory JavaScript singleton.
-3. **Driver Location Streaming Gap:**
+   - Ride updates currently propagate via REST polling/fetches and local emitters.
+   - Bi-directional push dispatch to drivers and passengers will be implemented in TASK-D3.
+2. **Driver Location Streaming Gap:**
    - Driver location is simulated locally; there is no live GPS streaming to the backend.
+3. **Automated Matching Engine Gap:**
+   - Drivers currently claim rides via `POST /api/rides/:id/accept` (or `/api/rides/available`). An automated geospatial proximity dispatch queue with acceptance timeouts is scheduled for TASK-D4.
 4. **Document Storage Gap:**
    - Driver KYC documents store placeholder strings; Cloudinary upload endpoints are not yet wired to Multer.
 5. **SMS Delivery Gap:**
@@ -355,13 +370,14 @@ From [docs/DECISIONS.md](file:///c:/Projects/PickMe/docs/DECISIONS.md) and commi
 ## N. Next Recommended Implementation Task
 
 **Recommended Next Task:**
-**TASK-D1: Establish Persistent Server-Side Ride Models and MongoDB Schemas**
+**TASK-D3: Real-Time WebSocket Channel for Live Ride State Synchronization**
 
-- **Why this task?** All client-side ride screens (finding ride, booked, en-route, arrived, in-trip, completed) are already built in the mobile application. What prevents PickMe from functioning as a real ride-sharing platform is the absence of a server-side persistence layer (`Ride` and `RideRequest` models in MongoDB) and REST dispatch endpoints.
+- **Why this task?** With the persistent `Ride` model, atomic lifecycle state machine, and REST endpoints now in place, the immediate next requirement is pushing lifecycle state updates (e.g. driver assigned, vehicle arrived, ride started, ride completed) instantaneously to the passenger and driver mobile clients without relying on manual REST polling.
 - **Deliverables:**
-  1. Create `backend/src/models/Ride.js` with statuses, vehicle type, route, seat allocation, and 2dsphere indexing.
-  2. Create `backend/src/models/RideRequest.js` with passenger ID, pickup/drop coordinates, ride mode, requested seats, and verification OTP.
-  3. Validate model compilation and schema constraints against canonical vehicle rules.
+  1. Integrate Socket.io server with JWT authentication handshake in Node/Express.
+  2. Implement room partitioning (`ride:<rideId>`, `user:<userId>`).
+  3. Emit lifecycle events from `ride.controller.js` upon state transitions.
+  4. Connect `mobile-app` Socket.io client to update `RideLifecycleService` dynamically.
 
 ---
 

@@ -9,22 +9,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import {
-  Camera,
-  type CameraRef,
-  Map,
-  Marker,
-  UserLocation,
-} from "@maplibre/maplibre-react-native";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import { Colors, Radius } from "@/theme";
 import MapService, {
+  DEFAULT_DELTA,
   DEFAULT_MAP_CENTER,
-  GeoCoordinates,
-  MapMarkerPoint,
-  OSM_RASTER_STYLE,
-  toLngLat,
+  type GeoCoordinates,
+  type MapMarkerPoint,
 } from "@/services/map.service";
 
 export type DriverMapMode = "idle" | "offer" | "en_route" | "arrived" | "live_trip";
@@ -48,9 +41,9 @@ export default function DriverMapPreview({
   speedText = "34 km/h",
   showRecenterButton = true,
 }: DriverMapPreviewProps) {
-  const cameraRef = useRef<CameraRef | null>(null);
+  const mapRef = useRef<MapView>(null);
 
-  // Radar Pulse Animation
+  // Radar pulse animation (idle mode)
   const pulseAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -66,14 +59,14 @@ export default function DriverMapPreview({
     );
     pulseLoop.start();
     return () => pulseLoop.stop();
-  }, []);
+  }, [pulseAnim]);
 
+  // Compute the driver vehicle marker position based on mode
   const driverMarkerPoint: MapMarkerPoint = useMemo(() => {
     if (mode === "arrived" && pickupCoords) {
       return { latitude: pickupCoords.latitude, longitude: pickupCoords.longitude, title: "Your Cab" };
     }
     if (mode === "live_trip" && pickupCoords && destinationCoords) {
-      // Driver midway to dropoff
       return {
         latitude: pickupCoords.latitude + (destinationCoords.latitude - pickupCoords.latitude) * 0.45,
         longitude: pickupCoords.longitude + (destinationCoords.longitude - pickupCoords.longitude) * 0.45,
@@ -85,33 +78,22 @@ export default function DriverMapPreview({
       longitude: driverLocation.longitude,
       title: "Your Cab",
     };
-  }, [mode, driverLocation.latitude, driverLocation.longitude, pickupCoords, destinationCoords]);
+  }, [mode, driverLocation, pickupCoords, destinationCoords]);
 
-  // Camera framing
+  // Camera framing on mode/coord changes
   useEffect(() => {
-    if (!cameraRef.current) return;
+    if (!mapRef.current) return;
 
     if (mode === "idle" || mode === "arrived") {
-      MapService.recenterCamera(
-        cameraRef.current,
-        driverMarkerPoint,
-        15.2,
-        600
-      );
+      MapService.animateTo(mapRef, driverMarkerPoint, { latitudeDelta: 0.008, longitudeDelta: 0.008 });
     } else if (mode === "en_route" && pickupCoords) {
-      MapService.fitPoints(
-        cameraRef.current,
-        [driverMarkerPoint, pickupCoords],
-        { top: 70, right: 60, bottom: 60, left: 60 },
-        600
-      );
+      MapService.fitPoints(mapRef, [driverMarkerPoint, pickupCoords], {
+        top: 70, right: 60, bottom: 60, left: 60,
+      });
     } else if ((mode === "offer" || mode === "live_trip") && pickupCoords && destinationCoords) {
-      MapService.fitPoints(
-        cameraRef.current,
-        [pickupCoords, destinationCoords],
-        { top: 70, right: 60, bottom: 60, left: 60 },
-        600
-      );
+      MapService.fitPoints(mapRef, [pickupCoords, destinationCoords], {
+        top: 70, right: 60, bottom: 60, left: 60,
+      });
     }
   }, [
     mode,
@@ -124,62 +106,54 @@ export default function DriverMapPreview({
   ]);
 
   const handleRecenter = () => {
-    if (!cameraRef.current) return;
+    if (!mapRef.current) return;
     if ((mode === "offer" || mode === "live_trip") && pickupCoords && destinationCoords) {
-      MapService.fitPoints(cameraRef.current, [pickupCoords, destinationCoords], { top: 70, right: 60, bottom: 60, left: 60 }, 500);
+      MapService.fitPoints(mapRef, [pickupCoords, destinationCoords], {
+        top: 70, right: 60, bottom: 60, left: 60,
+      });
     } else if (mode === "en_route" && pickupCoords) {
-      MapService.fitPoints(cameraRef.current, [driverMarkerPoint, pickupCoords], { top: 70, right: 60, bottom: 60, left: 60 }, 500);
+      MapService.fitPoints(mapRef, [driverMarkerPoint, pickupCoords], {
+        top: 70, right: 60, bottom: 60, left: 60,
+      });
     } else {
-      MapService.recenterCamera(cameraRef.current, driverMarkerPoint, 15.2, 500);
+      MapService.animateTo(mapRef, driverMarkerPoint, { latitudeDelta: 0.008, longitudeDelta: 0.008 });
     }
   };
 
-  const initialCenter = useMemo(() => {
-    return toLngLat(driverMarkerPoint);
-  }, []);
+  const initialRegion = useMemo(() => {
+    return MapService.toRegion(driverMarkerPoint, { latitudeDelta: 0.008, longitudeDelta: 0.008 });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <View style={[styles.container, { height: height as any }]}>
-      <Map
+    <View style={[styles.container, { height: height as number }]}>
+      <MapView
+        ref={mapRef}
         style={StyleSheet.absoluteFill}
-        mapStyle={OSM_RASTER_STYLE}
-        dragPan={true}
-        touchZoom={true}
-        attribution={false}
-        logo={false}
+        provider={PROVIDER_GOOGLE}
+        initialRegion={initialRegion}
+        showsUserLocation={true}
+        showsMyLocationButton={false}
+        showsCompass={false}
+        toolbarEnabled={false}
       >
-        <Camera
-          ref={cameraRef}
-          initialViewState={{
-            center: initialCenter,
-            zoom: 15.2,
-          }}
-        />
-
-        <UserLocation animated={true} />
-
         {/* ── Driver Vehicle Marker ── */}
         <Marker
-          id="driver-vehicle-marker"
-          lngLat={toLngLat(driverMarkerPoint)}
-          anchor="center"
+          coordinate={{ latitude: driverMarkerPoint.latitude, longitude: driverMarkerPoint.longitude }}
+          anchor={{ x: 0.5, y: 0.5 }}
+          flat={false}
         >
           <View style={styles.driverMarkerContainer}>
-            {/* Speed Badge in Live Trip */}
             {mode === "live_trip" && (
               <View style={styles.speedBadge}>
                 <View style={styles.greenLiveDot} />
                 <Text style={styles.speedBadgeText}>{speedText}</Text>
               </View>
             )}
-
-            {/* Waiting Badge in Arrived Mode */}
             {mode === "arrived" && (
               <View style={styles.waitingBadge}>
                 <Text style={styles.waitingBadgeText}>You are at Pickup</Text>
               </View>
             )}
-
             <View style={styles.driverCarCircle}>
               <MaterialIcons name="directions-car" size={20} color="#064B00" />
             </View>
@@ -189,9 +163,8 @@ export default function DriverMapPreview({
         {/* ── Pickup Marker ── */}
         {pickupCoords && (mode === "offer" || mode === "en_route" || mode === "arrived" || mode === "live_trip") && (
           <Marker
-            id="driver-pickup-marker"
-            lngLat={toLngLat(pickupCoords)}
-            anchor="bottom"
+            coordinate={{ latitude: pickupCoords.latitude, longitude: pickupCoords.longitude }}
+            anchor={{ x: 0.5, y: 1 }}
           >
             <View style={styles.pickupMarkerWrap}>
               <View style={styles.pickupCallout}>
@@ -209,9 +182,8 @@ export default function DriverMapPreview({
         {/* ── Destination Marker ── */}
         {destinationCoords && (mode === "offer" || mode === "live_trip") && (
           <Marker
-            id="driver-dest-marker"
-            lngLat={toLngLat(destinationCoords)}
-            anchor="bottom"
+            coordinate={{ latitude: destinationCoords.latitude, longitude: destinationCoords.longitude }}
+            anchor={{ x: 0.5, y: 1 }}
           >
             <View style={styles.pickupMarkerWrap}>
               <View style={[styles.pickupCallout, { backgroundColor: "#0F172A" }]}>
@@ -223,7 +195,7 @@ export default function DriverMapPreview({
             </View>
           </Marker>
         )}
-      </Map>
+      </MapView>
 
       {/* Recenter Button */}
       {showRecenterButton && (

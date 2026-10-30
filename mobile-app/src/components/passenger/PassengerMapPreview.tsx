@@ -1,32 +1,32 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
   Easing,
-  NativeSyntheticEvent,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from "react-native";
-import {
-  Camera,
-  type CameraRef,
-  Map,
+import MapView, {
+  type MapViewProps,
   Marker,
-  type PressEvent,
-  UserLocation,
-} from "@maplibre/maplibre-react-native";
+  PROVIDER_GOOGLE,
+  type Region,
+} from "react-native-maps";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import { Colors, Radius } from "@/theme";
 import MapService, {
+  DEFAULT_DELTA,
   DEFAULT_MAP_CENTER,
-  DEFAULT_ZOOM,
-  GeoCoordinates,
-  MapMarkerPoint,
-  OSM_RASTER_STYLE,
-  toLngLat,
+  ROUTE_DELTA,
+  type GeoCoordinates,
+  type MapMarkerPoint,
 } from "@/services/map.service";
+import { reverseGeocodeCoordinates } from "@/services/location.service";
+
+// ─── Types ─────────────────────────────────────────────────────────────────
 
 export interface NearbyDriverMarker {
   id: string;
@@ -41,12 +41,19 @@ interface PassengerMapPreviewProps {
   height?: number;
   pickupCoords?: MapMarkerPoint;
   destinationCoords?: MapMarkerPoint;
+  /** Called when user confirms a manually selected pin position. */
   onPickupChange?: (coords: GeoCoordinates) => void;
+  /**
+   * When true, the map shows a center-pin that moves with the map.
+   * After the user stops panning, onPickupChange is called with the new coords.
+   */
   isInteractivePickup?: boolean;
   nearbyDrivers?: NearbyDriverMarker[];
   scanningRadiusKm?: number;
   showRecenterButton?: boolean;
 }
+
+// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function PassengerMapPreview({
   mode = "search",
@@ -59,19 +66,146 @@ export default function PassengerMapPreview({
   scanningRadiusKm = 2.0,
   showRecenterButton = true,
 }: PassengerMapPreviewProps) {
-  const cameraRef = useRef<CameraRef | null>(null);
+  const mapRef = useRef<MapView>(null);
 
-  // Radar Pulse Animation Values
+  // Pin bounce animation for center-pin interactive mode
+  const pinBounce = useRef(new Animated.Value(0)).current;
+
+  // Radar pulse animations
   const pulseAnim1 = useRef(new Animated.Value(0)).current;
   const pulseAnim2 = useRef(new Animated.Value(0)).current;
   const pulseAnim3 = useRef(new Animated.Value(0)).current;
 
-  // Compute initial camera view state
-  const initialCenter = useMemo(() => {
-    return toLngLat(pickupCoords);
-  }, [pickupCoords.latitude, pickupCoords.longitude]);
+  // While the center pin is being dragged, show a "resolving..." label
+  const [isResolvingPin, setIsResolvingPin] = useState(false);
 
-  // Generate deterministic nearby drivers if none provided
+  // Current center region tracked when in interactive mode
+  const draggingRegionRef = useRef<Region | null>(null);
+
+  // ── Initial Region ────────────────────────────────────────────────────────
+  const initialRegion = useMemo(() => {
+    const delta =
+      mode === "route" || mode === "booked" || mode === "live"
+        ? ROUTE_DELTA
+        : DEFAULT_DELTA;
+    return MapService.toRegion(pickupCoords, delta);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps — only for initial mount
+
+  // ── Camera on coord changes ───────────────────────────────────────────────
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    if (
+      (mode === "route" || mode === "booked" || mode === "live") &&
+      destinationCoords?.latitude &&
+      destinationCoords?.longitude
+    ) {
+      MapService.fitPoints(mapRef, [pickupCoords, destinationCoords], {
+        top: 80,
+        right: 50,
+        bottom: 50,
+        left: 50,
+      });
+    } else if (mode === "finding") {
+      MapService.animateTo(mapRef, pickupCoords, { latitudeDelta: 0.01, longitudeDelta: 0.01 });
+    } else if (mode === "search") {
+      MapService.animateTo(mapRef, pickupCoords, DEFAULT_DELTA);
+    }
+  }, [
+    mode,
+    pickupCoords.latitude,
+    pickupCoords.longitude,
+    destinationCoords?.latitude,
+    destinationCoords?.longitude,
+  ]);
+
+  // ── Radar pulse for finding/booked modes ──────────────────────────────────
+  useEffect(() => {
+    if (mode !== "finding" && mode !== "booked") return;
+
+    const make = (anim: Animated.Value, delay: number) =>
+      Animated.loop(
+        Animated.sequence([
+          Animated.delay(delay),
+          Animated.timing(anim, {
+            toValue: 1,
+            duration: 2600,
+            easing: Easing.out(Easing.ease),
+            useNativeDriver: true,
+          }),
+        ])
+      );
+
+    const p1 = make(pulseAnim1, 0);
+    const p2 = make(pulseAnim2, 850);
+    const p3 = make(pulseAnim3, 1700);
+    p1.start(); p2.start(); p3.start();
+    return () => { p1.stop(); p2.stop(); p3.stop(); };
+  }, [mode, pulseAnim1, pulseAnim2, pulseAnim3]);
+
+  // ── Pin bounce animation on map drag ─────────────────────────────────────
+  const animatePinUp = useCallback(() => {
+    Animated.spring(pinBounce, {
+      toValue: -12,
+      useNativeDriver: true,
+      speed: 20,
+      bounciness: 8,
+    }).start();
+  }, [pinBounce]);
+
+  const animatePinDown = useCallback(() => {
+    Animated.spring(pinBounce, {
+      toValue: 0,
+      useNativeDriver: true,
+      speed: 20,
+      bounciness: 6,
+    }).start();
+  }, [pinBounce]);
+
+  // ── Map event handlers ───────────────────────────────────────────────────
+  const handlePanDrag: MapViewProps["onPanDrag"] = useCallback(() => {
+    if (!isInteractivePickup) return;
+    animatePinUp();
+  }, [isInteractivePickup, animatePinUp]);
+
+  const handleRegionChange = useCallback((region: Region) => {
+    if (!isInteractivePickup) return;
+    draggingRegionRef.current = region;
+  }, [isInteractivePickup]);
+
+  const handleRegionChangeComplete = useCallback(
+    async (region: Region) => {
+      if (!isInteractivePickup || !onPickupChange) return;
+      animatePinDown();
+      draggingRegionRef.current = region;
+      setIsResolvingPin(true);
+      // Fire callback immediately with raw coords so UI can react
+      onPickupChange({ latitude: region.latitude, longitude: region.longitude });
+      setIsResolvingPin(false);
+    },
+    [isInteractivePickup, onPickupChange, animatePinDown]
+  );
+
+  // ── Recenter ──────────────────────────────────────────────────────────────
+  const handleRecenter = useCallback(() => {
+    if (!mapRef.current) return;
+    if ((mode === "route" || mode === "booked" || mode === "live") && destinationCoords) {
+      MapService.fitPoints(mapRef, [pickupCoords, destinationCoords], {
+        top: 80,
+        right: 50,
+        bottom: 50,
+        left: 50,
+      });
+    } else {
+      MapService.animateTo(
+        mapRef,
+        pickupCoords,
+        mode === "finding" ? { latitudeDelta: 0.01, longitudeDelta: 0.01 } : DEFAULT_DELTA
+      );
+    }
+  }, [mode, pickupCoords, destinationCoords]);
+
+  // ── Nearby drivers (deterministic demo markers) ───────────────────────────
   const activeNearbyDrivers = useMemo<NearbyDriverMarker[]>(() => {
     if (mode !== "finding" && mode !== "booked" && mode !== "live") return [];
     if (nearbyDrivers && nearbyDrivers.length > 0) return nearbyDrivers;
@@ -80,14 +214,11 @@ export default function PassengerMapPreview({
     const lng = pickupCoords.longitude;
 
     if (mode === "booked") {
-      // Single assigned driver approaching pickup — positioned close (~3 min away)
       return [
         { id: "assigned-driver", latitude: lat + 0.0018, longitude: lng - 0.0025, etaText: "3 min", isPrimary: true },
       ];
     }
-
     if (mode === "live") {
-      // Vehicle in progress along the route between pickup and destination (~45% of the distance)
       const dLat = destinationCoords?.latitude ?? (lat + 0.04);
       const dLng = destinationCoords?.longitude ?? (lng + 0.02);
       return [
@@ -100,104 +231,15 @@ export default function PassengerMapPreview({
         },
       ];
     }
-
     return [
       { id: "driver-1", latitude: lat + 0.0022, longitude: lng - 0.0031, etaText: "2m away", isPrimary: true },
       { id: "driver-2", latitude: lat - 0.0024, longitude: lng + 0.0026, isPrimary: false },
       { id: "driver-3", latitude: lat + 0.0016, longitude: lng + 0.0034, isPrimary: false },
       { id: "driver-4", latitude: lat - 0.0019, longitude: lng - 0.0022, isPrimary: true },
     ];
-  }, [mode, nearbyDrivers, pickupCoords.latitude, pickupCoords.longitude, destinationCoords?.latitude, destinationCoords?.longitude]);
+  }, [mode, nearbyDrivers, pickupCoords.latitude, pickupCoords.longitude, destinationCoords]);
 
-  // Frame both points in route mode or focus pickup in search/finding mode
-  useEffect(() => {
-    if (!cameraRef.current) return;
-
-    if (
-      (mode === "route" || mode === "booked" || mode === "live") &&
-      destinationCoords &&
-      destinationCoords.latitude &&
-      destinationCoords.longitude
-    ) {
-      MapService.fitPoints(
-        cameraRef.current,
-        [pickupCoords, destinationCoords],
-        { top: 80, right: 50, bottom: 50, left: 50 },
-        600
-      );
-    } else if (mode === "finding") {
-      MapService.recenterCamera(cameraRef.current, pickupCoords, 14.8, 500);
-    } else if (mode === "search") {
-      MapService.recenterCamera(cameraRef.current, pickupCoords, DEFAULT_ZOOM, 500);
-    }
-  }, [
-    mode,
-    pickupCoords.latitude,
-    pickupCoords.longitude,
-    destinationCoords?.latitude,
-    destinationCoords?.longitude,
-  ]);
-
-  // Start animated radar waves when in finding or booked mode
-  useEffect(() => {
-    if (mode !== "finding" && mode !== "booked") return;
-
-    const createPulse = (anim: Animated.Value, delay: number) => {
-      return Animated.loop(
-        Animated.sequence([
-          Animated.delay(delay),
-          Animated.timing(anim, {
-            toValue: 1,
-            duration: 2600,
-            easing: Easing.out(Easing.ease),
-            useNativeDriver: true,
-          }),
-        ])
-      );
-    };
-
-    const p1 = createPulse(pulseAnim1, 0);
-    const p2 = createPulse(pulseAnim2, 850);
-    const p3 = createPulse(pulseAnim3, 1700);
-
-    p1.start();
-    p2.start();
-    p3.start();
-
-    return () => {
-      p1.stop();
-      p2.stop();
-      p3.stop();
-    };
-  }, [mode, pulseAnim1, pulseAnim2, pulseAnim3]);
-
-  const handleRecenter = () => {
-    if (cameraRef.current) {
-      if ((mode === "route" || mode === "booked" || mode === "live") && destinationCoords) {
-        MapService.fitPoints(
-          cameraRef.current,
-          [pickupCoords, destinationCoords],
-          { top: 80, right: 50, bottom: 50, left: 50 },
-          500
-        );
-      } else {
-        MapService.recenterCamera(
-          cameraRef.current,
-          pickupCoords,
-          mode === "finding" ? 14.8 : DEFAULT_ZOOM,
-          500
-        );
-      }
-    }
-  };
-
-  const handleMapPress = (e: NativeSyntheticEvent<PressEvent>) => {
-    if (isInteractivePickup && onPickupChange && e.nativeEvent?.lngLat) {
-      const [lng, lat] = e.nativeEvent.lngLat;
-      onPickupChange({ latitude: lat, longitude: lng });
-    }
-  };
-
+  // ── Wave style for radar ──────────────────────────────────────────────────
   const getWaveStyle = (anim: Animated.Value) => ({
     transform: [
       {
@@ -215,101 +257,124 @@ export default function PassengerMapPreview({
 
   return (
     <View style={[styles.container, { height }]}>
-      {/* Real MapLibre Native Map with OpenStreetMap raster tiles */}
-      <Map
+      {/* ── Google Map ── */}
+      <MapView
+        ref={mapRef}
         style={StyleSheet.absoluteFill}
-        mapStyle={OSM_RASTER_STYLE}
-        dragPan={true}
-        touchZoom={true}
-        attribution={false}
-        logo={false}
-        onPress={handleMapPress}
+        provider={PROVIDER_GOOGLE}
+        initialRegion={initialRegion}
+        showsUserLocation={true}
+        showsMyLocationButton={false}
+        showsCompass={false}
+        toolbarEnabled={false}
+        moveOnMarkerPress={false}
+        onPanDrag={handlePanDrag}
+        onRegionChange={handleRegionChange}
+        onRegionChangeComplete={handleRegionChangeComplete}
       >
-        <Camera
-          ref={cameraRef}
-          initialViewState={{
-            center: initialCenter,
-            zoom: (mode === "finding" || mode === "booked") ? 14.8 : DEFAULT_ZOOM,
-          }}
-        />
-
-        {/* Real Device User Location Puck */}
-        <UserLocation animated={true} />
-
-        {/* Pickup Marker */}
-        <Marker
-          id="pickup-marker"
-          lngLat={toLngLat(pickupCoords)}
-          anchor="bottom"
-        >
-          <View style={styles.markerContainer}>
-            <View style={styles.pickupPinCallout}>
-              <View style={styles.pulsingCore} />
-              <Text style={styles.calloutText} numberOfLines={1}>
-                {mode === "finding" ? "You are here" : pickupCoords.title || "Pickup"}
-              </Text>
-            </View>
-            <View style={styles.pickupMarkerCircle}>
-              <View style={styles.pickupMarkerDot} />
-            </View>
-          </View>
-        </Marker>
-
-        {/* Nearby Drivers / Assigned Driver / Live Vehicle Marker */}
-        {(mode === "finding" || mode === "booked" || mode === "live") &&
-          activeNearbyDrivers.map((driver) => (
-            <Marker
-              key={driver.id}
-              id={`driver-marker-${driver.id}`}
-              lngLat={[driver.longitude, driver.latitude]}
-              anchor="center"
-            >
-              <View style={styles.driverMarkerContainer}>
-                <View
-                  style={[
-                    styles.driverMarkerCircle,
-                    (driver.isPrimary || mode === "live" || mode === "booked") && styles.driverMarkerCirclePrimary,
-                    mode === "live" && styles.driverMarkerCircleLive,
-                  ]}
-                >
-                  <MaterialIcons
-                    name={mode === "live" ? "directions-car" : "local-taxi"}
-                    size={driver.isPrimary || mode === "live" ? 18 : 14}
-                    color={driver.isPrimary || mode === "live" || mode === "booked" ? "#0D6E00" : "#4B5563"}
-                  />
-                </View>
-                {driver.etaText && (
-                  <View style={[styles.driverEtaBadge, mode === "live" && styles.driverSpeedBadge]}>
-                    {mode === "live" && <View style={styles.driverSpeedDot} />}
-                    <Text style={[styles.driverEtaText, mode === "live" && styles.driverSpeedText]}>
-                      {driver.etaText}
-                    </Text>
-                  </View>
-                )}
-              </View>
-            </Marker>
-          ))}
-
-        {/* Destination Marker (Route, Booked, Live Modes) */}
-        {(mode === "route" || mode === "booked" || mode === "live") && destinationCoords && destinationCoords.latitude && (
+        {/* ── Pickup Marker (only when NOT in interactive center-pin mode) ── */}
+        {!isInteractivePickup && (
           <Marker
-            id="destination-marker"
-            lngLat={toLngLat(destinationCoords)}
-            anchor="bottom"
+            coordinate={{ latitude: pickupCoords.latitude, longitude: pickupCoords.longitude }}
+            anchor={{ x: 0.5, y: 1 }}
+            flat={false}
           >
             <View style={styles.markerContainer}>
-              <View style={[styles.pickupPinCallout, { backgroundColor: "#111827" }]}>
+              <View style={styles.pickupPinCallout}>
+                <View style={styles.pulsingCore} />
                 <Text style={styles.calloutText} numberOfLines={1}>
-                  {destinationCoords.title || "Drop-off"}
+                  {mode === "finding" ? "You are here" : pickupCoords.title || "Pickup"}
                 </Text>
               </View>
-              <Ionicons name="location" size={30} color={Colors.primary} />
+              <View style={styles.pickupMarkerCircle}>
+                <View style={styles.pickupMarkerDot} />
+              </View>
             </View>
           </Marker>
         )}
-      </Map>
 
-      {/* Central Pulsing Radar Waves (Finding Mode) */}
+        {/* ── Nearby / assigned driver markers ── */}
+        {activeNearbyDrivers.map((driver) => (
+          <Marker
+            key={driver.id}
+            coordinate={{ latitude: driver.latitude, longitude: driver.longitude }}
+            anchor={{ x: 0.5, y: 0.5 }}
+            flat={false}
+          >
+            <View style={styles.driverMarkerContainer}>
+              <View
+                style={[
+                  styles.driverMarkerCircle,
+                  (driver.isPrimary || mode === "live" || mode === "booked") &&
+                    styles.driverMarkerCirclePrimary,
+                  mode === "live" && styles.driverMarkerCircleLive,
+                ]}
+              >
+                <MaterialIcons
+                  name={mode === "live" ? "directions-car" : "local-taxi"}
+                  size={driver.isPrimary || mode === "live" ? 18 : 14}
+                  color={
+                    driver.isPrimary || mode === "live" || mode === "booked"
+                      ? "#0D6E00"
+                      : "#4B5563"
+                  }
+                />
+              </View>
+              {driver.etaText && (
+                <View style={[styles.driverEtaBadge, mode === "live" && styles.driverSpeedBadge]}>
+                  {mode === "live" && <View style={styles.driverSpeedDot} />}
+                  <Text style={[styles.driverEtaText, mode === "live" && styles.driverSpeedText]}>
+                    {driver.etaText}
+                  </Text>
+                </View>
+              )}
+            </View>
+          </Marker>
+        ))}
+
+        {/* ── Destination Marker ── */}
+        {(mode === "route" || mode === "booked" || mode === "live") &&
+          destinationCoords?.latitude && (
+            <Marker
+              coordinate={{
+                latitude: destinationCoords.latitude,
+                longitude: destinationCoords.longitude,
+              }}
+              anchor={{ x: 0.5, y: 1 }}
+            >
+              <View style={styles.markerContainer}>
+                <View style={[styles.pickupPinCallout, { backgroundColor: "#111827" }]}>
+                  <Text style={styles.calloutText} numberOfLines={1}>
+                    {destinationCoords.title || "Drop-off"}
+                  </Text>
+                </View>
+                <Ionicons name="location" size={30} color={Colors.primary} />
+              </View>
+            </Marker>
+          )}
+      </MapView>
+
+      {/* ── Center Pin (interactive pickup selection) ── */}
+      {isInteractivePickup && (
+        <View style={styles.centerPinWrapper} pointerEvents="none">
+          <Animated.View style={[styles.centerPin, { transform: [{ translateY: pinBounce }] }]}>
+            <View style={styles.centerPinCallout}>
+              {isResolvingPin ? (
+                <ActivityIndicator size="small" color="#FFFFFF" />
+              ) : (
+                <Text style={styles.calloutText}>Move map to select pickup</Text>
+              )}
+            </View>
+            <View style={styles.centerPinCircle}>
+              <View style={styles.centerPinDot} />
+            </View>
+          </Animated.View>
+          {/* Pin shadow dot on map surface */}
+          <View style={styles.centerPinShadow} />
+        </View>
+      )}
+
+      {/* ── Radar waves (finding/booked) ── */}
       {mode === "finding" && (
         <View style={styles.radarOverlay} pointerEvents="none">
           <Animated.View style={[styles.radarCircle, getWaveStyle(pulseAnim1)]} />
@@ -318,7 +383,7 @@ export default function PassengerMapPreview({
         </View>
       )}
 
-      {/* Floating Mini Context Route Pill (Finding Mode) */}
+      {/* ── Finding mode top pill ── */}
       {mode === "finding" && (
         <View style={styles.findingRoutePill}>
           <View style={styles.findingRoutePillLeft}>
@@ -336,17 +401,17 @@ export default function PassengerMapPreview({
         </View>
       )}
 
-      {/* Status Badges Matching Stitch Aesthetic (Search Mode) */}
+      {/* ── Search mode info pill ── */}
       {mode === "search" && (
         <View style={styles.infoPill}>
           <View style={styles.pulsingGreenDot} />
           <Text style={styles.infoPillText}>
-            {isInteractivePickup ? "Tap map to adjust pickup" : "MapLibre & OpenStreetMap"}
+            {isInteractivePickup ? "Move map to select pickup" : "Google Maps"}
           </Text>
         </View>
       )}
 
-      {/* Bottom Floating Map Controls (Finding Mode) */}
+      {/* ── Finding mode bottom overlay ── */}
       {mode === "finding" && (
         <View style={styles.findingBottomOverlay}>
           <View style={styles.scanningPill}>
@@ -355,7 +420,6 @@ export default function PassengerMapPreview({
               Scanning {scanningRadiusKm.toFixed(1)} km radius
             </Text>
           </View>
-
           <TouchableOpacity
             style={styles.recenterButtonFinding}
             activeOpacity={0.8}
@@ -367,7 +431,7 @@ export default function PassengerMapPreview({
         </View>
       )}
 
-      {/* Floating Re-center Button (Search & Route Modes) */}
+      {/* ── Recenter button ── */}
       {mode !== "finding" && showRecenterButton && (
         <TouchableOpacity
           style={styles.recenterButton}
@@ -381,6 +445,8 @@ export default function PassengerMapPreview({
     </View>
   );
 }
+
+// ─── Styles ───────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
   container: {
@@ -440,7 +506,68 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     backgroundColor: "#FFFFFF",
   },
-  // Driver Markers
+
+  // ── Center pin (interactive mode) ──
+  centerPinWrapper: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  centerPin: {
+    alignItems: "center",
+    // Offset upward so the dot tip sits exactly at center
+    marginBottom: 20,
+  },
+  centerPinCallout: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    backgroundColor: "#064B00",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: Radius.pill,
+    marginBottom: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 4,
+    maxWidth: 200,
+  },
+  centerPinCircle: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: Colors.primary,
+    borderWidth: 3,
+    borderColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 6,
+  },
+  centerPinDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#FFFFFF",
+  },
+  centerPinShadow: {
+    width: 10,
+    height: 4,
+    borderRadius: 5,
+    backgroundColor: "rgba(0,0,0,0.18)",
+    marginTop: -2,
+  },
+
+  // ── Driver markers ──
   driverMarkerContainer: {
     alignItems: "center",
   },
@@ -517,7 +644,8 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     letterSpacing: 0.2,
   },
-  // Radar Overlay
+
+  // ── Radar overlay ──
   radarOverlay: {
     position: "absolute",
     top: 0,
@@ -536,7 +664,8 @@ const styles = StyleSheet.create({
     borderColor: "rgba(31, 198, 0, 0.45)",
     backgroundColor: "rgba(31, 198, 0, 0.08)",
   },
-  // Floating Mini Route Pill in Finding Mode
+
+  // ── Finding mode pills ──
   findingRoutePill: {
     position: "absolute",
     top: 14,
@@ -581,7 +710,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#374151",
   },
-  // Bottom Map Overlay in Finding Mode
+
   findingBottomOverlay: {
     position: "absolute",
     bottom: 12,
@@ -630,7 +759,8 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 3,
   },
-  // Search Mode info pill
+
+  // ── Info pill (search mode) ──
   infoPill: {
     position: "absolute",
     top: 12,
@@ -662,6 +792,8 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: Colors.text.primary,
   },
+
+  // ── Recenter button ──
   recenterButton: {
     position: "absolute",
     bottom: 12,

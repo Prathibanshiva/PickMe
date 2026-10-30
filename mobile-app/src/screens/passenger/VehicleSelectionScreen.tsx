@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import {
+  Alert,
   Modal,
   Platform,
   ScrollView,
@@ -61,6 +62,7 @@ export default function VehicleSelectionScreen() {
   const [requestedSeats, setRequestedSeats] = useState<number>(1);
   const [paymentMethod, setPaymentMethod] = useState<"Cash" | "Card">("Cash");
   const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
+  const [isBooking, setIsBooking] = useState(false);
 
   // Available vehicles for the active mode
   const availableVehicleKeys = useMemo<VehicleType[]>(() => {
@@ -131,14 +133,16 @@ export default function VehicleSelectionScreen() {
   };
 
   // Proceed from booking confirmation modal to Finding Your Ride
-  const handleProceedToFindingRide = () => {
+  // P3: Server-authoritative booking. Await backend persistence before moving to SEARCHING state.
+  const handleProceedToFindingRide = async () => {
+    if (isBooking) return;
     setConfirmationModalVisible(false);
+    setIsBooking(true);
 
-    // ── Create the shared ride in the lifecycle service ───────────────────
-    // Both passenger and driver screens will now subscribe to this same offer.
     const distKm = parseFloat(params.distanceKm || "5.4");
-    const durationMin = Math.round((distKm / 20) * 60); // rough estimate at 20 km/h avg
-    rideLifecycleService.createRide({
+    const durationMin = Math.round((distKm / 20) * 60);
+
+    const result = await rideLifecycleService.createRide({
       pickupTitle,
       pickupSubtitle,
       pickupLat,
@@ -157,9 +161,21 @@ export default function VehicleSelectionScreen() {
       paymentMethod,
     });
 
+    setIsBooking(false);
+
+    if (!result.success) {
+      Alert.alert(
+        "Booking Failed",
+        result.error || "Unable to request ride at this moment. Please try again.",
+        [{ text: "OK" }]
+      );
+      return;
+    }
+
     router.push({
       pathname: "/passenger/finding-ride",
       params: {
+        rideId: result.rideId,
         pickupTitle,
         pickupSubtitle,
         pickupLat: String(pickupLat),
@@ -226,7 +242,7 @@ export default function VehicleSelectionScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* MapLibre + OpenStreetMap Preview with Dual Markers and Camera Fit */}
+        {/* Google Maps Preview with Dual Markers and Camera Fit */}
         <PassengerMapPreview
           mode="route"
           height={210}

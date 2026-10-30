@@ -32,8 +32,8 @@ export default function DriverEnRoutePickupScreen() {
     return () => unsubscribe();
   }, []);
 
-  const handleArrivedAtPickup = () => {
-    rideLifecycleService.arriveAtPickup();
+  const handleArrivedAtPickup = async () => {
+    await rideLifecycleService.arriveAtPickup();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     router.replace("/driver/arrived" as any);
   };

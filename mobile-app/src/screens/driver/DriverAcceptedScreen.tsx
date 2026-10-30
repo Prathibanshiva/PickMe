@@ -66,8 +66,8 @@ export default function DriverAcceptedScreen() {
                 {
                   text: "Cancel Ride",
                   style: "destructive",
-                  onPress: () => {
-                    rideLifecycleService.declineRequest();
+                  onPress: async () => {
+                    await rideLifecycleService.cancelRide("Driver cancelled accepted ride");
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     router.replace("/driver/home" as any);
                   },

@@ -124,8 +124,8 @@ export default function RideBookedScreen() {
 
   // ─── OTP from shared lifecycle session ─────────────────────────────────────
   // The service owns the OTP; the passenger shows it and the driver verifies it.
-  const sessionOtp =
-    rideLifecycleService.getActiveState().activeOffer?.otp || MOCK_DRIVER.otp.join("");
+  const activeOffer = rideLifecycleService.getActiveState().activeOffer;
+  const sessionOtp = activeOffer?.otp || "----";
   const otpDigits = sessionOtp.split("");
 
   // ─── Lifecycle subscription: navigate to LiveRide when trip starts ──────────
@@ -172,8 +172,14 @@ export default function RideBookedScreen() {
       navigateToLiveRide();
     }
 
+    // Periodic bounded sync with backend to detect arrival & OTP verification
+    const pollInterval = setInterval(() => {
+      rideLifecycleService.syncActiveRide();
+    }, 3000);
+
     return () => {
       unsubscribe();
+      clearInterval(pollInterval);
     };
   }, []);
 

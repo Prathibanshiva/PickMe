@@ -1,6 +1,6 @@
 import AuthLoadingScreen from "@/screens/auth/AuthLoadingScreen";
 import PassengerHomeScreen from "@/screens/passenger/PassengerHomeScreen";
-import DriverHomeScreen from "@/screens/driver/DriverHomeScreen";
+import DriverStatusGate from "@/screens/driver/DriverStatusGate";
 import RoleSelectionScreen from "@/screens/auth/RoleSelectionScreen";
 
 import { useAuth } from "@/store/auth.store";
@@ -25,7 +25,7 @@ export default function AuthGateScreen() {
   }
 
   if (role === "driver") {
-    return <DriverHomeScreen />;
+    return <DriverStatusGate />;
   }
 
   return <RoleSelectionScreen />;

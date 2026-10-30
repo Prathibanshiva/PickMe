@@ -35,19 +35,28 @@ export default function DriverArrivedScreen() {
     return () => unsubscribe();
   }, []);
 
-  const [enteredOtp, setEnteredOtp] = useState<string>("7294");
+  const [enteredOtp, setEnteredOtp] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isVerifying, setIsVerifying] = useState<boolean>(false);
 
-  const handleVerifyOtp = () => {
+  const handleVerifyOtp = async () => {
+    if (isVerifying) return;
+    if (enteredOtp.trim().length !== 4) {
+      setErrorMessage("Please enter the 4-digit PIN provided by the passenger.");
+      return;
+    }
+
     setErrorMessage(null);
-    const result = rideLifecycleService.verifyOtp(enteredOtp);
+    setIsVerifying(true);
+    const result = await rideLifecycleService.verifyOtp(enteredOtp);
+    setIsVerifying(false);
 
     if (result.success) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       router.replace("/driver/live-trip" as any);
     } else {
       setErrorMessage(result.message || "Invalid OTP PIN. Please check with passenger.");
-      Alert.alert("Incorrect PIN", result.message || "Invalid OTP.");
+      Alert.alert("PIN Verification Failed", result.message || "Invalid OTP.");
     }
   };
 

@@ -11,6 +11,7 @@ export interface DriverProfile {
     | "rejected";
 
   rejectionReason: string;
+  rejectionCode?: string;
 
   profilePhoto: string;
 
@@ -120,4 +121,73 @@ export async function submitDriverProfile(
   }
 
   return data.driverProfile;
+}
+
+export type DriverProfileStatus =
+  | { state: "not_found" }
+  | { state: "incomplete"; profile: DriverProfile }
+  | { state: "pending"; profile: DriverProfile }
+  | { state: "rejected"; rejectionReason: string; rejectionCode: string; profile: DriverProfile }
+  | { state: "approved"; profile: DriverProfile };
+
+export async function getDriverProfileStatus(): Promise<DriverProfileStatus> {
+  const session = await getAuthSession();
+
+  if (!session?.token) {
+    throw new Error("Authentication session not found.");
+  }
+
+  const response = await fetch(`${API_BASE_URL}/api/driver/profile`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${session.token}`,
+    },
+  });
+
+  if (response.status === 404) {
+    return { state: "not_found" };
+  }
+
+  if (!response.ok) {
+    let errorMessage = "Unable to fetch driver profile.";
+    try {
+      const errData = await response.json();
+      if (errData?.message) errorMessage = errData.message;
+    } catch {
+      // Keep default error message
+    }
+    throw new Error(errorMessage);
+  }
+
+  const data = await response.json();
+  const profile: DriverProfile = data.driverProfile;
+
+  // Verify that all required onboarding fields are present
+  const isComplete = Boolean(
+    profile.profilePhoto &&
+    profile.aadhaarDocument &&
+    profile.drivingLicenceDocument &&
+    profile.vehicleType &&
+    profile.vehicleNumber &&
+    profile.vehiclePhoto
+  );
+
+  if (!isComplete) {
+    return { state: "incomplete", profile };
+  }
+
+  if (profile.verificationStatus === "approved") {
+    return { state: "approved", profile };
+  }
+
+  if (profile.verificationStatus === "rejected") {
+    return {
+      state: "rejected",
+      rejectionReason: profile.rejectionReason || "Your verification documents were not approved.",
+      rejectionCode: profile.rejectionCode || "",
+      profile,
+    };
+  }
+
+  return { state: "pending", profile };
 }

@@ -13,7 +13,7 @@ import {
   View,
 } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import PassengerMapPreview from "@/components/passenger/PassengerMapPreview";
@@ -22,8 +22,41 @@ import { Colors, Radius } from "@/theme";
 import {
   BENGALURU_FALLBACK_LOCATION,
   getCurrentPickupLocation,
+  getPlaceDetails,
+  PlacePrediction,
   reverseGeocodeCoordinates,
+  searchPlaces,
 } from "@/services/location.service";
+
+/** Creates a UUID v4 session token for Google Places Autocomplete grouping. */
+function createSessionToken(): string {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
+/** Calculates spherical distance in kilometers between two coordinates. */
+function calculateDistanceKm(
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const d = R * c;
+  return Math.round(d * 10) / 10;
+}
 
 const RECENT_DESTINATIONS: LocationPoint[] = [
   {
@@ -146,34 +179,53 @@ const QUICK_SAVED_DESTINATIONS: LocationPoint[] = [
 
 export default function DestinationSearchScreen() {
   const insets = useSafeAreaInsets();
+  const searchParams = useLocalSearchParams<{ initialQuery?: string; mode?: string }>();
 
   // State: Structured Pickup Location
   const [pickupLocation, setPickupLocation] = useState<LocationPoint>(
     BENGALURU_FALLBACK_LOCATION
   );
-  const [isEditingPickup, setIsEditingPickup] = useState(false);
+  const [isPickupLoading, setIsPickupLoading] = useState(true);
+  const [pickupError, setPickupError] = useState<string | null>(null);
+  const [isEditingPickup, setIsEditingPickup] = useState(searchParams.mode === "pickup");
+  const [isReverseGeocodingPickup, setIsReverseGeocodingPickup] = useState(false);
 
-  // State: Destination Search
-  const [searchQuery, setSearchQuery] = useState("");
+  // State: Places Search
+  const [searchQuery, setSearchQuery] = useState(searchParams.initialQuery || "");
+  const [isSearching, setIsSearching] = useState(false);
+  const [placePredictions, setPlacePredictions] = useState<PlacePrediction[]>([]);
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [isNotConfigured, setIsNotConfigured] = useState(false);
+  const [resolvingPlaceId, setResolvingPlaceId] = useState<string | null>(null);
+
+  // Google Places Session Token & Debounce Timer
+  const sessionTokenRef = useRef<string>(createSessionToken());
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // State: Stitch Recent Destinations
   const [recentList, setRecentList] = useState<LocationPoint[]>(RECENT_DESTINATIONS);
-
-  // Filtered destinations based on search query
-  const filteredDestinations = searchQuery.trim().length > 0
-    ? QUICK_SAVED_DESTINATIONS.filter((item) =>
-        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (item.subtitle && item.subtitle.toLowerCase().includes(searchQuery.toLowerCase()))
-      )
-    : [];
 
   // On mount: Fetch actual GPS location for pickup
   useEffect(() => {
     let isMounted = true;
     (async () => {
-      const loc = await getCurrentPickupLocation();
-      if (isMounted) {
-        setPickupLocation(loc);
+      setIsPickupLoading(true);
+      const res = await getCurrentPickupLocation();
+      if (!isMounted) return;
+      setIsPickupLoading(false);
+
+      if (res.status === "ok") {
+        setPickupLocation(res.location);
+        setPickupError(null);
+      } else if (res.status === "permission_denied") {
+        setPickupError("Location permission denied. Move map to position pickup pin.");
+        setIsEditingPickup(true);
+      } else if (res.status === "timeout") {
+        setPickupError("GPS timed out. Move map to position pickup pin.");
+        setIsEditingPickup(true);
+      } else {
+        setPickupError("GPS unavailable. Move map to position pickup pin.");
+        setIsEditingPickup(true);
       }
     })();
     return () => {
@@ -181,21 +233,81 @@ export default function DestinationSearchScreen() {
     };
   }, []);
 
+  // Live Google Places Autocomplete Search with 300ms Debounce
+  useEffect(() => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    const query = searchQuery.trim();
+    if (query.length < 2) {
+      setPlacePredictions([]);
+      setIsSearching(false);
+      setSearchError(null);
+      return;
+    }
+
+    setIsSearching(true);
+    setSearchError(null);
+
+    debounceTimerRef.current = setTimeout(async () => {
+      const res = await searchPlaces(query, {
+        sessiontoken: sessionTokenRef.current,
+        lat: pickupLocation.latitude,
+        lng: pickupLocation.longitude,
+      });
+
+      setIsSearching(false);
+
+      if (res.status === "ok") {
+        setPlacePredictions(res.predictions);
+        setIsNotConfigured(false);
+        setSearchError(null);
+      } else if (res.status === "not_configured") {
+        setIsNotConfigured(true);
+        setPlacePredictions([]);
+        setSearchError(
+          "Google Places API is not configured on the backend. Please configure GOOGLE_MAPS_SERVER_API_KEY."
+        );
+      } else {
+        setSearchError(res.message);
+        setPlacePredictions([]);
+      }
+    }, 300);
+
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [searchQuery, pickupLocation.latitude, pickupLocation.longitude]);
+
   // Handle Pickup Adjustment via Interactive Map
   const handlePickupChange = async (coords: {
     latitude: number;
     longitude: number;
   }) => {
+    setIsReverseGeocodingPickup(true);
     const geocoded = await reverseGeocodeCoordinates(
       coords.latitude,
       coords.longitude
     );
+    setIsReverseGeocodingPickup(false);
     setPickupLocation({
       title: geocoded.title,
       subtitle: geocoded.subtitle,
       latitude: coords.latitude,
       longitude: coords.longitude,
     });
+    setPickupError(null);
+  };
+
+  // Explicit Confirm Pickup Action
+  const handleConfirmPickup = () => {
+    setIsEditingPickup(false);
+    setPickupError(null);
+    setSearchQuery("");
+    setPlacePredictions([]);
   };
 
   // Back Navigation Handler
@@ -207,8 +319,55 @@ export default function DestinationSearchScreen() {
     }
   };
 
+  // Handle Selection of a Place Prediction (resolves geometry via server-side Place Details proxy)
+  const handleSelectPrediction = async (pred: PlacePrediction) => {
+    setResolvingPlaceId(pred.placeId);
+    const res = await getPlaceDetails(pred.placeId, sessionTokenRef.current);
+    setResolvingPlaceId(null);
+
+    // Refresh session token for subsequent searches (closes billing session)
+    sessionTokenRef.current = createSessionToken();
+
+    if (res.status === "ok") {
+      if (isEditingPickup) {
+        // Resolved selected pickup place
+        setPickupLocation(res.details);
+        setIsEditingPickup(false);
+        setPickupError(null);
+        setSearchQuery("");
+        setPlacePredictions([]);
+      } else {
+        // Resolved destination
+        const dist = calculateDistanceKm(
+          pickupLocation.latitude,
+          pickupLocation.longitude,
+          res.details.latitude,
+          res.details.longitude
+        );
+        handleSelectDestination({
+          ...res.details,
+          distanceKm: dist,
+        });
+      }
+    } else if (res.status === "not_configured") {
+      setIsNotConfigured(true);
+      setSearchError("Google Places API is not configured on the backend.");
+    } else {
+      setSearchError(res.message || "Could not resolve coordinates for this place.");
+    }
+  };
+
   // Select a destination and navigate to Vehicle Selection with structured coordinates
   const handleSelectDestination = (dest: LocationPoint) => {
+    const dist =
+      dest.distanceKm ??
+      calculateDistanceKm(
+        pickupLocation.latitude,
+        pickupLocation.longitude,
+        dest.latitude,
+        dest.longitude
+      );
+
     router.push({
       pathname: "/passenger/vehicle-selection",
       params: {
@@ -220,7 +379,7 @@ export default function DestinationSearchScreen() {
         destinationSubtitle: dest.subtitle || "",
         destLat: String(dest.latitude),
         destLng: String(dest.longitude),
-        distanceKm: dest.distanceKm ? String(dest.distanceKm) : "7.2",
+        distanceKm: String(dist),
       },
     } as any);
   };
@@ -288,29 +447,72 @@ export default function DestinationSearchScreen() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          {/* Real MapLibre + OpenStreetMap Preview Section */}
+          {/* Google Maps Preview with Center-Pin Pickup Adjustment */}
           <PassengerMapPreview
             mode="search"
-            height={230}
+            height={isEditingPickup ? 260 : 210}
             pickupCoords={pickupLocation}
             isInteractivePickup={isEditingPickup}
             onPickupChange={handlePickupChange}
           />
 
+          {/* Confirm Pickup Action Bar (displayed whenever user is in interactive pickup mode) */}
+          {isEditingPickup && (
+            <View style={styles.confirmPickupBar}>
+              <View style={styles.confirmPickupInfo}>
+                <View style={styles.confirmPickupDot} />
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.confirmPickupAddress} numberOfLines={1}>
+                    {isReverseGeocodingPickup
+                      ? "Resolving location..."
+                      : pickupLocation.title}
+                  </Text>
+                  {pickupLocation.subtitle ? (
+                    <Text style={styles.confirmPickupSubtitle} numberOfLines={1}>
+                      {pickupLocation.subtitle}
+                    </Text>
+                  ) : null}
+                </View>
+                {isReverseGeocodingPickup && (
+                  <ActivityIndicator size="small" color={Colors.primary} />
+                )}
+              </View>
+
+              <TouchableOpacity
+                style={styles.confirmPickupButton}
+                activeOpacity={0.85}
+                onPress={handleConfirmPickup}
+                disabled={isReverseGeocodingPickup}
+              >
+                <Ionicons name="checkmark-circle" size={18} color="#FFFFFF" />
+                <Text style={styles.confirmPickupButtonText}>Confirm Pickup Location</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
           {/* Search Input Panel */}
           <View style={styles.searchPanel}>
             <View style={styles.inputContainer}>
               <View style={styles.searchIconBox}>
-                <Ionicons name="search" size={18} color={Colors.primary} />
+                {isSearching ? (
+                  <ActivityIndicator size="small" color={Colors.primary} />
+                ) : (
+                  <Ionicons name="search" size={18} color={Colors.primary} />
+                )}
               </View>
 
               <TextInput
                 style={styles.searchInput}
-                placeholder="Where do you want to go?"
+                placeholder={
+                  isEditingPickup
+                    ? "Search pickup address or move map pin..."
+                    : "Where do you want to go?"
+                }
                 placeholderTextColor="#9CA3AF"
                 value={searchQuery}
                 onChangeText={setSearchQuery}
                 returnKeyType="search"
+                autoFocus={false}
               />
 
               {searchQuery.length > 0 && (
@@ -323,106 +525,142 @@ export default function DestinationSearchScreen() {
               )}
             </View>
 
+            {/* Error Banner when Places proxy or Google API fails / 503 missing key */}
+            {searchError ? (
+              <View style={styles.errorBanner}>
+                <MaterialIcons name="error-outline" size={18} color="#DC2626" />
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.errorBannerTitle}>
+                    {isNotConfigured ? "Maps Key Required" : "Places Search Notice"}
+                  </Text>
+                  <Text style={styles.errorBannerText}>{searchError}</Text>
+                </View>
+              </View>
+            ) : null}
+
             {/* Quick Filter Chips (Stitch Aesthetic) */}
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.chipsRow}
-            >
-              <TouchableOpacity
-                style={styles.chip}
-                activeOpacity={0.7}
-                onPress={() =>
-                  handleSelectDestination({
-                    title: "Home",
-                    subtitle: "Indiranagar 100ft Road, Bengaluru",
-                    latitude: 12.9784,
-                    longitude: 77.6408,
-                    distanceKm: 4.8,
-                  })
-                }
+            {!isEditingPickup && (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.chipsRow}
               >
-                <MaterialIcons name="home" size={17} color={Colors.primary} />
-                <Text style={styles.chipText}>Home</Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.chip}
+                  activeOpacity={0.7}
+                  onPress={() =>
+                    handleSelectDestination({
+                      title: "Home",
+                      subtitle: "Indiranagar 100ft Road, Bengaluru",
+                      latitude: 12.9784,
+                      longitude: 77.6408,
+                      distanceKm: 4.8,
+                    })
+                  }
+                >
+                  <MaterialIcons name="home" size={17} color={Colors.primary} />
+                  <Text style={styles.chipText}>Home</Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                style={styles.chip}
-                activeOpacity={0.7}
-                onPress={() =>
-                  handleSelectDestination({
-                    title: "Work",
-                    subtitle: "Ecospace Business Park, Bellandur",
-                    latitude: 12.926,
-                    longitude: 77.6833,
-                    distanceKm: 8.5,
-                  })
-                }
-              >
-                <MaterialIcons name="work" size={17} color={Colors.primary} />
-                <Text style={styles.chipText}>Work</Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.chip}
+                  activeOpacity={0.7}
+                  onPress={() =>
+                    handleSelectDestination({
+                      title: "Work",
+                      subtitle: "Ecospace Business Park, Bellandur",
+                      latitude: 12.926,
+                      longitude: 77.6833,
+                      distanceKm: 8.5,
+                    })
+                  }
+                >
+                  <MaterialIcons name="work" size={17} color={Colors.primary} />
+                  <Text style={styles.chipText}>Work</Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                style={styles.chip}
-                activeOpacity={0.7}
-                onPress={() =>
-                  handleSelectDestination({
-                    title: "Favorites",
-                    subtitle: "MG Road Metro Station",
-                    latitude: 12.9756,
-                    longitude: 77.6066,
-                    distanceKm: 6.1,
-                  })
-                }
-              >
-                <MaterialIcons name="favorite" size={17} color="#E11D48" />
-                <Text style={styles.chipText}>Favorites</Text>
-              </TouchableOpacity>
-            </ScrollView>
+                <TouchableOpacity
+                  style={styles.chip}
+                  activeOpacity={0.7}
+                  onPress={() =>
+                    handleSelectDestination({
+                      title: "Favorites",
+                      subtitle: "MG Road Metro Station",
+                      latitude: 12.9756,
+                      longitude: 77.6066,
+                      distanceKm: 6.1,
+                    })
+                  }
+                >
+                  <MaterialIcons name="favorite" size={17} color="#E11D48" />
+                  <Text style={styles.chipText}>Favorites</Text>
+                </TouchableOpacity>
+              </ScrollView>
+            )}
           </View>
 
-          {/* Search Results / Matching Destinations */}
-          {searchQuery.trim().length > 0 ? (
+          {/* Search Results / Places Predictions */}
+          {searchQuery.trim().length >= 2 ? (
             <View style={styles.suggestionsSection}>
-              <Text style={styles.sectionHeaderTitle}>SEARCH RESULTS</Text>
+              <Text style={styles.sectionHeaderTitle}>
+                {isEditingPickup ? "PICKUP SUGGESTIONS" : "GOOGLE PLACES RESULTS"}
+              </Text>
 
-              {filteredDestinations.map((item, idx) => (
+              {placePredictions.map((pred) => (
                 <TouchableOpacity
-                  key={`dest-${idx}`}
+                  key={pred.placeId}
                   style={styles.destinationRow}
                   activeOpacity={0.7}
-                  onPress={() => handleSelectDestination(item)}
+                  onPress={() => handleSelectPrediction(pred)}
+                  disabled={resolvingPlaceId === pred.placeId}
                 >
                   <View style={styles.destinationIconCircle}>
-                    <Ionicons name="location-sharp" size={18} color={Colors.primary} />
+                    <Ionicons
+                      name={isEditingPickup ? "navigate" : "location-sharp"}
+                      size={18}
+                      color={Colors.primary}
+                    />
                   </View>
 
                   <View style={styles.destinationInfoColumn}>
                     <Text style={styles.destinationTitle} numberOfLines={1}>
-                      {item.title}
+                      {pred.title}
                     </Text>
                     <Text style={styles.destinationSubtitle} numberOfLines={1}>
-                      {item.subtitle}
+                      {pred.subtitle || pred.description}
                     </Text>
                   </View>
 
-                  <MaterialIcons
-                    name="chevron-right"
-                    size={20}
-                    color={Colors.text.secondary}
-                  />
+                  {resolvingPlaceId === pred.placeId ? (
+                    <ActivityIndicator size="small" color={Colors.primary} />
+                  ) : (
+                    <MaterialIcons
+                      name="chevron-right"
+                      size={20}
+                      color={Colors.text.secondary}
+                    />
+                  )}
                 </TouchableOpacity>
               ))}
 
-              {filteredDestinations.length === 0 && (
+              {!isSearching && placePredictions.length === 0 && !searchError && (
                 <View style={styles.emptyStateContainer}>
-                  <MaterialIcons name="search-off" size={32} color={Colors.text.secondary} style={{ marginBottom: 8 }} />
+                  <MaterialIcons
+                    name="search-off"
+                    size={32}
+                    color={Colors.text.secondary}
+                    style={{ marginBottom: 8 }}
+                  />
                   <Text style={styles.emptyStateText}>
-                    No results for "{searchQuery}"
+                    No places found for "{searchQuery}"
                   </Text>
-                  <Text style={[styles.emptyStateText, { marginTop: 4, fontSize: 12, color: Colors.text.secondary }]}>
-                    Try a neighbourhood, landmark, or road name.
+                  <Text
+                    style={[
+                      styles.emptyStateText,
+                      { marginTop: 4, fontSize: 12, color: Colors.text.secondary },
+                    ]}
+                  >
+                    Try searching by locality, street name, or landmark.
                   </Text>
                 </View>
               )}
@@ -596,6 +834,55 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flex: 1,
+  },
+  confirmPickupBar: {
+    backgroundColor: "#F0FDF4",
+    borderBottomWidth: 1,
+    borderBottomColor: "#BBF7D0",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 10,
+  },
+  confirmPickupInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  confirmPickupDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: "#0D6E00",
+  },
+  confirmPickupAddress: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#064B00",
+  },
+  confirmPickupSubtitle: {
+    fontSize: 11,
+    color: "#166534",
+    marginTop: 2,
+  },
+  confirmPickupButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    backgroundColor: "#0D6E00",
+    paddingVertical: 11,
+    borderRadius: Radius.lg,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  confirmPickupButtonText: {
+    fontSize: 13,
+    fontWeight: "800",
+    color: "#FFFFFF",
+    letterSpacing: 0.3,
   },
   searchPanel: {
     paddingHorizontal: 16,

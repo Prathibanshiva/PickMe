@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Modal,
   Platform,
   ScrollView,
@@ -21,24 +22,88 @@ import {
   BENGALURU_FALLBACK_LOCATION,
   getCurrentPickupLocation,
 } from "@/services/location.service";
+import rideLifecycleService from "@/services/ride-lifecycle.service";
 
 export default function PassengerHomeScreen() {
   const { user, logout } = useAuth();
   const insets = useSafeAreaInsets();
 
-  const [pickupLocation, setPickupLocation] = useState<LocationPoint>(
-    BENGALURU_FALLBACK_LOCATION
-  );
+  const [pickupLocation, setPickupLocation] = useState<LocationPoint | null>(null);
+  const [isLocating, setIsLocating] = useState<boolean>(true);
+  const [locationError, setLocationError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"ride" | "schedule" | "activity" | "profile">("ride");
   const [pendingTabModal, setPendingTabModal] = useState<string | null>(null);
 
-  // Fetch real GPS location on mount
+  const fetchPickupLocation = async () => {
+    setIsLocating(true);
+    setLocationError(null);
+    const result = await getCurrentPickupLocation();
+    setIsLocating(false);
+
+    if (result.status === "ok") {
+      setPickupLocation(result.location);
+      setLocationError(null);
+    } else if (result.status === "permission_denied") {
+      setLocationError(
+        "Location permission is needed to detect your pickup. Tap to select on map or search manually."
+      );
+    } else if (result.status === "timeout") {
+      setLocationError(
+        "GPS timed out. Tap to search or manually select your pickup location."
+      );
+    } else {
+      setLocationError(
+        "Location unavailable. Tap to search or manually select your pickup location."
+      );
+    }
+  };
+
+  // Fetch real GPS location and recover any active persistent ride on mount
   useEffect(() => {
     let isMounted = true;
     (async () => {
-      const loc = await getCurrentPickupLocation();
-      if (isMounted) {
-        setPickupLocation(loc);
+      setIsLocating(true);
+      setLocationError(null);
+      const result = await getCurrentPickupLocation();
+      if (!isMounted) return;
+      setIsLocating(false);
+
+      if (result.status === "ok") {
+        setPickupLocation(result.location);
+        setLocationError(null);
+      } else if (result.status === "permission_denied") {
+        setLocationError(
+          "Location permission is needed to detect your pickup. Tap to select on map or search manually."
+        );
+      } else if (result.status === "timeout") {
+        setLocationError(
+          "GPS timed out. Tap to search or manually select your pickup location."
+        );
+      } else {
+        setLocationError(
+          "Location unavailable. Tap to search or manually select your pickup location."
+        );
+      }
+
+      // Check if passenger already has a persistent active ride
+      const active = await rideLifecycleService.syncActiveRide();
+      if (!isMounted) return;
+
+      if (active.hasActiveRide && active.status) {
+        if (active.status === "REQUEST_OFFERED") {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          router.push("/passenger/finding-ride" as any);
+        } else if (
+          active.status === "ACCEPTED" ||
+          active.status === "DRIVING_TO_PICKUP" ||
+          active.status === "ARRIVED_AT_PICKUP"
+        ) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          router.push("/passenger/ride-booked" as any);
+        } else if (active.status === "TRIP_ACTIVE") {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          router.push("/passenger/live-ride" as any);
+        }
       }
     })();
     return () => {
@@ -60,6 +125,11 @@ export default function PassengerHomeScreen() {
     longitude: number,
     distanceKm: number
   ) => {
+    if (!pickupLocation) {
+      handleOpenSearch(title);
+      return;
+    }
+
     router.push({
       pathname: "/passenger/vehicle-selection",
       params: {
@@ -134,18 +204,53 @@ export default function PassengerHomeScreen() {
           contentContainerStyle={{ paddingBottom: insets.bottom + 90 }}
           showsVerticalScrollIndicator={false}
         >
-          {/* Pickup location indicator (Real GPS or fallback) */}
-          <TouchableOpacity
-            style={styles.pickupPill}
-            activeOpacity={0.8}
-            onPress={() => handleOpenSearch()}
-          >
-            <View style={styles.pickupDot} />
-            <Text style={styles.pickupAddress} numberOfLines={1}>
-              {pickupLocation.title}
-            </Text>
-            <MaterialIcons name="my-location" size={16} color={Colors.primary} />
-          </TouchableOpacity>
+          {/* Pickup location indicator (Real GPS, Loading, or Recoverable Error) */}
+          {locationError ? (
+            <View style={styles.locationErrorBox}>
+              <View style={styles.locationErrorHeader}>
+                <MaterialIcons name="location-off" size={16} color="#DC2626" />
+                <Text style={styles.locationErrorTitle}>Pickup Location Not Detected</Text>
+              </View>
+              <Text style={styles.locationErrorText}>{locationError}</Text>
+              <View style={styles.locationErrorActions}>
+                <TouchableOpacity
+                  style={styles.locationManualButton}
+                  activeOpacity={0.8}
+                  onPress={() => handleOpenSearch()}
+                >
+                  <Ionicons name="map-outline" size={14} color="#FFFFFF" />
+                  <Text style={styles.locationManualButtonText}>Select on Map / Search</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.locationRetryButton}
+                  activeOpacity={0.8}
+                  onPress={fetchPickupLocation}
+                >
+                  <MaterialIcons name="refresh" size={14} color={Colors.primary} />
+                  <Text style={styles.locationRetryButtonText}>Retry GPS</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ) : isLocating ? (
+            <View style={styles.pickupPill}>
+              <ActivityIndicator size="small" color={Colors.primary} />
+              <Text style={[styles.pickupAddress, { color: Colors.text.secondary }]}>
+                Detecting your current location...
+              </Text>
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={styles.pickupPill}
+              activeOpacity={0.8}
+              onPress={() => handleOpenSearch()}
+            >
+              <View style={styles.pickupDot} />
+              <Text style={styles.pickupAddress} numberOfLines={1}>
+                {pickupLocation?.title || "Select pickup location"}
+              </Text>
+              <MaterialIcons name="my-location" size={16} color={Colors.primary} />
+            </TouchableOpacity>
+          )}
 
           {/* Destination Search Trigger */}
           <TouchableOpacity
@@ -471,6 +576,66 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingTop: 14,
+  },
+  locationErrorBox: {
+    backgroundColor: "#FEF2F2",
+    borderRadius: Radius.lg,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: "#FECACA",
+    marginBottom: 14,
+  },
+  locationErrorHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: 4,
+  },
+  locationErrorTitle: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#DC2626",
+  },
+  locationErrorText: {
+    fontSize: 12,
+    color: "#7F1D1D",
+    lineHeight: 16,
+    marginBottom: 10,
+  },
+  locationErrorActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  locationManualButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: Radius.pill,
+  },
+  locationManualButtonText: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#FFFFFF",
+  },
+  locationRetryButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    borderRadius: Radius.pill,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  locationRetryButtonText: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: Colors.text.primary,
   },
   pickupPill: {
     flexDirection: "row",

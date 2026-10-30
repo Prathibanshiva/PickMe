@@ -18,6 +18,8 @@ import DriverMapPreview from "@/components/driver/DriverMapPreview";
 import rideLifecycleService from "@/services/ride-lifecycle.service";
 import { DriverAvailabilityStatus } from "@/types/driver.types";
 import { Colors, Radius } from "@/theme";
+import API_BASE_URL from "@/services/api";
+import { getAuthSession } from "@/services/auth.service";
 
 export default function DriverHomeScreen() {
   const insets = useSafeAreaInsets();
@@ -31,6 +33,63 @@ export default function DriverHomeScreen() {
 
   // Pulse animation for Online status radar beacon
   const pulseAnim = React.useRef(new Animated.Value(0)).current;
+
+  // Active ride recovery on mount (e.g. app restart or navigation)
+  useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      const active = await rideLifecycleService.syncActiveRide();
+      if (!isMounted) return;
+      if (active.hasActiveRide && active.status) {
+        if (active.status === "REQUEST_OFFERED") {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          router.push("/driver/incoming-request" as any);
+        } else if (active.status === "ACCEPTED" || active.status === "DRIVING_TO_PICKUP") {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          router.replace("/driver/accepted" as any);
+        } else if (active.status === "ARRIVED_AT_PICKUP") {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          router.replace("/driver/arrived" as any);
+        } else if (active.status === "TRIP_ACTIVE") {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          router.replace("/driver/live-trip" as any);
+        }
+      }
+    })();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Poll available rides from backend when online
+  useEffect(() => {
+    if (!isOnline) return;
+
+    let isPolling = true;
+
+    const pollAvailableRides = async () => {
+      const rides = await rideLifecycleService.fetchAvailableRides();
+      if (!isPolling) return;
+
+      const currentState = rideLifecycleService.getActiveState();
+      if (
+        rides.length > 0 &&
+        currentState.lifecycleStatus === "IDLE" &&
+        rideLifecycleService.getAvailabilityStatus() === "ONLINE"
+      ) {
+        // Offer the first available persistent ride from the backend queue
+        rideLifecycleService.setActiveOffer(rides[0]);
+      }
+    };
+
+    pollAvailableRides();
+    const interval = setInterval(pollAvailableRides, 4000);
+
+    return () => {
+      isPolling = false;
+      clearInterval(interval);
+    };
+  }, [isOnline]);
 
   useEffect(() => {
     const unsubscribe = rideLifecycleService.subscribeAvailability((status) => {
@@ -68,8 +127,6 @@ export default function DriverHomeScreen() {
   }, [isOnline]);
 
   // ── Subscribe to shared lifecycle: auto-navigate to incoming request ────────
-  // When the passenger creates a ride (REQUEST_OFFERED), this ONLINE driver
-  // automatically sees the incoming request screen.
   useEffect(() => {
     let navigated = false;
 
@@ -89,7 +146,7 @@ export default function DriverHomeScreen() {
       }
     });
 
-    // Eagerly check — passenger may have booked before driver opened this screen
+    // Eagerly check
     const currentState = rideLifecycleService.getActiveState();
     if (
       currentState.lifecycleStatus === "REQUEST_OFFERED" &&
@@ -103,10 +160,60 @@ export default function DriverHomeScreen() {
     };
   }, []);
 
-  const handleToggleOnline = () => {
-    const nextStatus: DriverAvailabilityStatus = isOnline ? "OFFLINE" : "ONLINE";
-    rideLifecycleService.setAvailabilityStatus(nextStatus);
-    setAvailability(nextStatus);
+  const handleToggleOnline = async () => {
+    if (isOnline) {
+      rideLifecycleService.setAvailabilityStatus("OFFLINE");
+      setAvailability("OFFLINE");
+      return;
+    }
+
+    // Verify driver verification status on backend
+    try {
+      const session = await getAuthSession();
+      if (!session?.token) {
+        Alert.alert("Authentication Required", "Please sign in as a driver partner.");
+        return;
+      }
+
+      const res = await fetch(`${API_BASE_URL}/api/driver/profile`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${session.token}` },
+      });
+
+      if (res.status === 404) {
+        Alert.alert(
+          "Onboarding Required",
+          "You must complete driver onboarding before going online."
+        );
+        return;
+      }
+
+      if (!res.ok) {
+        Alert.alert(
+          "Verification Error",
+          "Unable to verify driver status. Please try again."
+        );
+        return;
+      }
+
+      const data = await res.json();
+      const profile = data.driverProfile;
+      if (profile?.verificationStatus !== "approved") {
+        Alert.alert(
+          "Verification Pending",
+          "Your driver profile is currently under review by PickMe operations. You will be able to go online once approved by an administrator."
+        );
+        return;
+      }
+
+      rideLifecycleService.setAvailabilityStatus("ONLINE");
+      setAvailability("ONLINE");
+    } catch {
+      Alert.alert(
+        "Connection Error",
+        "Unable to verify driver approval status. Please check your network connection and try again."
+      );
+    }
   };
 
   const handleSimulateIncomingRequest = () => {

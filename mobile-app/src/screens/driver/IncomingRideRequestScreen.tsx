@@ -47,6 +47,8 @@ export default function IncomingRideRequestScreen() {
   }, []);
 
   useEffect(() => {
+    if (!activeOffer) return;
+
     // 15-second progress bar animation
     Animated.timing(countdownAnim, {
       toValue: 0,
@@ -90,15 +92,15 @@ export default function IncomingRideRequestScreen() {
       clearInterval(interval);
       pulseLoop.stop();
     };
-  }, []);
+  }, [activeOffer]);
 
-  const handleAccept = () => {
-    const success = rideLifecycleService.acceptRequest();
-    if (success) {
+  const handleAccept = async () => {
+    const result = await rideLifecycleService.acceptRequest();
+    if (result.success) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       router.replace("/driver/accepted" as any);
     } else {
-      Alert.alert("Request Expired", "This ride request is no longer available.");
+      Alert.alert("Request Unavailable", result.message || "This ride request is no longer available.");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       router.replace("/driver/home" as any);
     }
